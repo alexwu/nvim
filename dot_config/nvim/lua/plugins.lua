@@ -26,7 +26,7 @@ return require("packer").startup {
       end,
     }
     use { "nvim-lua/plenary.nvim" }
-    use { "~/Code/neovim/nvim-snazzy" }
+    use { "alexwu/nvim-snazzy" }
     use { "nvim-treesitter/nvim-treesitter" }
     use {
       "numToStr/Comment.nvim",

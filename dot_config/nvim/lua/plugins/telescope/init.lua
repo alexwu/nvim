@@ -170,15 +170,6 @@ require("telescope").setup {
     },
     project = {
       base_dirs = {
-        "~/Code/cleverific/editorder",
-        "~/Code/cleverific/admin",
-        "~/Code/cleverific/zenlocator/api",
-        "~/Code/cleverific/zenlocator/dash",
-        "~/Code/cleverific/zenlocator/sdk",
-        "~/Code/cleverific/zenlocator/shopify",
-        "~/Code/bombeelu/sheikah-slate",
-        "~/Code/bombeelu/sheikah-slate/api",
-        "~/Code/bombeelu/sheikah-slate/web",
       },
       hidden_files = true,
     },
