@@ -40,6 +40,9 @@ require("nvim-treesitter.configs").setup {
       [";"] = "textsubjects-container-outer",
     },
   },
+  endwise = {
+    enable = true,
+  },
   textobjects = {
     select = {
       enable = true,
