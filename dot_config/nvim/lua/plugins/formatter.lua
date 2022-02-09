@@ -27,7 +27,7 @@ local function stylua()
   return {
     exe = "stylua",
     args = {
-      "--config-path " .. vim.fn.expand "~/.config/stylua.toml",
+    --   "--config-path " .. vim.fn.expand "~/.config/stylua.toml",
       "-",
     },
     stdin = true,

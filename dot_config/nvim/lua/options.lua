@@ -43,6 +43,7 @@ vim.opt.wildignore =
 vim.opt.shortmess:append "Icq"
 vim.opt.termguicolors = true
 vim.opt.timeoutlen = 500
+vim.opt.pumheight = 10
 
 vim.o.shell = bin .. "zsh"
 
