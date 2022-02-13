@@ -29,6 +29,7 @@ endfunction
 let g:test#custom_strategies = {'toggleterm': function('ToggletermStrategy')}
 ]]
 
+-- vim.api.nvim_set_var("test#strategy", "kitty")
 vim.api.nvim_set_var("test#strategy", "toggleterm")
 vim.api.nvim_set_var("test#ruby#rspec#executable", "bundle exec rspec")
 vim.api.nvim_set_var("test#ruby#rspec#patterns", "_spec.rb")

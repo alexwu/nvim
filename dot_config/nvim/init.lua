@@ -14,4 +14,4 @@ require("snazzy").setup("dark")
 
 require("plugins.treesitter")
 
-vim.cmd([[autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"]])
+vim.cmd([[autocmd BufWritePost silent ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"]])
