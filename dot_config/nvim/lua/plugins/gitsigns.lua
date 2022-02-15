@@ -2,7 +2,7 @@ require("gitsigns").setup {
   debug_mode = true,
   sign_priority = 6,
   attach_to_untracked = true,
-  current_line_blame = false,
+  current_line_blame = true,
   current_line_blame_opts = {
     virt_text = true,
     virt_text_pos = "eol",
@@ -44,6 +44,7 @@ require("gitsigns").setup {
     -- Navigation
     map("n", "]c", "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true })
     map("n", "[c", "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true })
+      -- vim.call('repeat#set', ']d')
 
     -- Actions
     map({ "n", "v" }, "<leader>sh", gs.stage_hunk)
@@ -53,7 +54,7 @@ require("gitsigns").setup {
     map("n", "<leader>uh", gs.undo_stage_hunk)
     map("n", "<leader>ph", gs.preview_hunk)
     map("n", "M", function()
-      gs.blame_line { full = false, ignore_whitespace = true }
+      gs.blame_line { full = true, ignore_whitespace = true }
     end)
     map("n", "<leader>tb", gs.toggle_current_line_blame)
     map("n", "<leader>hd", gs.diffthis)
