@@ -33,6 +33,7 @@ require("diffview").setup({
 			["<leader>e"] = cb("focus_files"),
 			["<leader>b"] = cb("toggle_files"),
 			["q"] = cb("close"),
+			["gf"] = cb("goto_file_edit"),
 		},
 	},
 })
