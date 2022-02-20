@@ -57,6 +57,7 @@ return require("packer").startup({
 				require("plugins.snippets")
 			end,
 		})
+		use({ "williamboman/nvim-lsp-installer" })
 		use({
 			"neovim/nvim-lspconfig",
 			config = function()
@@ -121,6 +122,14 @@ return require("packer").startup({
 		})
 
 		use({
+			"nvim-telescope/telescope-frecency.nvim",
+			config = function()
+				require("telescope").load_extension("frecency")
+			end,
+			requires = { "tami5/sqlite.lua" },
+		})
+
+		use({
 			"vim-test/vim-test",
 			config = function()
 				require("plugins.vim-test")
@@ -144,6 +153,13 @@ return require("packer").startup({
 		use({ "nvim-treesitter/nvim-treesitter-refactor" })
 		use({ "RRethy/nvim-treesitter-textsubjects" })
 		use({ "RRethy/nvim-treesitter-endwise" })
+
+		use({
+			"lewis6991/spellsitter.nvim",
+			config = function()
+				require("spellsitter").setup()
+			end,
+		})
 
 		use({
 			"nvim-treesitter/playground",
@@ -200,6 +216,8 @@ return require("packer").startup({
 				"nvim-telescope/telescope.nvim",
 			},
 		})
+
+		use({ "ray-x/go.nvim" })
 
 		use({
 			"rcarriga/nvim-dap-ui",
@@ -310,9 +328,9 @@ return require("packer").startup({
 		})
 
 		use({
-			"blackCauldron7/surround.nvim",
+			"alexwu/surround.nvim",
 			config = function()
-				require("surround").setup({ mappings_style = "surround" })
+				require("surround").setup({ mappings_style = "surround", prompt = false })
 			end,
 		})
 
@@ -348,15 +366,19 @@ return require("packer").startup({
 		use({
 			"folke/which-key.nvim",
 			config = function()
-				require("which-key").setup({
-					-- your configuration comes here
-					-- or leave it empty to use the default settings
-					-- refer to the configuration section below
-				})
+				require("which-key").setup({})
 			end,
 		})
 
 		use({ "rafcamlet/nvim-luapad", ft = { "lua" } })
+
+		use({
+			"echasnovski/mini.nvim",
+			branch = "stable",
+			require = function()
+				require("mini.bufremove").setup()
+			end,
+		})
 
 		if packer_bootstrap then
 			require("packer").sync()
