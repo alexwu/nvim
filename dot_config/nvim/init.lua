@@ -1,9 +1,3 @@
-vim.filetype.add({
-	filename = {
-		[".git/config"] = "gitconfig",
-		["dot_zshrc"] = "zsh",
-	},
-})
 require("impatient")
 require("options")
 require("mappings")
