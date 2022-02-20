@@ -19,6 +19,7 @@ require("diffview").setup({
 			["<leader>e"] = cb("focus_files"),
 			["<leader>b"] = cb("toggle_files"),
 			["q"] = cb("close"),
+			["gf"] = cb("goto_file_edit"),
 		},
 		file_panel = {
 			["j"] = cb("next_entry"),
@@ -33,6 +34,9 @@ require("diffview").setup({
 			["<leader>e"] = cb("focus_files"),
 			["<leader>b"] = cb("toggle_files"),
 			["q"] = cb("close"),
+			["gf"] = cb("goto_file_edit"),
+		},
+		file_history_panel = {
 			["gf"] = cb("goto_file_edit"),
 		},
 	},
