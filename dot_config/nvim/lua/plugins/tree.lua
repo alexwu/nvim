@@ -62,10 +62,10 @@ tree.setup({
 		width = tree_width(0.2),
 		mappings = {
 			list = {
-				{ key = "h", cb = tree_cb("close_node") },
-				{ key = "l", cb = tree_cb("unroll_dir") },
-				{ key = "-", cb = nil },
-				{ key = "<C-n>", cb = tree_cb("close") },
+				{ key = "h", action = "close_node" },
+				{ key = "l", action = "unroll_dir" },
+				{ key = "-", aciton = nil },
+				{ key = "<C-n>", action = "close" },
 			},
 		},
 		filters = {
