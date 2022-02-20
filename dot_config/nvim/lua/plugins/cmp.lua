@@ -82,6 +82,12 @@ cmp.setup({
 				fallback()
 			end
 		end,
+		["<C-l>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				return cmp.complete_common_string()
+			end
+			fallback()
+		end, { "i", "c" }),
 	},
 	preselect = cmp.PreselectMode.None,
 	formatting = {
@@ -126,3 +132,4 @@ cmp.setup.cmdline(":", {
 })
 
 vim.cmd([[autocmd FileType toml lua require('cmp').setup.buffer { sources = { { name = 'crates' } } }]])
+vim.cmd([[autocmd FileType TelescopePrompt lua require('cmp').setup.buffer { enabled = false }]])

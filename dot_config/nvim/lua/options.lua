@@ -45,8 +45,6 @@ vim.opt.termguicolors = true
 vim.opt.timeoutlen = 500
 vim.opt.pumheight = 10
 
-vim.o.shell = bin .. "zsh"
-
 vim.cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{ higroup='IncSearch', timeout = 150 } ]]
 
 -- disable python 2

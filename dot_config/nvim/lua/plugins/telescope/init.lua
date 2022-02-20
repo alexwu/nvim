@@ -2,6 +2,7 @@ local set = vim.keymap.set
 local actions = require("telescope.actions")
 local fb_actions = require("telescope").extensions.file_browser.actions
 local builtin = require("telescope.builtin")
+local utils = require("telescope.utils")
 
 R = function(name)
 	require("plenary.reload").reload_module(name)
@@ -31,6 +32,7 @@ require("telescope").setup({
 				["<C-u>"] = require("plugins.telescope.actions").clear_line,
 			},
 			n = {
+				["q"] = actions.close,
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
 			},
@@ -157,9 +159,6 @@ require("telescope").setup({
 				width = function()
 					return math.max(100, vim.fn.round(vim.o.columns * 0.8))
 				end,
-				-- height = function(_, _, max_lines)
-				--   return math.min(max_lines, 15)
-				-- end,
 			},
 			mappings = {
 				i = {
@@ -172,6 +171,9 @@ require("telescope").setup({
 			base_dirs = {},
 			hidden_files = true,
 		},
+		frecency = {
+			default_workspace = "CWD",
+		},
 	},
 })
 require("telescope").load_extension("fzf")
@@ -179,6 +181,11 @@ require("telescope").load_extension("ui-select")
 require("telescope").load_extension("file_browser")
 require("telescope").load_extension("project")
 require("neoclip").setup()
+-- pcall(function()
+--      for _, ext in ipairs(extensions) do
+--         telescope.load_extension(ext)
+--      end
+--   end)
 
 set("n", "<Leader><space>", function()
 	require("plugins.telescope.pickers").buffers({
@@ -199,6 +206,7 @@ set("n", "<Leader><space>", function()
 		},
 	})
 end)
+
 set("n", "<Leader>f", function()
 	builtin.find_files(
 		require("telescope.themes").get_dropdown({
@@ -211,6 +219,10 @@ set("n", "<Leader>f", function()
 		{ desc = "Find Files" }
 	)
 end, { desc = "Default fuzzy finder" })
+
+-- set("n", "<Leader>f", function()
+-- 	require("telescope").extensions.frecency.frecency()
+-- end, { desc = "Frecency finder" })
 
 set("n", "<Leader>g", function()
 	builtin.git_files()
@@ -238,6 +250,7 @@ end)
 set("n", "<Leader>sn", function()
 	require("plugins.telescope.pickers").snippets()
 end)
+
 set("n", "<Leader>st", function()
 	builtin.git_status()
 end)
@@ -246,7 +259,7 @@ set("n", "<Leader>i", function()
 	require("plugins.telescope.pickers").related_files()
 end)
 
-set("n", "<Leader>v", function()
+set("n", "gp", function()
 	require("telescope").extensions.neoclip.default()
 end)
 

@@ -1,28 +1,10 @@
 local lspconfig = require("lspconfig")
-local configs = require("lspconfig.configs")
 local util = lspconfig.util
 local root_pattern = util.root_pattern
 local lsp_installer = require("nvim-lsp-installer")
 local on_attach = require("plugins.lsp.defaults").on_attach
 local capabilities = require("plugins.lsp.defaults").capabilities
-local null_ls = require("null-ls")
--- require "plugins.lsp.rubocop"
-
-null_ls.setup({
-	sources = {
-		null_ls.builtins.formatting.rubocop.with({
-			command = "bundle",
-			args = vim.list_extend({ "exec", "rubocop" }, require("null-ls").builtins.formatting.rubocop._opts.args),
-		}),
-		null_ls.builtins.diagnostics.rubocop.with({
-			command = "bundle",
-			args = vim.list_extend({ "exec", "rubocop" }, require("null-ls").builtins.diagnostics.rubocop._opts.args),
-		}),
-		null_ls.builtins.formatting.pg_format,
-		null_ls.builtins.formatting.prismaFmt,
-		null_ls.builtins.code_actions.gitsigns,
-	},
-})
+local null_ls = require("plugins.lsp.null-ls")
 
 lsp_installer.settings({
 	log_level = vim.log.levels.DEBUG,
@@ -195,39 +177,7 @@ lsp_installer.on_server_ready(function(server)
 	vim.cmd([[ do User LspAttachBuffers ]])
 end)
 
--- lspconfig["rubocop-lsp"].setup {
---   on_attach = on_attach,
---   capabilities = capabilities,
--- }
-
--- local rubocop = {
---   lintCommand = "bundle exec rubocop --force-exclusion --stdin ${INPUT}",
---   lintStdin = true,
---   lintFormats = { "%f:%l:%c: %m" },
---   lintIgnoreExitCode = true,
---   formatCommand = "bundle exec rubocop -A -f quiet --stderr -s ${INPUT}",
---   formatStdin = true,
--- }
---
--- lspconfig.efm.setup {
---   init_options = {
---     documentFormatting = true,
---     codeAction = true,
---     completion = true,
---     hover = true,
---     documentSymbol = true,
---   },
---   filetypes = { "ruby", "eruby" },
---   root_dir = root_pattern ".rubocop.yml",
---   settings = {
---     rootMarkers = { ".rubocop.yml" },
---     languages = {
---       ruby = { rubocop },
---     },
---   },
---   on_attach = on_attach,
---   capabilities = capabilities,
--- }
+null_ls.setup()
 
 lspconfig.sorbet.setup({
 	on_attach = on_attach,
@@ -258,8 +208,6 @@ lspconfig.sorbet.setup({
 --   on_attach = on_attach,
 --   capabilities = capabilities,
 -- }
---
--- require("trouble").setup {}
 
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <CR> <CR>:cclose<CR>]])
 vim.cmd([[autocmd FileType LspInfo,null-ls-info nmap <buffer> q <cmd>quit<cr>]])

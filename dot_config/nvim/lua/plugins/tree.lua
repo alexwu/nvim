@@ -77,11 +77,11 @@ tree.setup({
 		update_cwd = false,
 		ignore_list = { "help" },
 	},
-	update_to_buf_dir = {
+	hijack_directories = {
 		enable = false,
 	},
 	diagnostics = {
-		enable = true,
+		enable = false,
 	},
 })
 
