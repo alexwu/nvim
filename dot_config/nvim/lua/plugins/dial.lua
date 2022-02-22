@@ -1,28 +1,31 @@
-local dial = require "dial"
+local augend = require("dial.augend")
 local set = vim.keymap.set
 
-dial.augends["custom#boolean"] = dial.common.enum_cyclic {
-  name = "boolean",
-  strlist = { "true", "false" },
-}
-dial.augends["custom#tests"] = dial.common.enum_cyclic {
-  name = "tests",
-  strlist = { "it", "fit", "xit" },
-}
-dial.augends["custom#enable"] = dial.common.enum_cyclic {
-  name = "enable",
-  strlist = { "enable", "disable" },
-}
-table.insert(dial.config.searchlist.normal, "custom#boolean")
-table.insert(dial.config.searchlist.normal, "custom#tests")
-table.insert(dial.config.searchlist.normal, "custom#enable")
+require("dial.config").augends:register_group({
+	default = {
+		augend.integer.alias.decimal,
+		augend.integer.alias.decimal_int,
+		augend.constant.alias.bool,
+		augend.constant.new({
+			elements = { "and", "or" },
+			word = true,
+			cyclic = true,
+		}),
+		augend.constant.new({
+			elements = { "&&", "||" },
+			word = false,
+			cyclic = true,
+		}),
+		augend.constant.new({
+			elements = { "it", "fit", "xit" },
+			word = false,
+			cyclic = true,
+		}),
+	},
+})
 
-dial.config.searchlist.visual = {
-  "number#decimal",
-  "number#hex",
-  "number#binary",
-  "date#[%Y/%m/%d]",
-}
+set("n", "<C-a>", require("dial.map").inc_normal(), { noremap = true })
+set("n", "<C-x>", require("dial.map").dec_normal(), { noremap = true })
 
-set({ "n", "v" }, "<C-a>", "<Plug>(dial-increment)")
-set({ "n", "v" }, "<C-x>", "<Plug>(dial-decrement)")
+set("v", "<C-a>", require("dial.map").inc_visual(), { noremap = true })
+set("v", "<C-x>", require("dial.map").dec_visual(), { noremap = true })

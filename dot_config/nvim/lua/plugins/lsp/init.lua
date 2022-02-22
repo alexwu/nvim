@@ -147,6 +147,9 @@ lsp_installer.on_server_ready(function(server)
 							disabled = { "unresolved-proc-macro" },
 							enableExperimental = true,
 						},
+						checkOnSave = {
+							command = "clippy",
+						},
 					},
 				},
 			}),
