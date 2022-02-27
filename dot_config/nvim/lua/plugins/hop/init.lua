@@ -4,16 +4,14 @@ local extension = require("hop-extensions")
 
 hop.setup({})
 
-set("n", "gw", function()
-  require("plugins.hop.custom").hint_both_ends()
-end)
+-- 'asdghklqwertyuiopzxcvbnmfj'
 
 set("n", "gs", function()
 	hop.hint_words()
 end)
 
 set("n", "gl", function()
-  hop.hint_lines_skip_whitespace()
+	hop.hint_lines_skip_whitespace()
 end)
 
 set("n", "f", function()

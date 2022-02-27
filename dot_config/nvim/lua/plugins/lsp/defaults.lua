@@ -1,6 +1,6 @@
 local M = {}
-local builtin = require("telescope.builtin")
 local set = vim.keymap.set
+local telescope = require("telescope.builtin")
 
 function M.on_attach(_, bufnr)
 	local signs = {
@@ -48,22 +48,24 @@ function M.on_attach(_, bufnr)
 		{ border = "rounded", focusable = false }
 	)
 	set("n", "gd", function()
-		builtin.lsp_definitions()
-		-- vim.lsp.buf.definition()
+		telescope.lsp_definitions()
 	end)
 
 	set("n", "gr", function()
-		builtin.lsp_references()
-		-- vim.lsp.buf.references()
+		telescope.lsp_references()
 	end)
 
 	set("n", "gi", function()
-		builtin.lsp_implementations()
+		telescope.lsp_implementations()
 	end)
 
-	-- set("n", "gD", function()
-	-- 	vim.lsp.buf.declaration()
-	-- end, { silent = true })
+	set("n", "g-", function()
+		telescope.lsp_document_symbols()
+	end)
+
+	set("n", "gD", function()
+		vim.lsp.buf.declaration()
+	end, { silent = true })
 
 	set("n", "K", function()
 		vim.lsp.buf.hover()
@@ -83,12 +85,16 @@ function M.on_attach(_, bufnr)
 		vim.lsp.buf.code_action()
 	end, { silent = true })
 
+	set("n", "ga", function()
+		vim.lsp.buf.code_action()
+	end, { silent = true })
+
 	set("n", "[d", function()
-		vim.lsp.diagnostic.goto_prev()
+		vim.diagnostic.goto_prev()
 	end, { silent = true })
 
 	set("n", "]d", function()
-		vim.lsp.diagnostic.goto_next()
+		vim.diagnostic.goto_next()
 	end, { silent = true })
 
 	set("n", "<BSlash>y", function()

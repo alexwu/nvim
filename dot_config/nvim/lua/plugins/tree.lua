@@ -56,10 +56,12 @@ tree.setup({
 	},
 	disable_netrw = true,
 	hijack_netrw = true,
+  hijack_cursor = true,
 	ignore_ft_on_setup = { "startify", "dashboard", "netrw", "help" },
 	view = {
 		auto_resize = true,
 		width = tree_width(0.2),
+		preserve_window_proportions = true,
 		mappings = {
 			list = {
 				{ key = "h", action = "close_node" },
@@ -81,8 +83,40 @@ tree.setup({
 		enable = false,
 	},
 	diagnostics = {
-		enable = false,
+		enable = true,
+	},
+	actions = {
+		change_dir = {
+			global = false,
+		},
+		open_file = {
+			quit_on_open = false,
+			window_picker = {
+				enable = false,
+				chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+				exclude = {
+					filetype = {
+						"notify",
+						"packer",
+						"qf",
+					},
+				},
+			},
+		},
 	},
 })
 
+local function toggle_replace()
+	local view = require("nvim-tree.view")
+	if view.is_visible() then
+		view.close()
+	else
+		require("nvim-tree").open_replacing_current_buffer()
+	end
+end
+
+-- TODO: Get this working nicely
+set("n", "-", function()
+	toggle_replace()
+end)
 set("n", "<C-n>", "<Cmd>NvimTreeFindFile<CR>")

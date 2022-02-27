@@ -23,7 +23,7 @@ require("telescope").setup({
 		},
 		sorting_strategy = "ascending",
 		layout_strategy = "center",
-		winblend = 30,
+		winblend = 10,
 		mappings = {
 			i = {
 				["<esc>"] = actions.close,
@@ -48,26 +48,8 @@ require("telescope").setup({
 				"fd",
 				"--type",
 				"f",
-				"-uu",
 				"--follow",
-				"--exclude",
-				".git",
-				"--exclude",
-				"node_modules",
-				"--exclude",
-				"coverage",
-				"--exclude",
-				".DS_Store",
-				"--exclude",
-				"*.cache",
-				"--exclude",
-				"*.chunk.js.map",
-				"--exclude",
-				"tmp",
-				"--exclude",
-				"target",
-				"--exclude",
-				"vendor",
+				"-uu",
 				"--strip-cwd-prefix",
 			},
 		},
@@ -89,15 +71,6 @@ require("telescope").setup({
 		},
 		live_grep = {
 			theme = "dropdown",
-			vimgrep_arguments = {
-				"ag",
-				"--nocolor",
-				"--no-heading",
-				"--filename",
-				"--numbers",
-				"--column",
-				"--smart-case",
-			},
 		},
 		buffers = {
 			initial_mode = "normal",
@@ -123,6 +96,13 @@ require("telescope").setup({
 		lsp_definitions = {
 			theme = "dropdown",
 			initial_mode = "normal",
+		},
+		lsp_document_symbols = {
+			mappings = {
+				i = {
+					["-"] = actions.close,
+				},
+			},
 		},
 	},
 	extensions = {
@@ -159,6 +139,9 @@ require("telescope").setup({
 				width = function()
 					return math.max(100, vim.fn.round(vim.o.columns * 0.8))
 				end,
+				height = function()
+					return math.max(100, vim.fn.round(vim.o.lines * 0.9))
+				end,
 			},
 			mappings = {
 				i = {
@@ -171,21 +154,16 @@ require("telescope").setup({
 			base_dirs = {},
 			hidden_files = true,
 		},
-		frecency = {
-			default_workspace = "CWD",
-		},
 	},
 })
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
 require("telescope").load_extension("file_browser")
 require("telescope").load_extension("project")
-require("neoclip").setup()
--- pcall(function()
---      for _, ext in ipairs(extensions) do
---         telescope.load_extension(ext)
---      end
---   end)
+
+require("neoclip").setup({
+	enable_persistent_history = true,
+})
 
 set("n", "<Leader><space>", function()
 	require("plugins.telescope.pickers").buffers({
@@ -207,7 +185,7 @@ set("n", "<Leader><space>", function()
 	})
 end)
 
-set("n", "<Leader>f", function()
+set("n", "gf", function()
 	builtin.find_files(
 		require("telescope.themes").get_dropdown({
 			layout_config = {
@@ -220,11 +198,7 @@ set("n", "<Leader>f", function()
 	)
 end, { desc = "Default fuzzy finder" })
 
--- set("n", "<Leader>f", function()
--- 	require("telescope").extensions.frecency.frecency()
--- end, { desc = "Frecency finder" })
-
-set("n", "<Leader>g", function()
+set("n", "<Leader>f", function()
 	builtin.git_files()
 end)
 
@@ -236,14 +210,11 @@ set("n", "<Leader>td", function()
 	builtin.diagnostics()
 end)
 
-set("n", "<Leader>rg", function()
-	builtin.live_grep()
-end)
-set("n", "<Leader>ag", function()
+set("n", "gag", function()
 	builtin.live_grep()
 end)
 
-set("n", "<Leader>br", function()
+set("n", "gbr", function()
 	builtin.git_branches()
 end)
 
@@ -267,7 +238,7 @@ set("n", "<Leader>p", function()
 	require("telescope").extensions.project.project({})
 end, { noremap = true, silent = true })
 
-set("n", "<Leader>tr", function()
+set("n", "gtr", function()
 	require("telescope").extensions.file_browser.file_browser({ path = vim.fn.expand("%:p:h") })
 end, { noremap = true })
 

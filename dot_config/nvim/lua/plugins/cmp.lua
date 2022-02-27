@@ -12,6 +12,7 @@ local has_words_before = function()
 	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
+---@diagnostic disable-next-line: redundant-parameter
 cmp.setup({
 	sources = {
 		{ name = "nvim_lsp", max_item_count = 10, priority = 100 },
@@ -56,8 +57,8 @@ cmp.setup({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
-		["<Down>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
-		["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), { "i" }),
+		["<Down>"] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), { "i", "c" }),
+		["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), { "i", "c" }),
 		["<C-e>"] = cmp.mapping({
 			i = cmp.mapping.abort(),
 			c = cmp.mapping.close(),
@@ -88,6 +89,12 @@ cmp.setup({
 			end
 			fallback()
 		end, { "i", "c" }),
+		-- ["<Right>"] = cmp.mapping(function(fallback)
+		-- 	if cmp.visible() then
+		-- 		return cmp.complete_common_string()
+		-- 	end
+		-- 	fallback()
+		-- end, { "i", "c" }),
 	},
 	preselect = cmp.PreselectMode.None,
 	formatting = {

@@ -54,6 +54,6 @@ require("lir").setup {
   },
   hide_cursor = true,
 }
-set("n", "-", function()
-  require("lir.float").toggle()
-end)
+-- set("n", "-", function()
+--   require("lir.float").toggle()
+-- end)

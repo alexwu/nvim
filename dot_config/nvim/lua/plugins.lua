@@ -29,6 +29,12 @@ return require("packer").startup({
 		use({ "alexwu/nvim-snazzy" })
 		use({ "nvim-treesitter/nvim-treesitter" })
 		use({
+			"sheerun/vim-polyglot",
+			setup = function()
+				vim.g.polyglot_disabled = { "sensible", "ftdetect", "lua" }
+			end,
+		})
+		use({
 			"numToStr/Comment.nvim",
 			config = function()
 				require("plugins.commenting")
@@ -44,12 +50,14 @@ return require("packer").startup({
 				require("plugins.kitty")
 			end,
 		})
+
 		use({
 			"mhartington/formatter.nvim",
 			config = function()
 				require("plugins.formatter")
 			end,
 		})
+
 		use({
 			"L3MON4D3/LuaSnip",
 			requires = { "rafamadriz/friendly-snippets" },
@@ -69,6 +77,7 @@ return require("packer").startup({
 				"hrsh7th/cmp-nvim-lsp",
 				"nvim-telescope/telescope.nvim",
 				"b0o/schemastore.nvim",
+				"simrat39/symbols-outline.nvim",
 			},
 		})
 
@@ -90,11 +99,13 @@ return require("packer").startup({
 				require("plugins.cmp")
 			end,
 		})
+
 		use({
 			"tzachar/cmp-tabnine",
 			run = "./install.sh",
 			requires = "hrsh7th/nvim-cmp",
 		})
+
 		use({
 			"saecki/crates.nvim",
 			event = { "BufRead Cargo.toml" },
@@ -121,12 +132,58 @@ return require("packer").startup({
 			end,
 		})
 
+		use({ "MunifTanjim/nui.nvim" })
+
 		use({
-			"nvim-telescope/telescope-frecency.nvim",
+			"stevearc/dressing.nvim",
 			config = function()
-				require("telescope").load_extension("frecency")
+				require("dressing").setup({
+					input = {
+						enabled = true,
+					},
+					select = {
+						enabled = true,
+
+						-- Priority list of preferred vim.select implementations
+						backend = { "nui" },
+
+						-- Options for nui Menu
+						nui = {
+							position = "50%",
+							size = nil,
+							relative = "editor",
+							border = {
+								style = "rounded",
+							},
+							max_width = 80,
+							max_height = 40,
+						},
+
+						-- Options for built-in selector
+						builtin = {
+							-- These are passed to nvim_open_win
+							anchor = "NW",
+							relative = "cursor",
+							row = 0,
+							col = 0,
+							border = "rounded",
+
+							-- Window transparency (0-100)
+							winblend = 10,
+							-- Change default highlight groups (see :help winhl)
+							winhighlight = "",
+
+							-- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+							width = nil,
+							max_width = 0.8,
+							min_width = 40,
+							height = nil,
+							max_height = 0.9,
+							min_height = 10,
+						},
+					},
+				})
 			end,
-			requires = { "tami5/sqlite.lua" },
 		})
 
 		use({
@@ -192,6 +249,22 @@ return require("packer").startup({
 		})
 
 		use({
+			"rmagatti/auto-session",
+			config = function()
+				vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+				require("auto-session").setup({})
+			end,
+		})
+
+		use({
+			"rmagatti/session-lens",
+			requires = { "rmagatti/auto-session", "nvim-telescope/telescope.nvim" },
+			config = function()
+				require("session-lens").setup({})
+			end,
+		})
+
+		use({
 			"pwntester/octo.nvim",
 			requires = {
 				"nvim-lua/plenary.nvim",
@@ -216,8 +289,8 @@ return require("packer").startup({
 				"nvim-telescope/telescope.nvim",
 			},
 		})
-
-		use({ "ray-x/go.nvim" })
+		use("ray-x/go.nvim")
+		use("nanotee/sqls.nvim")
 
 		use({
 			"rcarriga/nvim-dap-ui",
@@ -297,6 +370,14 @@ return require("packer").startup({
 		})
 
 		use({
+			"TimUntersberger/neogit",
+			requires = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim" },
+			config = function()
+				require("neogit").setup({ integrations = { diffview = true } })
+			end,
+		})
+
+		use({
 			"monaqa/dial.nvim",
 			config = function()
 				require("plugins.dial")
@@ -362,7 +443,6 @@ return require("packer").startup({
 			end,
 		})
 
-		-- Lua
 		use({
 			"folke/which-key.nvim",
 			config = function()
@@ -379,6 +459,8 @@ return require("packer").startup({
 				require("mini.bufremove").setup()
 			end,
 		})
+
+		use({ "~/Code/neovim/nvim-treesitter-test-runner" })
 
 		if packer_bootstrap then
 			require("packer").sync()

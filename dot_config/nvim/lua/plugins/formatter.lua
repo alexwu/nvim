@@ -67,3 +67,4 @@ require("formatter").setup({
 
 set({ "n", "v" }, "<F8>", "<CMD>Format<CR>", { silent = true })
 set({ "n", "v" }, "<Leader>y", "<CMD>Format<CR>", { silent = true })
+set({ "n", "v" }, "gy", "<CMD>Format<CR>", { silent = true })

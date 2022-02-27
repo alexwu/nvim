@@ -55,7 +55,7 @@ require("toggleterm").setup({
 			return vim.o.columns * 0.8
 		end
 	end,
-	open_mapping = [[<C-Bslash>]],
+	open_mapping = [[<A-Bslash>]],
 	hide_numbers = true,
 	shade_filetypes = {},
 	shade_terminals = true,
@@ -69,7 +69,7 @@ require("toggleterm").setup({
 		border = "rounded",
 		width = vim.fn.round(0.9 * vim.o.columns),
 		height = vim.fn.round(0.9 * vim.o.lines),
-		winblend = 30,
+		winblend = 10,
 		highlights = { border = "FloatBorder", background = "Normal" },
 	},
 })

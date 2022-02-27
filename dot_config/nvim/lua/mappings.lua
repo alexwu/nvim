@@ -21,8 +21,14 @@ set("x", "<F2>", '"*y')
 set("n", "<A-BS>", "db")
 set("i", "<A-BS>", "<C-W>")
 
+set("n", "t", "gt")
+set("n", "T", "gT")
+set("n", "]t", "gt")
+set("n", "[T", "gT")
+
 set("n", "<A-o>", "o<esc>")
 set("n", "<A-O>", "O<esc>")
 
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
+vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> q :cclose<CR>]])
 vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> gd <C-]>]])
