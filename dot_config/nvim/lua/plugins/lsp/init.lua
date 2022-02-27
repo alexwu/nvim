@@ -73,8 +73,6 @@ lsp_installer.on_server_ready(function(server)
 	end
 
 	if server.name == "eslint" then
-		local default_opts = server:get_default_options()
-		opts.cmd = vim.list_extend({ "yarn", "node" }, default_opts.cmd)
 		opts.on_attach = function(client, bufnr)
 			client.resolved_capabilities.document_formatting = true
 			on_attach(client, bufnr)
@@ -102,7 +100,7 @@ lsp_installer.on_server_ready(function(server)
 			tools = {
 				autoSetHints = true,
 				hover_with_actions = true,
-				executor = require("rust-tools/executors").termopen,
+				executor = require("rust-tools/executors").toggleterm,
 				runnables = {
 					use_telescope = true,
 				},
