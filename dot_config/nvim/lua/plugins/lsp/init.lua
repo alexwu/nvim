@@ -5,6 +5,7 @@ local lsp_installer = require("nvim-lsp-installer")
 local on_attach = require("plugins.lsp.defaults").on_attach
 local capabilities = require("plugins.lsp.defaults").capabilities
 local null_ls = require("plugins.lsp.null-ls")
+local set = vim.keymap.set
 
 lsp_installer.settings({
 	log_level = vim.log.levels.DEBUG,
@@ -211,5 +212,18 @@ lspconfig.sorbet.setup({
 --   capabilities = capabilities,
 -- }
 
-vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <CR> <CR>:cclose<CR>]])
-vim.cmd([[autocmd FileType LspInfo,null-ls-info nmap <buffer> q <cmd>quit<cr>]])
+vim.api.nvim_create_autocmd({
+	event = "FileType",
+	pattern = "qf",
+	callback = function()
+		set("n", "<CR>", "<CR>:cclose<CR>")
+	end,
+})
+
+vim.api.nvim_create_autocmd({
+	event = "FileType",
+	pattern = { "LspInfo, null-ls-info" },
+	callback = function()
+		set("n", "q", "<cmd>quit<cr>")
+	end,
+})
