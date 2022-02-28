@@ -168,10 +168,10 @@ return require("packer").startup({
 			end,
 		})
 
-		use({ "nvim-treesitter/nvim-treesitter-textobjects" })
-		use({ "nvim-treesitter/nvim-treesitter-refactor" })
-		use({ "RRethy/nvim-treesitter-textsubjects" })
-		use({ "RRethy/nvim-treesitter-endwise" })
+		use({ "nvim-treesitter/nvim-treesitter-textobjects", requires = "nvim-treesitter/nvim-treesitter" })
+		use({ "nvim-treesitter/nvim-treesitter-refactor", requires = "nvim-treesitter/nvim-treesitter" })
+		use({ "RRethy/nvim-treesitter-textsubjects", requires = "nvim-treesitter/nvim-treesitter" })
+		use({ "RRethy/nvim-treesitter-endwise", requires = "nvim-treesitter/nvim-treesitter" })
 
 		use({
 			"lewis6991/spellsitter.nvim",
