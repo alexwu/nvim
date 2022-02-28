@@ -29,20 +29,7 @@ function M.on_attach(_, bufnr)
 		},
 		update_in_insert = false,
 	})
-	vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-		virtual_text = {
-			severity = { min = vim.diagnostic.severity.ERROR },
-		},
-		underline = {
-			-- severity = { min = vim.diagnostic.severity.ERROR },
-		},
-		signs = true,
-		float = {
-			show_header = false,
-			source = "always",
-		},
-		update_in_insert = false,
-	})
+
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
 		vim.lsp.handlers.hover,
 		{ border = "rounded", focusable = false }

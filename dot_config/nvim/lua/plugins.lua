@@ -124,11 +124,18 @@ return require("packer").startup({
 				{ "nvim-telescope/telescope-ui-select.nvim" },
 				{ "tami5/sqlite.lua", module = "sqlite" },
 				{ "AckslD/nvim-neoclip.lua" },
-				{ "nvim-telescope/telescope-file-browser.nvim" },
 				{ "nvim-telescope/telescope-project.nvim" },
 			},
 			config = function()
 				require("plugins.telescope")
+			end,
+		})
+
+		use({
+			"nvim-telescope/telescope-file-browser.nvim",
+			requires = "nvim-telescope/telescope.nvim",
+			config = function()
+				require("telescope").load_extension("file_browser")
 			end,
 		})
 
