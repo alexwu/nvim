@@ -96,8 +96,8 @@ M.buffers = function(opts)
   }):find()
 end
 
-M.project_files = function()
-  local opts = {}
+M.project_files = function(opts)
+  opts = opts or {}
   local ok = pcall(require("telescope.builtin").git_files, opts)
   if not ok then
     require("telescope.builtin").find_files(opts)

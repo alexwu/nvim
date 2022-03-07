@@ -8,53 +8,53 @@ require("fzf-lua").setup({
 	-- 	-- smaller width if neovim win has over 80 columns
 	-- 	return { width = vim.o.columns > 80 and 0.65 or 0.85 }
 	-- end,
-	winopts = {
-		height = 0.85, -- window height
-		width = 0.80, -- window width
-		row = 0.35, -- window row position (0=top, 1=bottom)
-		col = 0.55, -- window col position (0=left, 1=right)
-		border = "rounded",
-		fullscreen = false,
-		hl = {
-			normal = "Normal", -- window normal color (fg+bg)
-			border = "Normal", -- border color (try 'FloatBorder')
-			cursor = "Cursor", -- cursor highlight (grep/LSP matches)
-			cursorline = "CursorLine", -- cursor line
-			search = "Search", -- search matches (ctags)
-			-- title       = 'Normal',        -- preview border title (file/buffer)
-			-- scrollbar_f = 'PmenuThumb',    -- scrollbar "full" section highlight
-			-- scrollbar_e = 'PmenuSbar',     -- scrollbar "empty" section highlight
-		},
-		preview = {
-			-- 	border = "border", -- border|noborder, applies only to
-			-- 	wrap = "nowrap", -- wrap|nowrap
-			hidden = "nohidden", -- hidden|nohidden
-			vertical = "up:50%", -- up|down:size
-			layout = "vertical", -- horizontal|vertical|flex
-			-- 	flip_columns = 120, -- #cols to switch to horizontal on flex
-			title = true, -- preview border title (file/buf)?
-			scrollbar = "float", -- `false` or string:'float|border'
-			-- 	-- float:  in-window floating border
-			-- 	-- border: in-border chars (see below)
-			-- 	scrolloff = "-2", -- float scrollbar offset from right
-			-- 	-- applies only when scrollbar = 'float'
-			-- 	scrollchars = { "█", "" }, -- scrollbar chars ({ <full>, <empty> }
-			-- 	-- applies only when scrollbar = 'border'
-			-- 	delay = 100, -- delay(ms) displaying the preview
-			-- 	-- prevents lag on fast scrolling
-			-- 	winopts = { -- builtin previewer window options
-			-- 		number = true,
-			-- 		relativenumber = false,
-			-- 		cursorline = true,
-			-- 		cursorlineopt = "both",
-			-- 		cursorcolumn = false,
-			-- 		signcolumn = "no",
-			-- 		list = false,
-			-- 		foldenable = false,
-			-- 		foldmethod = "manual",
-			-- 	},
-		},
-	},
+	-- winopts = {
+	-- 	height = 0.50, -- window height
+	-- 	width = 0.80, -- window width
+	-- 	row = 0.35, -- window row position (0=top, 1=bottom)
+	-- 	col = 0.55, -- window col position (0=left, 1=right)
+	-- 	border = "rounded",
+	-- 	fullscreen = false,
+	-- 	hl = {
+	-- 		normal = "Normal", -- window normal color (fg+bg)
+	-- 		border = "Normal", -- border color (try 'FloatBorder')
+	-- 		cursor = "Cursor", -- cursor highlight (grep/LSP matches)
+	-- 		cursorline = "CursorLine", -- cursor line
+	-- 		search = "Search", -- search matches (ctags)
+	-- 		-- title       = 'Normal',        -- preview border title (file/buffer)
+	-- 		-- scrollbar_f = 'PmenuThumb',    -- scrollbar "full" section highlight
+	-- 		-- scrollbar_e = 'PmenuSbar',     -- scrollbar "empty" section highlight
+	-- 	},
+	-- 	preview = {
+	-- 		-- 	border = "border", -- border|noborder, applies only to
+	-- 		-- 	wrap = "nowrap", -- wrap|nowrap
+	-- 		hidden = "nohidden", -- hidden|nohidden
+	-- 		vertical = "up:50%", -- up|down:size
+	-- 		layout = "vertical", -- horizontal|vertical|flex
+	-- 		-- 	flip_columns = 120, -- #cols to switch to horizontal on flex
+	-- 		title = true, -- preview border title (file/buf)?
+	-- 		scrollbar = "float", -- `false` or string:'float|border'
+	-- 		-- 	-- float:  in-window floating border
+	-- 		-- 	-- border: in-border chars (see below)
+	-- 		-- 	scrolloff = "-2", -- float scrollbar offset from right
+	-- 		-- 	-- applies only when scrollbar = 'float'
+	-- 		-- 	scrollchars = { "█", "" }, -- scrollbar chars ({ <full>, <empty> }
+	-- 		-- 	-- applies only when scrollbar = 'border'
+	-- 		-- 	delay = 100, -- delay(ms) displaying the preview
+	-- 		-- 	-- prevents lag on fast scrolling
+	-- 		-- 	winopts = { -- builtin previewer window options
+	-- 		-- 		number = true,
+	-- 		-- 		relativenumber = false,
+	-- 		-- 		cursorline = true,
+	-- 		-- 		cursorlineopt = "both",
+	-- 		-- 		cursorcolumn = false,
+	-- 		-- 		signcolumn = "no",
+	-- 		-- 		list = false,
+	-- 		-- 		foldenable = false,
+	-- 		-- 		foldmethod = "manual",
+	-- 		-- 	},
+	-- 	},
+	-- },
 	keymap = {
 		builtin = {
 			["<F1>"] = "toggle-help",
@@ -205,9 +205,9 @@ require("fzf-lua").setup({
 	},
 })
 
--- set("n", "<Leader>f", function()
--- 	require("fzf-lua").files()
--- end)
+set("n", "<C-p>", function()
+	require("fzf-lua").files()
+end)
 
 vim.api.nvim_add_user_command("Rg", function()
 	require("fzf-lua").live_grep()

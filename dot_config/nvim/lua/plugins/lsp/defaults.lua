@@ -88,6 +88,17 @@ function M.on_attach(_, bufnr)
 		vim.lsp.buf.formatting()
 	end, { silent = true })
 
+	set("n", "<F8>", function()
+		vim.lsp.buf.formatting()
+	end, { silent = true })
+
+	-- set("v", "'<,'><F8>", function()
+	-- 	vim.lsp.buf.range_formatting()
+	-- end, { silent = true })
+	set("v", "<F8>", function()
+		vim.lsp.buf.range_formatting()
+	end, { silent = true })
+
 	vim.cmd([[autocmd CursorHold,CursorHoldI * lua require("nvim-lightbulb").update_lightbulb()]])
 	vim.cmd([[autocmd CursorHold * lua Show_cursor_diagnostics()]])
 end

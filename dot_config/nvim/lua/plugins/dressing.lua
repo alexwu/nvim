@@ -16,8 +16,8 @@ require("dressing").setup({
 			border = {
 				style = "rounded",
 			},
-			max_width = 80,
-			max_height = 40,
+			max_width = 120,
+			max_height = 80,
 		},
 
 		-- Options for built-in selector
@@ -25,8 +25,6 @@ require("dressing").setup({
 			-- These are passed to nvim_open_win
 			anchor = "NW",
 			relative = "cursor",
-			row = 0,
-			col = 0,
 			border = "rounded",
 
 			-- Window transparency (0-100)

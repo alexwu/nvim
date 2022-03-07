@@ -177,6 +177,7 @@ lsp_installer.on_server_ready(function(server)
 		server:setup(opts)
 	end
 
+	-- vim.api.nvim_do_autocmd("LspAttachBuffers", { group = "User" })
 	vim.cmd([[ do User LspAttachBuffers ]])
 end)
 
@@ -212,16 +213,14 @@ lspconfig.sorbet.setup({
 --   capabilities = capabilities,
 -- }
 
-vim.api.nvim_create_autocmd({
-	event = "FileType",
+vim.api.nvim_create_autocmd("FileType", {
 	pattern = "qf",
 	callback = function()
 		set("n", "<CR>", "<CR>:cclose<CR>")
 	end,
 })
 
-vim.api.nvim_create_autocmd({
-	event = "FileType",
+vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "LspInfo, null-ls-info" },
 	callback = function()
 		set("n", "q", "<cmd>quit<cr>")

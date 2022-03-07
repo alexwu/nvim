@@ -3,10 +3,8 @@ local tree = require("nvim-tree")
 local tree_cb = require("nvim-tree.config").nvim_tree_callback
 local tree_width = require("utils").tree_width
 
-vim.g.nvim_tree_disable_window_picker = 1
 vim.g.nvim_tree_respect_buf_cwd = 1
 vim.g.nvim_tree_highlight_opened_files = 1
-vim.g.nvim_tree_quit_on_open = 1
 vim.g.nvim_tree_icons = {
 	default = "",
 	symlink = "",
@@ -56,7 +54,7 @@ tree.setup({
 	},
 	disable_netrw = true,
 	hijack_netrw = true,
-  hijack_cursor = true,
+	hijack_cursor = true,
 	ignore_ft_on_setup = { "startify", "dashboard", "netrw", "help" },
 	view = {
 		auto_resize = true,
@@ -90,7 +88,7 @@ tree.setup({
 			global = false,
 		},
 		open_file = {
-			quit_on_open = false,
+			quit_on_open = true,
 			window_picker = {
 				enable = false,
 				chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",

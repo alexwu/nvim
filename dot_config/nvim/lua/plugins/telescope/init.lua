@@ -1,6 +1,5 @@
 local set = vim.keymap.set
 local actions = require("telescope.actions")
-local fb_actions = require("telescope").extensions.file_browser.actions
 local builtin = require("telescope.builtin")
 local utils = require("telescope.utils")
 
@@ -29,7 +28,7 @@ require("telescope").setup({
 				["<esc>"] = actions.close,
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
-				["<C-u>"] = require("plugins.telescope.actions").clear_line,
+				["<C-u>"] = false,
 			},
 			n = {
 				["q"] = actions.close,
@@ -112,9 +111,6 @@ require("telescope").setup({
 			override_file_sorter = true,
 			case_mode = "smart_case",
 		},
-		dash = {
-			theme = "dropdown",
-		},
 		["ui-select"] = {
 			require("telescope.themes").get_dropdown({
 				layout_config = {
@@ -126,29 +122,6 @@ require("telescope").setup({
 					end,
 				},
 			}),
-		},
-		file_browser = {
-			layout_strategy = "horizontal",
-			layout_config = {
-				vertical = {
-					height = 0.9,
-					preview_cutoff = 40,
-					prompt_position = "bottom",
-					width = 0.8,
-				},
-				width = function()
-					return math.max(100, vim.fn.round(vim.o.columns * 0.8))
-				end,
-				height = function()
-					return math.max(100, vim.fn.round(vim.o.lines * 0.9))
-				end,
-			},
-			mappings = {
-				i = {
-					["<esc>"] = false,
-				},
-				n = { ["a"] = fb_actions.create },
-			},
 		},
 		project = {
 			base_dirs = {},
@@ -169,6 +142,7 @@ set("n", "<Leader><space>", function()
 		initial_mode = "normal",
 		theme = "dropdown",
 		ignore_current_buffer = true,
+		only_cwd = true,
 		sort_lastused = true,
 		layout_config = {
 			width = function()
@@ -184,21 +158,21 @@ set("n", "<Leader><space>", function()
 	})
 end)
 
-set("n", "gf", function()
-	builtin.find_files(
-		require("telescope.themes").get_dropdown({
-			layout_config = {
-				width = function()
-					return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-				end,
-			},
-		}),
-		{ desc = "Find Files" }
-	)
-end, { desc = "Default fuzzy finder" })
-
+-- set("n", "gf", function()
+-- 	builtin.find_files(
+-- 		require("telescope.themes").get_dropdown({
+-- 			layout_config = {
+-- 				width = function()
+-- 					return math.max(100, vim.fn.round(vim.o.columns * 0.3))
+-- 				end,
+-- 			},
+-- 		}),
+-- 		{ desc = "Find Files" }
+-- 	)
+-- end, { desc = "Default fuzzy finder" })
+--
 set("n", "<Leader>f", function()
-	builtin.git_files()
+	require("plugins.telescope.pickers").project_files({ prompt_title = "Files" })
 end)
 
 set("n", "<Leader>tp", function()
@@ -236,10 +210,6 @@ end)
 set("n", "<Leader>p", function()
 	require("telescope").extensions.project.project({})
 end, { noremap = true, silent = true })
-
-set("n", "gtr", function()
-	require("telescope").extensions.file_browser.file_browser({ path = vim.fn.expand("%:p:h") })
-end, { noremap = true })
 
 vim.cmd([[autocmd FileType TelescopePrompt setlocal nocursorline]])
 vim.cmd([[autocmd User TelescopePreviewerLoaded setlocal wrap]])

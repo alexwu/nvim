@@ -6,6 +6,9 @@ hop.setup({})
 
 -- 'asdghklqwertyuiopzxcvbnmfj'
 
+set("n", "s", function()
+	hop.hint_words()
+end)
 set("n", "gs", function()
 	hop.hint_words()
 end)
