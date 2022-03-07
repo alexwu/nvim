@@ -1,15 +1,16 @@
-local M = {}
+local action_state = require("telescope.actions.state")
+local actions = require("telescope.actions")
+local custom_actions = require("plugins.telescope.actions")
+local finders = require("telescope.finders")
+local make_entry = require("telescope.make_entry")
 local pickers = require("telescope.pickers")
 local sorters = require("telescope.sorters")
-local finders = require("telescope.finders")
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-local action_set = require("telescope.actions.set")
-local custom_actions = require("plugins.telescope.actions")
-local make_entry = require("telescope.make_entry")
-local conf = require("telescope.config").values
+local utils = require("telescope.utils")
 
+local conf = require("telescope.config").values
 local filter = vim.tbl_filter
+
+local M = {}
 
 local function apply_cwd_only_aliases(opts)
 	local has_cwd_only = opts.cwd_only ~= nil
@@ -119,6 +120,46 @@ M.snippets = function()
 		sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
 		attach_mappings = function(_, map)
 			actions.select_default:replace(custom_actions.expand_snippet)
+			return true
+		end,
+	}):find()
+end
+
+M.favorites = function(opts)
+	opts = opts or {}
+
+	local favorites = opts.favorites or {}
+	local title = "Favorites"
+
+	opts.bufnr = vim.api.nvim_get_current_buf()
+	opts.winnr = vim.api.nvim_get_current_win()
+
+	pickers.new(opts, {
+		prompt_title = title,
+		finder = finders.new_table({
+			results = favorites,
+			entry_maker = function(entry)
+				return {
+					value = entry,
+					text = entry.title,
+					display = entry.title,
+					ordinal = entry.title,
+					filename = nil,
+				}
+			end,
+		}),
+		previewer = false,
+		sorter = conf.generic_sorter(opts),
+		attach_mappings = function(_)
+			actions.select_default:replace(function(_)
+				local selection = action_state.get_selected_entry()
+				if not selection then
+					vim.notify("[telescope] Nothing currently selected")
+					return
+				end
+
+				selection.value.callback(opts)
+			end)
 			return true
 		end,
 	}):find()

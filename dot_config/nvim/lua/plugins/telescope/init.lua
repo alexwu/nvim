@@ -1,25 +1,21 @@
 local set = vim.keymap.set
 local actions = require("telescope.actions")
 local builtin = require("telescope.builtin")
-local utils = require("telescope.utils")
-
-R = function(name)
-	require("plenary.reload").reload_module(name)
-	return require(name)
-end
+local custom_pickers = require("plugins.telescope.pickers")
 
 require("telescope").setup({
 	defaults = {
 		set_env = { ["COLORTERM"] = "truecolor" },
 		prompt_prefix = "❯ ",
-		layout_config = {
-			width = function()
-				return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-			end,
-			height = function(_, _, max_lines)
-				return math.min(max_lines, 15)
-			end,
-		},
+		theme = "dropdown",
+		-- layout_config = {
+		-- 	width = function()
+		-- 		return math.max(100, vim.fn.round(vim.o.columns * 0.3))
+		-- 	end,
+		-- 	height = function(_, _, max_lines)
+		-- 		return math.min(max_lines, 20)
+		-- 	end,
+		-- },
 		sorting_strategy = "ascending",
 		layout_strategy = "center",
 		winblend = 10,
@@ -36,7 +32,6 @@ require("telescope").setup({
 				["<C-k>"] = actions.move_selection_previous,
 			},
 		},
-		theme = "dropdown",
 	},
 	pickers = {
 		builtin = {
@@ -52,35 +47,13 @@ require("telescope").setup({
 				"--strip-cwd-prefix",
 			},
 		},
-		git_files = {
-			theme = "dropdown",
-			layout_config = {
-				width = function()
-					return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-				end,
-			},
-		},
-		git_status = {
-			theme = "dropdown",
-			layout_config = {
-				width = function()
-					return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-				end,
-			},
-		},
-		live_grep = {
-			theme = "dropdown",
-		},
+		git_files = {},
+		git_status = {},
+		live_grep = {},
 		buffers = {
 			initial_mode = "normal",
-			theme = "dropdown",
 			ignore_current_buffer = true,
 			sort_lastused = true,
-			layout_config = {
-				width = function()
-					return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-				end,
-			},
 			path_display = { "smart" },
 			mappings = {
 				n = {
@@ -89,11 +62,9 @@ require("telescope").setup({
 			},
 		},
 		lsp_references = {
-			theme = "dropdown",
 			initial_mode = "normal",
 		},
 		lsp_definitions = {
-			theme = "dropdown",
 			initial_mode = "normal",
 		},
 		lsp_document_symbols = {
@@ -140,15 +111,9 @@ require("neoclip").setup({
 set("n", "<Leader><space>", function()
 	require("plugins.telescope.pickers").buffers({
 		initial_mode = "normal",
-		theme = "dropdown",
 		ignore_current_buffer = true,
 		only_cwd = true,
 		sort_lastused = true,
-		layout_config = {
-			width = function()
-				return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-			end,
-		},
 		path_display = { "smart" },
 		mappings = {
 			n = {
@@ -158,25 +123,36 @@ set("n", "<Leader><space>", function()
 	})
 end)
 
--- set("n", "gf", function()
--- 	builtin.find_files(
--- 		require("telescope.themes").get_dropdown({
--- 			layout_config = {
--- 				width = function()
--- 					return math.max(100, vim.fn.round(vim.o.columns * 0.3))
--- 				end,
--- 			},
--- 		}),
--- 		{ desc = "Find Files" }
--- 	)
--- end, { desc = "Default fuzzy finder" })
---
-set("n", "<Leader>f", function()
-	require("plugins.telescope.pickers").project_files({ prompt_title = "Files" })
+set("n", "gf", function()
+	require("plugins.telescope.pickers").favorites({
+		favorites = {
+			{
+				title = "Fuzzy Finder",
+				callback = custom_pickers.project_files,
+			},
+			{
+				title = "Projects",
+				callback = function()
+					require("telescope").extensions.project.project({
+						initial_mode = "normal",
+					})
+				end,
+			},
+			-- TODO: There's a delay if the LSP hasn't launched yet I think? Maybe add a loading thing
+			{
+				title = "LSP Document Symbols",
+				callback = builtin.lsp_document_symbols,
+			},
+			{
+				title = "Clipboard History",
+				callback = require("telescope").extensions.neoclip.default,
+			},
+		},
+	})
 end)
 
-set("n", "<Leader>tp", function()
-	builtin.builtin({ include_extensions = true })
+set("n", "<Leader>f", function()
+	require("plugins.telescope.pickers").project_files({ prompt_title = "Files" })
 end)
 
 set("n", "<Leader>td", function()
