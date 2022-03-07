@@ -1,4 +1,4 @@
-require("neoscroll").setup {}
+require("neoscroll").setup({})
 
 local t = {}
 t["<C-u>"] = { "scroll", { "-vim.wo.scroll", "true", "150" } }

@@ -1,1 +1,1 @@
-require "statusline.lualine"
+require("statusline.lualine")

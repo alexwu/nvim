@@ -58,14 +58,15 @@ end
 --- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
 --- return function that can format the component accordingly
 local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
-  return function(str)
-    local win_width = vim.fn.winwidth(0)
-    if hide_width and win_width < hide_width then return ''
-    elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
-       return str:sub(1, trunc_len) .. (no_ellipsis and '' or '...')
-    end
-    return str
-  end
+	return function(str)
+		local win_width = vim.fn.winwidth(0)
+		if hide_width and win_width < hide_width then
+			return ""
+		elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
+			return str:sub(1, trunc_len) .. (no_ellipsis and "" or "...")
+		end
+		return str
+	end
 end
 
 -- require'lualine'.setup {
@@ -77,7 +78,7 @@ end
 -- }
 
 local function window()
-  return vim.api.nvim_win_get_number(0)
+	return vim.api.nvim_win_get_number(0)
 end
 
 -- require'lualine'.setup {
