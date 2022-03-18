@@ -93,6 +93,7 @@ require("lualine").setup({
 		disabled_filetypes = {},
 		component_separators = "|",
 		section_separators = { left = "", right = "" },
+		globalstatus = true,
 	},
 	extensions = { "fzf", "fugitive", "nvim-tree", "quickfix", "toggleterm" },
 	sections = {
