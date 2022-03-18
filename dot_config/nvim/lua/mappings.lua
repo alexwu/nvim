@@ -6,8 +6,8 @@ vim.g.mapleader = " "
 set("n", "j", "gj")
 set("n", "k", "gk")
 
-set({ "n", "x" }, "<C-j>", "5gj")
-set({ "n", "x" }, "<C-k>", "5gk")
+set({ "x" }, "<C-j>", "5gj")
+set({ "x" }, "<C-k>", "5gk")
 set({ "x" }, "<C-h>", "5h")
 set({ "x" }, "<C-l>", "5l")
 

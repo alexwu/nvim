@@ -141,9 +141,9 @@ M.favorites = function(opts)
 			entry_maker = function(entry)
 				return {
 					value = entry,
-					text = entry.title,
-					display = entry.title,
-					ordinal = entry.title,
+					text = entry.name,
+					display = entry.name,
+					ordinal = entry.name,
 					filename = nil,
 				}
 			end,

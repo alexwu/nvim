@@ -25,11 +25,23 @@ M.setup = function(opts)
 			}),
 			null_ls.builtins.formatting.pg_format,
 			null_ls.builtins.formatting.prismaFmt,
-			-- null_ls.builtins.formatting.prettier_d_slim,
 			null_ls.builtins.formatting.prettier,
-			null_ls.builtins.code_actions.eslint_d,
-			-- null_ls.builtins.formatting.eslint_d,
-			null_ls.builtins.diagnostics.eslint_d,
+			-- null_ls.builtins.diagnostics.eslint_d.with({
+			-- 	diagnostics_postprocess = function(diagnostic)
+			-- 		diagnostic.severity = vim.diagnostic.severity["WARN"]
+			-- 	end,
+			-- }),
+			-- null_ls.builtins.code_actions.eslint_d.with({
+			-- 	diagnostics_postprocess = function(diagnostic)
+			-- 		diagnostic.severity = vim.diagnostic.severity["WARN"]
+			-- 	end,
+			-- }),
+			null_ls.builtins.diagnostics.selene.with({
+				extra_args = {
+					"--config",
+					vim.fn.expand("~/.config/nvim/selene.toml"),
+				},
+			}),
 			null_ls.builtins.formatting.stylua,
 		},
 	})

@@ -78,7 +78,7 @@ tree.setup({
 		ignore_list = { "help" },
 	},
 	hijack_directories = {
-		enable = false,
+		enable = true,
 	},
 	diagnostics = {
 		enable = true,

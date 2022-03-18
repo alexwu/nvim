@@ -17,7 +17,7 @@ lsp_installer.on_server_ready(function(server)
 	if server.name == "sumneko_lua" then
 		opts.settings = {
 			Lua = {
-				diagnostics = { globals = { "vim", "use", "use_rocks" } },
+				diagnostics = { enable = false, globals = { "vim", "use", "use_rocks" } },
 				workspace = {
 					library = vim.api.nvim_get_runtime_file("", true),
 				},
@@ -75,7 +75,7 @@ lsp_installer.on_server_ready(function(server)
 
 	if server.name == "eslint" then
 		opts.on_attach = function(client, bufnr)
-			client.resolved_capabilities.document_formatting = true
+			client.resolved_capabilities.document_formatting = false
 			on_attach(client, bufnr)
 		end
 		opts.settings = {
@@ -221,7 +221,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "LspInfo, null-ls-info" },
+	pattern = { "LspInfo", "null-ls-info" },
 	callback = function()
 		set("n", "q", "<cmd>quit<cr>")
 	end,
