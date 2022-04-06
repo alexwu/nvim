@@ -1,12 +1,12 @@
 require("gitsigns").setup({
-	debug_mode = true,
+	debug_mode = false,
 	sign_priority = 6,
 	attach_to_untracked = true,
 	current_line_blame = true,
 	current_line_blame_opts = {
 		virt_text = true,
 		virt_text_pos = "eol",
-		delay = 1000,
+		delay = 500,
 	},
 	preview_config = { border = "rounded" },
 	current_line_blame_formatter_opts = { relative_time = true },

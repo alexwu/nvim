@@ -1,9 +1,7 @@
 local ls = require("luasnip")
-local snippet = ls.snippet
-local text_node = ls.text_node
-local insert_node = ls.insert_node
-local function_node = ls.function_node
 local types = require("luasnip.util.types")
+
+-- ls.snippets = require("luasnip-snippets").load_snippets()
 
 ls.config.set_config({
 	history = true,
@@ -27,23 +25,8 @@ ls.config.set_config({
 	enable_autosnippets = false,
 })
 
-local function copy(args)
-	return args[1]
-end
-
-ls.snippets = {
-	all = {},
-	typescript = {},
-	lua = {},
-}
-
--- autotriggered snippets have to be defined in a separate table, luasnip.autosnippets.
-ls.autosnippets = {
-	all = {},
-}
-
-ls.filetype_extend("lua", { "c" })
 ls.filetype_extend("tsx", { "ts" })
+ls.filetype_extend("jsx", { "js" })
 ls.filetype_extend("cpp", { "c" })
 
 require("luasnip.loaders.from_vscode").load({})

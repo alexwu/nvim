@@ -1,28 +1,34 @@
 local set = vim.keymap.set
 local hop = require("hop")
 local extension = require("hop-extensions")
+local custom = require("plugins.hop.custom")
 
 hop.setup({})
 
 set({ "n", "o" }, "s", function()
-	hop.hint_words()
+  hop.hint_words({ multi_windows = true })
+end)
+
+set({ "n", "o" }, "gs", function()
+  custom.hint_diagnostics({ multi_windows = true })
 end)
 
 set("n", "go", function()
-	extension.hint_locals()
+  extension.hint_locals()
 end)
 
 set("n", "gl", function()
-	hop.hint_lines_skip_whitespace()
+  hop.hint_lines_skip_whitespace()
 end)
 
 set("n", "go", function()
-	extension.hint_textobjects()
+  extension.hint_textobjects()
 end)
+
 set({ "n", "o" }, "f", function()
-	hop.hint_char1({ direction = require("hop.hint").HintDirection.AFTER_CURSOR, current_line_only = true })
+  hop.hint_char1({ direction = require("hop.hint").HintDirection.AFTER_CURSOR, current_line_only = true })
 end, {})
 
 set({ "n", "o" }, "F", function()
-	hop.hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
+  hop.hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
 end, {})

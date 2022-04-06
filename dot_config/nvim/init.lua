@@ -1,16 +1,23 @@
-require("impatient")
+if vim.fn.has("gui_vimr") == 1 or vim.fn.exists("g:vscode") == 1 then
+else
+  require("impatient")
+  require("plugins")
+
+  require("snazzy").setup("dark")
+
+  require("plugins.treesitter")
+end
+
 require("options")
 require("mappings")
 require("globals")
-require("plugins")
 
-require("snazzy").setup("dark")
+vim.api.nvim_create_augroup("chezmoi", { clear = true })
 
-require("plugins.treesitter")
-
--- TODO: Create autocmd group for chezmoi apply
+-- TODO: What happens if i'm doing :wqa
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = os.getenv("HOME") .. "/.local/share/chezmoi/*",
+  group = "chezmoi",
   callback = function()
     vim.schedule(function()
       local Job = require("plenary.job")

@@ -4,11 +4,10 @@ local custom_actions = require("plugins.telescope.actions")
 local finders = require("telescope.finders")
 local make_entry = require("telescope.make_entry")
 local pickers = require("telescope.pickers")
-local sorters = require("telescope.sorters")
-local utils = require("telescope.utils")
 
 local conf = require("telescope.config").values
 local filter = vim.tbl_filter
+local if_nil = vim.F.if_nil
 
 local M = {}
 
@@ -98,25 +97,33 @@ M.buffers = function(opts)
 end
 
 M.project_files = function(opts)
-	opts = opts or {}
+	opts = if_nil(opts, {})
 	local ok = pcall(require("telescope.builtin").git_files, opts)
 	if not ok then
 		require("telescope.builtin").find_files(opts)
 	end
 end
 
-M.related_files = function()
-	pickers.new({
+M.related_files = function(opts)
+	opts = if_nil(opts, {})
+
+	pickers.new(opts, {
 		results_title = "Related Files",
 		finder = require("plugins.telescope.finders").related_files(),
-		sorter = sorters.get_fuzzy_file(),
+		sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
 	}):find()
 end
 
-M.snippets = function()
-	pickers.new({
+M.snippets = function(opts)
+	opts = if_nil(opts, {})
+
+	opts.bufnr = vim.api.nvim_get_current_buf()
+	opts.winnr = vim.api.nvim_get_current_win()
+	opts.ft = opts.ft or vim.bo.ft
+
+	pickers.new(opts, {
 		results_title = "Snippets",
-		finder = require("plugins.telescope.finders").luasnip(),
+		finder = require("plugins.telescope.finders").luasnip(opts),
 		sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
 		attach_mappings = function(_, map)
 			actions.select_default:replace(custom_actions.expand_snippet)
@@ -126,16 +133,16 @@ M.snippets = function()
 end
 
 M.favorites = function(opts)
-	opts = opts or {}
+	opts = if_nil(opts, {})
 
-	local favorites = opts.favorites or {}
-	local title = "Favorites"
+	local favorites = if_nil(opts.favorites, {})
 
 	opts.bufnr = vim.api.nvim_get_current_buf()
 	opts.winnr = vim.api.nvim_get_current_win()
+	opts.ft = vim.bo.ft
 
 	pickers.new(opts, {
-		prompt_title = title,
+		prompt_title = "Favorites",
 		finder = finders.new_table({
 			results = favorites,
 			entry_maker = function(entry)
@@ -157,6 +164,8 @@ M.favorites = function(opts)
 					vim.notify("[telescope] Nothing currently selected")
 					return
 				end
+
+				-- vim.pretty_print(opts)
 
 				selection.value.callback(opts)
 			end)

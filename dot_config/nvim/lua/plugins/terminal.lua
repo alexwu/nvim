@@ -1,51 +1,19 @@
-local Terminal = require("toggleterm.terminal").Terminal
 local set = vim.keymap.set
+local Terminal = require("toggleterm.terminal").Terminal
 
-local rails_console = Terminal:new({
-	cmd = "bundle exec rails console",
+local lazygit = Terminal:new({
+	cmd = "lazygit",
 	direction = "float",
-	float_opts = {
-		border = "rounded",
-		width = vim.fn.round(0.9 * vim.o.columns),
-		height = vim.fn.round(0.9 * vim.o.lines),
-		winblend = 0,
-		highlights = { border = "FloatBorder", background = "Normal" },
-	},
+	hidden = true,
 })
 
-local rails_runner = Terminal:new({
-	cmd = "bundle exec rails runner " .. vim.fn.expand("%"),
-	direction = "float",
-	float_opts = {
-		border = "rounded",
-		width = vim.fn.round(0.9 * vim.o.columns),
-		height = vim.fn.round(0.9 * vim.o.lines),
-		winblend = 0,
-		highlights = { border = "FloatBorder", background = "Normal" },
-	},
-	close_on_exit = false,
-	on_open = function(term)
-		vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
-	end,
-})
-
-local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
-
-local lazygit_toggle = function()
+vim.api.nvim_add_user_command("LazyGit", function()
 	lazygit:toggle()
-end
+end, { nargs = 0 })
 
-set("n", "<leader>g", function()
-	lazygit_toggle()
-end, { noremap = true, silent = true })
-
-function Rails_console()
-	rails_console:toggle()
-end
-
-_G.runner = function()
-	rails_runner:toggle()
-end
+vim.api.nvim_add_user_command("LG", function()
+	lazygit:toggle()
+end, { nargs = 0 })
 
 require("toggleterm").setup({
 	size = function(term)
@@ -55,8 +23,7 @@ require("toggleterm").setup({
 			return vim.o.columns * 0.8
 		end
 	end,
-	open_mapping = [[<A-/>]],
-	-- open_mapping = [[<A-Bslash>]],
+	open_mapping = [[<c-\>]],
 	hide_numbers = true,
 	shade_filetypes = {},
 	shade_terminals = true,
@@ -73,16 +40,15 @@ require("toggleterm").setup({
 		winblend = 10,
 		highlights = { border = "FloatBorder", background = "Normal" },
 	},
+	on_open = function()
+		set("t", "<Esc>", "<C-BSlash><C-n>", { buffer = true })
+	end,
 })
 
-vim.cmd([[
-  if has('nvim') && executable('nvr')
-    let $GIT_EDITOR = "nvr -cc split --remote-wait +'set bufhidden=wipe'"
+vim.cmd [[
+  if has('nvim')
+    let $GIT_EDITOR = "nvim --server $NVIM_SERVER --remote"
   endif
-]])
-
+]]
 vim.cmd([[autocmd FileType toggleterm nmap <buffer> - +]])
 vim.cmd([[autocmd FileType toggleterm nmap <buffer> <space><space> <cmd>ToggleTerm<CR>]])
-vim.cmd([[autocmd FileType toggleterm tmap <buffer> <esc> <C-\><C-n>]])
-vim.cmd([[command! -nargs=0 RConsole :lua Rails_console()<CR>]])
-vim.cmd([[command! -nargs=0 RRunner :lua runner()<CR>]])
