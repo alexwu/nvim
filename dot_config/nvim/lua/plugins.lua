@@ -6,7 +6,7 @@ local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.n
 if needs_packer(install_path) then
 	packer_bootstrap = install_packer(install_path)
 end
-
+local fun
 vim.cmd([[
   augroup packer_user_config
     autocmd!

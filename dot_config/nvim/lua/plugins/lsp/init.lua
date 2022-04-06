@@ -176,21 +176,6 @@ lspconfig.sorbet.setup({
 	root_dir = util.root_pattern("sorbet"),
 })
 
--- if not configs["rubocop-lsp"] then
---   configs["rubocop-lsp"] = {
---     default_config = {
---       cmd = { "rubocop-lsp" },
---       filetypes = { "ruby" },
---       root_dir = util.root_pattern(".rubocop.yml", "Gemfile"),
---     },
---   }
--- end
---
--- lspconfig["rubocop-lsp"].setup {
---   on_attach = on_attach,
---   capabilities = capabilities,
--- }
-
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "qf",
 	callback = function()
