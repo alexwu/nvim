@@ -7,6 +7,15 @@ local on_attach = require("plugins.lsp.defaults").on_attach
 local capabilities = require("plugins.lsp.defaults").capabilities
 local null_ls = require("plugins.lsp.null-ls")
 local set = vim.keymap.set
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
+
+local formatting_callback = function(client, bufnr)
+	map({ "n", "i" }, { "<leader>y", "<F8>" }, function()
+		local params = vim.lsp.util.make_formatting_params({})
+		client.request("textDocument/formatting", params, nil, bufnr)
+	end, { buffer = bufnr })
+end
 
 lsp_installer.settings({
 	log_level = vim.log.levels.DEBUG,
@@ -41,21 +50,15 @@ lsp_installer.on_server_ready(function(server)
 				includeInlayEnumMemberValueHints = true,
 			},
 		}
-
 		opts.settings = {
 			flags = {
 				debounce_text_changes = 150,
 			},
 		}
-
 		opts.filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" }
 	end
 
 	if server.name == "eslint" then
-		opts.on_attach = function(client, bufnr)
-			client.resolved_capabilities.document_formatting = false
-			on_attach(client, bufnr)
-		end
 		opts.settings = {
 			format = { enable = true },
 			rulesCustomizations = { { rule = "*", severity = "warn" } },
@@ -132,6 +135,10 @@ lsp_installer.on_server_ready(function(server)
 				},
 			}),
 		}
+		opts.on_attach = function(client, bufnr)
+			formatting_callback(client, bufnr)
+			on_attach(client, bufnr)
+		end
 
 		require("rust-tools").setup(rustopts)
 	end
@@ -149,14 +156,30 @@ lsp_installer.on_server_ready(function(server)
 		}
 	end
 
+	if server.name == "gopls" then
+		capabilities = capabilities
+		opts.settings = {
+			gopls = {
+				experimentalPostfixCompletions = true,
+				analyses = {
+					unusedparams = true,
+					shadow = true,
+				},
+				staticcheck = true,
+			},
+		}
+		opts.init_options = {
+			usePlaceholders = true,
+		}
+	end
+
 	if server.name == "rust_analyzer" then
 		server:attach_buffers()
 	else
 		server:setup(opts)
 	end
 
-	-- vim.api.nvim_do_autocmd("LspAttachBuffers", { group = "User" })
-	vim.cmd([[ do User LspAttachBuffers ]])
+	vim.api.nvim_exec_autocmds("User LspAttachBuffers", { modeline = false })
 end)
 
 null_ls.setup()
@@ -176,15 +199,19 @@ lspconfig.sorbet.setup({
 	root_dir = util.root_pattern("sorbet"),
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+augroup("LspCustom", { clear = true })
+
+autocmd("FileType", {
 	pattern = "qf",
+	group = "LspCustom",
 	callback = function()
 		set("n", "<CR>", "<CR>:cclose<CR>")
 	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
 	pattern = { "LspInfo", "null-ls-info" },
+	group = "LspCustom",
 	callback = function()
 		set("n", "q", "<cmd>quit<cr>")
 	end,

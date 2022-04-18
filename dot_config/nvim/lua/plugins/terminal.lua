@@ -7,11 +7,11 @@ local lazygit = Terminal:new({
 	hidden = true,
 })
 
-vim.api.nvim_add_user_command("LazyGit", function()
+vim.api.nvim_create_user_command("LazyGit", function()
 	lazygit:toggle()
 end, { nargs = 0 })
 
-vim.api.nvim_add_user_command("LG", function()
+vim.api.nvim_create_user_command("LG", function()
 	lazygit:toggle()
 end, { nargs = 0 })
 

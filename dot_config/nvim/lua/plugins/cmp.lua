@@ -1,9 +1,9 @@
 local cmp = require("cmp")
+local types = require("cmp.types")
+local mapping = cmp.mapping
 local compare = cmp.config.compare
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
-
-require("cmp-npm").setup({})
 
 local has_words_before = function()
 	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
@@ -35,10 +35,18 @@ local select_prev = function(fallback)
 	end
 end
 
+local preset = function()
+	if vim.env.TERM_PROGRAM == "iTerm.app" then
+		return "default"
+	else
+		return "codicons"
+	end
+end
+
 ---@diagnostic disable-next-line: redundant-parameter
 cmp.setup({
-	sources = {
-		{ name = "nvim_lsp", max_item_count = 10, priority = 100 },
+	sources = cmp.config.sources({
+		{ name = "nvim_lsp", max_item_count = 10 },
 		{ name = "treesitter", max_item_count = 10 },
 		{ name = "copilot" },
 		{ name = "nvim_lua" },
@@ -46,15 +54,15 @@ cmp.setup({
 		{ name = "cmp_tabnine" },
 		{ name = "path" },
 		{ name = "npm", keyword_length = 4 },
-	},
+	}),
 	comparators = {
+		compare.locality,
+		compare.exact,
+		compare.recently_used,
 		require("cmp_tabnine.compare"),
 		compare.offset,
-		compare.exact,
 		compare.scopes,
 		compare.score,
-		compare.recently_used,
-		compare.locality,
 		compare.kind,
 		compare.sort_text,
 		compare.length,
@@ -64,6 +72,10 @@ cmp.setup({
 			luasnip.lsp_expand(args.body)
 		end,
 	},
+	window = {
+		completion = cmp.config.window.bordered({ border = "rounded" }),
+		documentation = cmp.config.window.bordered({ border = "rounded", winhighlight = "FloatBorder:FloatBorder" }),
+	},
 	enabled = function()
 		local context = require("cmp.config.context")
 		if vim.api.nvim_get_mode().mode == "c" then
@@ -72,31 +84,30 @@ cmp.setup({
 			return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
 		end
 	end,
-	mapping = {
-		["<CR>"] = cmp.mapping.confirm(),
-		["<C-p>"] = cmp.mapping(select_prev, { "i", "c" }),
-		["<C-n>"] = cmp.mapping(select_next, { "i", "c" }),
-		["<C-d>"] = cmp.mapping.scroll_docs(-4),
-		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<Down>"] = cmp.mapping(select_next, { "i", "c" }),
-		["<Up>"] = cmp.mapping(select_prev, { "i", "c" }),
-		["<C-e>"] = cmp.mapping({
-			i = cmp.mapping.abort(),
-			c = cmp.mapping.close(),
+	mapping = mapping.preset.insert({
+		["<CR>"] = mapping.confirm(),
+		["<C-n>"] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert }), { "i", "c" }),
+		["<C-p>"] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert }), { "i", "c" }),
+		["<C-d>"] = mapping.scroll_docs(-4),
+		["<C-f>"] = mapping.scroll_docs(4),
+		["<Down>"] = mapping(select_next, { "i", "c" }),
+		["<Up>"] = mapping(select_prev, { "i", "c" }),
+		["<C-e>"] = mapping({
+			i = mapping.abort(),
+			c = mapping.close(),
 		}),
-		["<Tab>"] = select_next,
-		["<S-Tab>"] = select_prev,
-		["<C-l>"] = cmp.mapping(function(fallback)
+		["<Tab>"] = mapping(select_next, { "i", "c" }),
+		["<S-Tab>"] = mapping(select_prev, { "i", "c" }),
+		["<C-l>"] = mapping(function(fallback)
 			if cmp.visible() then
 				return cmp.complete_common_string()
 			end
 			fallback()
 		end, { "i", "c" }),
-	},
-	-- preselect = cmp.PreselectMode.None,
+	}),
 	formatting = {
 		format = lspkind.cmp_format({
-			with_text = true,
+			preset = preset(),
 			mode = "symbol_text",
 			menu = {
 				buffer = "[Buffer]",
@@ -123,24 +134,26 @@ cmp.setup({
 	experimental = {
 		ghost_text = true,
 	},
-	documentation = { border = "rounded" },
 })
 
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline("/", {
+	mapping = mapping.preset.cmdline(),
 	sources = {
 		{ name = "buffer" },
+		{ name = "path" },
 	},
 })
 
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(":", {
+	mapping = mapping.preset.cmdline(),
 	sources = cmp.config.sources({
 		{ name = "path" },
 	}, {
 		{ name = "cmdline" },
 	}),
 })
+
+require("cmp-npm").setup({})
 
 vim.cmd([[autocmd FileType toml lua require('cmp').setup.buffer { sources = { { name = 'crates' } } }]])
 vim.cmd([[autocmd FileType TelescopePrompt lua require('cmp').setup.buffer { enabled = false }]])

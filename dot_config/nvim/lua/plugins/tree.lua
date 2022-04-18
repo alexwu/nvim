@@ -64,7 +64,6 @@ tree.setup({
 			list = {
 				{ key = "h", action = "close_node" },
 				{ key = "l", action = "unroll_dir" },
-				{ key = "-", aciton = nil },
 				{ key = "s", aciton = nil },
 				{ key = "<C-n>", action = "close" },
 			},

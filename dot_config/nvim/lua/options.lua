@@ -43,8 +43,17 @@ vim.opt.shortmess:append("Icq")
 vim.opt.termguicolors = true
 vim.opt.timeoutlen = 500
 vim.opt.pumheight = 10
+vim.opt.guifont = "FiraCode Nerd Font:h14"
+vim.opt.foldmethod="expr"
+vim.opt.foldexpr=vim.fn["nvim_treesitter#foldexpr"]()
 
-vim.cmd([[ au TextYankPost * silent! lua vim.highlight.on_yank{ higroup='IncSearch', timeout = 150 } ]])
+vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+	group = "YankHighlight",
+	callback = function()
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+	end,
+})
 
 -- disable python 2
 vim.g.loaded_python_provider = 0

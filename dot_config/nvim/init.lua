@@ -1,43 +1,51 @@
+_G.map = function(modes, mappings, callback)
+	if type(mappings) == "string" then
+		mappings = { mappings }
+	end
+	vim.tbl_map(function(mapping)
+		vim.keymap.set(modes, mapping, callback)
+	end, mappings)
+end
+
 if vim.fn.has("gui_vimr") == 1 or vim.fn.exists("g:vscode") == 1 then
+	require("snazzy").setup({ theme = "dark", transparent = false })
 else
-  require("impatient")
-  require("plugins")
+	require("impatient")
+	require("plugins")
 
-  require("snazzy").setup("dark")
+	local transparent = vim.env.TERM_PROGRAM == "WezTerm" or vim.env.TERM_PROGRAM == "iTerm.app"
+	require("snazzy").setup({ theme = "dark", transparent = transparent })
 
-  require("plugins.treesitter")
+	require("plugins.treesitter")
+end
+
+if vim.g.neovide then
+	require("neovide")
 end
 
 require("options")
 require("mappings")
 require("globals")
 
-vim.api.nvim_create_augroup("chezmoi", { clear = true })
+local chezmoi_apply = function()
+	local Job = require("plenary.job")
 
--- TODO: What happens if i'm doing :wqa
-vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = os.getenv("HOME") .. "/.local/share/chezmoi/*",
-  group = "chezmoi",
-  callback = function()
-    vim.schedule(function()
-      local Job = require("plenary.job")
+	Job
+		:new({
+			command = "chezmoi",
+			args = { "apply" },
+			cwd = vim.loop.cwd(),
+			on_stderr = function(_, data)
+				vim.notify(data, "error")
+			end,
+			on_stdout = function(_, return_val)
+				vim.notify(return_val)
+			end,
+			on_exit = function(_, _)
+				vim.notify("chezmoi apply: successful")
+			end,
+		})
+		:start()
+end
 
-      Job
-        :new({
-          command = "chezmoi",
-          args = { "apply" },
-          cwd = vim.loop.cwd(),
-          on_stderr = function(_, data)
-            vim.notify(data, "error")
-          end,
-          on_stdout = function(_, return_val)
-            vim.notify(return_val)
-          end,
-          on_exit = function(_, _)
-            vim.notify("chezmoi apply: successful")
-          end,
-        })
-        :sync()
-    end)
-  end,
-})
+vim.api.nvim_create_user_command("Chezmoi", chezmoi_apply, { nargs = 0 })

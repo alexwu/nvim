@@ -1,5 +1,5 @@
-local keymap = vim.keymap
-local set = keymap.set
+local set = vim.keymap.set
+local api = vim.api
 
 vim.g.mapleader = " "
 
@@ -21,16 +21,23 @@ set("x", "<F2>", '"*y')
 set("n", "<A-BS>", "db")
 set("i", "<A-BS>", "<C-W>")
 
--- set("n", "t", "gt")
--- set("n", "T", "gT")
 set("n", "tt", "<cmd>tabnew<CR>")
 set("n", "tq", "<cmd>tabclose<CR>")
 set("n", "]t", "gt")
 set("n", "[T", "gT")
-set("n", "Q", "<cmd>close<CR>")
+set("n", "Q", function()
+	api.nvim_win_close(0, false)
+end)
 
 set("n", "<A-o>", "o<esc>")
-set("n", "<A-O>", "O<esc>")
+set("n", "<A-O>", function()
+	local pos = api.nvim_win_get_cursor(0)
+	local line = pos[1] - 1
+	api.nvim_buf_set_lines(0, line, line, true, { "" })
+	-- api.nvim_put({ line }, "", false, true)
+end)
+
+-- set("n", "<A-O>", "O<esc>")
 
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
 vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> q :cclose<CR>]])

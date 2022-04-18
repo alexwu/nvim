@@ -5,13 +5,17 @@ local builtin = require("telescope.builtin")
 local custom_pickers = require("plugins.telescope.pickers")
 local autocmd = vim.api.nvim_create_autocmd
 
+require("telescope").load_extension("fzf")
+require("telescope").load_extension("project")
+require("telescope").load_extension("commander")
+
 require("telescope").setup({
 	defaults = {
 		set_env = { ["COLORTERM"] = "truecolor" },
 		prompt_prefix = "❯ ",
 		layout_config = {
 			width = function()
-				return math.max(100, vim.fn.round(vim.o.columns * 0.3))
+				return math.max(100, vim.fn.round(vim.o.columns * 0.4))
 			end,
 		},
 		sorting_strategy = "ascending",
@@ -41,6 +45,9 @@ require("telescope").setup({
 				"-uu",
 				"--strip-cwd-prefix",
 			},
+			follow = true,
+			hidden = true,
+			no_ignore = true,
 		},
 		buffers = {
 			initial_mode = "normal",
@@ -99,13 +106,9 @@ require("telescope").setup({
 			},
 			load_session = true,
 		},
+		commander = {},
 	},
 })
-
-require("telescope").load_extension("fzf")
-require("telescope").load_extension("ui-select")
-require("telescope").load_extension("project")
-require("telescope").load_extension("zoxide")
 
 require("neoclip").setup({
 	enable_persistent_history = true,
@@ -126,50 +129,93 @@ set("n", "<Leader><space>", function()
 	})
 end, { desc = "Opens buffer switcher, auto-jumps if there's only one buffer" })
 
--- TODO: Move this into the Telescope config
--- set("n", "<C-p>", function()
--- 	custom_pickers.favorites({
--- 		favorites = {
--- 			{ name = "Fuzzy Finder", callback = custom_pickers.project_files },
--- 			{
--- 				name = "Projects",
--- 				callback = function(opt)
--- 					extensions.project.project(opt)
--- 				end,
--- 			},
--- 			-- TODO: There's a delay if the LSP hasn't launched yet I think? Maybe add a loading thing
--- 			{
--- 				name = "LSP Document Symbols",
--- 				callback = builtin.lsp_document_symbols,
--- 			},
--- 			{
--- 				name = "Clipboard History",
--- 				callback = extensions.neoclip.default,
--- 			},
--- 			{
--- 				name = "Live Grep",
--- 				callback = builtin.live_grep,
--- 			},
--- 			{
--- 				name = "Snippets",
--- 				callback = function(opts)
--- 					custom_pickers.snippets(opts)
--- 				end,
--- 			},
--- 			{
--- 				name = "Todo",
--- 				callback = function()
--- 					extensions["todo-comments"].todo()
--- 				end,
--- 			},
--- 			{
--- 				name = "Zoxide",
--- 				callback = extensions.zoxide.list,
--- 			},
--- 		},
--- 	})
--- end)
---
+map("n", { "<D-p>", "C-S-P" }, function()
+	extensions.commander.commander({
+		command_list = {
+			{
+				title = "Find Files",
+				type = "command",
+				callback = custom_pickers.project_files,
+				description = "Find files based on git-ls if in a Git repo, fd otherwise",
+			},
+			{ title = "Tests", type = "command", callback = custom_pickers.find_tests },
+			{
+				title = "Buffers",
+				type = "command",
+				callback = function()
+					custom_pickers.buffers({
+						initial_mode = "normal",
+						ignore_current_buffer = true,
+						only_cwd = true,
+						sort_lastused = true,
+						path_display = { "smart" },
+						mappings = {
+							n = {
+								["<leader><space>"] = actions.close,
+							},
+						},
+					})
+				end,
+			},
+			{
+				title = "Projects",
+				type = "command",
+				callback = extensions.project.project,
+				description = "",
+			},
+			{
+				title = "LSP Document Symbols",
+				type = "command",
+				callback = builtin.lsp_document_symbols,
+				description = "",
+			},
+			{
+				title = "Clipboard History",
+				type = "command",
+				callback = extensions.neoclip.default,
+				description = "",
+			},
+			{
+				title = "Live Grep",
+				type = "command",
+				callback = builtin.live_grep,
+				description = "",
+			},
+			{
+				title = "Snippets",
+				type = "command",
+				callback = custom_pickers.snippets,
+				description = "",
+			},
+			{
+				title = "Todo",
+				type = "command",
+				callback = extensions["todo-comments"],
+				description = "",
+			},
+			{
+				title = "Other buffers",
+				type = "command",
+				description = "experimental buffer using just vim.ui.select",
+				callback = function()
+					vim.ui.select(vim.api.nvim_list_bufs(), {
+						prompt = "Select a buffer:",
+						format_item = function(bufnr)
+							return "bufnr: " .. bufnr
+						end,
+					}, function(choice)
+						if choice == "spaces" then
+							vim.o.expandtab = true
+						else
+							vim.o.expandtab = false
+						end
+					end)
+				end,
+			},
+		},
+	})
+end)
+
 set("n", "<Leader>f", function()
 	custom_pickers.project_files({ prompt_title = "Fuzzy Finder" })
 end)
@@ -179,7 +225,7 @@ set("n", "<Leader>td", function()
 end)
 
 set("n", "<Leader>i", function()
-	custom_pickers.related_files()
+	extensions.commander.related_files()
 end)
 
 set("n", "<Leader>p", function()

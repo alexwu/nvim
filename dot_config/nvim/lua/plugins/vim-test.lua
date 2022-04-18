@@ -43,5 +43,3 @@ vim.api.nvim_set_var("test#typescript#jest#options", "--color=always")
 
 set("n", "<F7>", "<cmd>TestNearest<CR>")
 set("n", "<F9>", "<cmd>TestFile<CR>")
--- vim.api.nvim_set_keymap("n", "t<C-l>", "<cmd>TestLast<CR>", { noremap = true })
--- vim.api.nvim_set_keymap("n", "t<C-g>", "<cmd>TestVisit<CR>", { noremap = true })

@@ -209,6 +209,6 @@ set("n", "<C-p>", function()
 	require("fzf-lua").files()
 end)
 
-vim.api.nvim_add_user_command("Rg", function()
+vim.api.nvim_create_user_command("Rg", function()
 	require("fzf-lua").live_grep()
 end, { nargs = 0 })

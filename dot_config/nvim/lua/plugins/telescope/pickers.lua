@@ -125,7 +125,7 @@ M.snippets = function(opts)
 		results_title = "Snippets",
 		finder = require("plugins.telescope.finders").luasnip(opts),
 		sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
-		attach_mappings = function(_, map)
+		attach_mappings = function()
 			actions.select_default:replace(custom_actions.expand_snippet)
 			return true
 		end,
@@ -165,13 +165,13 @@ M.favorites = function(opts)
 					return
 				end
 
-				-- vim.pretty_print(opts)
-
 				selection.value.callback(opts)
 			end)
 			return true
 		end,
 	}):find()
 end
+
+M.find_tests = require("plugins.telescope.finders").find_tests
 
 return M
