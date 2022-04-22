@@ -26,6 +26,8 @@ end
 
 M.buffers = function(opts)
 	opts = apply_cwd_only_aliases(opts)
+	opts.should_jump = if_nil(opts.should_jump, true)
+
 	local bufnrs = filter(function(b)
 		if 1 ~= vim.fn.buflisted(b) then
 			return false
@@ -79,7 +81,8 @@ M.buffers = function(opts)
 		opts.bufnr_width = #tostring(max_bufnr)
 	end
 
-	if #buffers == 1 then
+	--       vim.lsp.util.jump_to_location(flattened_results[1], offset_encoding)
+	if opts.should_jump and #buffers == 1 then
 		local bufnr = buffers[1].bufnr
 		return vim.api.nvim_set_current_buf(bufnr)
 	end

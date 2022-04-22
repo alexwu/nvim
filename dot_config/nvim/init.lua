@@ -48,4 +48,4 @@ local chezmoi_apply = function()
 		:start()
 end
 
-vim.api.nvim_create_user_command("Chezmoi", chezmoi_apply, { nargs = 0 })
+vim.api.nvim_create_user_command("Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })

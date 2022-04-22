@@ -15,7 +15,7 @@ require("telescope").setup({
 		prompt_prefix = "❯ ",
 		layout_config = {
 			width = function()
-				return math.max(100, vim.fn.round(vim.o.columns * 0.4))
+				return math.max(100, vim.fn.round(vim.o.columns * 0.5))
 			end,
 		},
 		sorting_strategy = "ascending",
@@ -41,8 +41,6 @@ require("telescope").setup({
 				"fd",
 				"--type",
 				"f",
-				"--follow",
-				"-uu",
 				"--strip-cwd-prefix",
 			},
 			follow = true,
@@ -52,24 +50,12 @@ require("telescope").setup({
 		buffers = {
 			initial_mode = "normal",
 			ignore_current_buffer = true,
+			cwd_only = true,
 			sort_lastused = true,
 			path_display = { "smart" },
 			mappings = {
 				n = {
 					["<leader><space>"] = actions.close,
-				},
-			},
-		},
-		lsp_references = {
-			initial_mode = "normal",
-		},
-		lsp_definitions = {
-			initial_mode = "normal",
-		},
-		lsp_document_symbols = {
-			mappings = {
-				n = {
-					["-"] = actions.close,
 				},
 			},
 		},
@@ -114,7 +100,7 @@ require("neoclip").setup({
 	enable_persistent_history = true,
 })
 
-set("n", "<Leader><space>", function()
+map("n", "<Leader><space>", function()
 	custom_pickers.buffers({
 		initial_mode = "normal",
 		ignore_current_buffer = true,
@@ -127,21 +113,35 @@ set("n", "<Leader><space>", function()
 			},
 		},
 	})
-end, { desc = "Opens buffer switcher, auto-jumps if there's only one buffer" })
+end, { desc = "Select an open buffer" })
 
-map("n", { "<D-p>", "C-S-P" }, function()
+map("n", { "<Leader>b" }, function()
+	custom_pickers.buffers({
+		initial_mode = "normal",
+		ignore_current_buffer = true,
+		only_cwd = true,
+		sort_lastused = true,
+		should_jump = false,
+		path_display = { "smart" },
+		mappings = {
+			n = {
+				["<leader><space>"] = actions.close,
+			},
+		},
+	})
+end, { desc = "Select an open buffer" })
+
+map("n", { "<D-p>", "<C-S-P>" }, function()
 	extensions.commander.commander({
 		command_list = {
 			{
 				title = "Find Files",
-				type = "command",
 				callback = custom_pickers.project_files,
-				description = "Find files based on git-ls if in a Git repo, fd otherwise",
+				description = "Select files from current directory",
 			},
-			{ title = "Tests", type = "command", callback = custom_pickers.find_tests },
+			{ title = "Tests", callback = custom_pickers.find_tests },
 			{
 				title = "Buffers",
-				type = "command",
 				callback = function()
 					custom_pickers.buffers({
 						initial_mode = "normal",
@@ -159,78 +159,62 @@ map("n", { "<D-p>", "C-S-P" }, function()
 			},
 			{
 				title = "Projects",
-				type = "command",
 				callback = extensions.project.project,
-				description = "",
+				description = "Select a project",
 			},
 			{
 				title = "LSP Document Symbols",
-				type = "command",
 				callback = builtin.lsp_document_symbols,
-				description = "",
+				description = "Select a document symbol from LSP",
 			},
 			{
 				title = "Clipboard History",
-				type = "command",
 				callback = extensions.neoclip.default,
-				description = "",
+				description = "Select from clipboard history",
 			},
 			{
 				title = "Live Grep",
-				type = "command",
 				callback = builtin.live_grep,
 				description = "",
 			},
 			{
 				title = "Snippets",
-				type = "command",
 				callback = custom_pickers.snippets,
-				description = "",
+				description = "Select snippet based on current file",
 			},
 			{
 				title = "Todo",
-				type = "command",
 				callback = extensions["todo-comments"],
-				description = "",
-			},
-			{
-				title = "Other buffers",
-				type = "command",
-				description = "experimental buffer using just vim.ui.select",
-				callback = function()
-					vim.ui.select(vim.api.nvim_list_bufs(), {
-						prompt = "Select a buffer:",
-						format_item = function(bufnr)
-							return "bufnr: " .. bufnr
-						end,
-					}, function(choice)
-						if choice == "spaces" then
-							vim.o.expandtab = true
-						else
-							vim.o.expandtab = false
-						end
-					end)
-				end,
+				description = "Select a todo from the current directory",
 			},
 		},
 	})
 end)
 
-set("n", "<Leader>f", function()
-	custom_pickers.project_files({ prompt_title = "Fuzzy Finder" })
-end)
+-- local desc = vim.tbl_filter(function(keymap)
+-- 	return keymap.desc ~= nil
+-- end, vim.api.nvim_get_commands({}))
 
-set("n", "<Leader>td", function()
+-- vim.pretty_print(desc)
+for i, entry in ipairs(vim.api.nvim_get_commands({})) do
+	vim.pretty_print(entry)
+end
+
+set("n", "<Leader>f", function()
+	custom_pickers.project_files({ prompt_title = "Find Files" })
+end, { desc = "Select files" })
+
+set("n", "<Leader>d", function()
 	builtin.diagnostics()
 end)
 
 set("n", "<Leader>i", function()
 	extensions.commander.related_files()
-end)
+end, { desc = "Select related files" })
 
 set("n", "<Leader>p", function()
 	extensions.project.project({})
-end, { noremap = true, silent = true })
+end, { noremap = true, silent = true, desc = "Select a project" })
 
 set("n", "<BSlash>s", function()
 	builtin.grep_string()

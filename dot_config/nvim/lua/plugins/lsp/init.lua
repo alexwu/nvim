@@ -1,25 +1,20 @@
 local lspconfig = require("lspconfig")
-local util = lspconfig.util
-local root_pattern = util.root_pattern
+local root_pattern = lspconfig.util.root_pattern
 local lsp_installer = require("nvim-lsp-installer")
 local typescript = require("plugins.lsp.typescript")
 local on_attach = require("plugins.lsp.defaults").on_attach
 local capabilities = require("plugins.lsp.defaults").capabilities
-local null_ls = require("plugins.lsp.null-ls")
 local set = vim.keymap.set
 local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 
+-- TODO: Make a global callback thing that lets me select the best formatter for the moment
 local formatting_callback = function(client, bufnr)
-	map({ "n", "i" }, { "<leader>y", "<F8>" }, function()
+	map({ "n" }, { "<leader>y", "<F8>" }, function()
 		local params = vim.lsp.util.make_formatting_params({})
 		client.request("textDocument/formatting", params, nil, bufnr)
 	end, { buffer = bufnr })
 end
-
-lsp_installer.settings({
-	log_level = vim.log.levels.DEBUG,
-})
 
 lsp_installer.on_server_ready(function(server)
 	local opts = { on_attach = on_attach, capabilities = capabilities }
@@ -60,7 +55,7 @@ lsp_installer.on_server_ready(function(server)
 
 	if server.name == "eslint" then
 		opts.settings = {
-			format = { enable = true },
+			format = { enable = false },
 			rulesCustomizations = { { rule = "*", severity = "warn" } },
 		}
 	end
@@ -136,24 +131,11 @@ lsp_installer.on_server_ready(function(server)
 			}),
 		}
 		opts.on_attach = function(client, bufnr)
-			formatting_callback(client, bufnr)
+			-- formatting_callback(client, bufnr)
 			on_attach(client, bufnr)
 		end
 
 		require("rust-tools").setup(rustopts)
-	end
-
-	if server.name == "sqls" then
-		opts.settings = {
-			sqls = {
-				connections = {
-					{
-						driver = "postgresql",
-						dataSourceName = "host=127.0.0.1 port=5432 user=jamesbombeelu  dbname=sheikah-slate_development sslmode=disable",
-					},
-				},
-			},
-		}
 	end
 
 	if server.name == "gopls" then
@@ -182,8 +164,6 @@ lsp_installer.on_server_ready(function(server)
 	vim.api.nvim_exec_autocmds("User LspAttachBuffers", { modeline = false })
 end)
 
-null_ls.setup()
-
 lspconfig.sorbet.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
@@ -196,7 +176,7 @@ lspconfig.sorbet.setup({
 		"--lsp",
 		"--enable-all-beta-lsp-features",
 	},
-	root_dir = util.root_pattern("sorbet"),
+	root_dir = root_pattern("sorbet"),
 })
 
 augroup("LspCustom", { clear = true })
