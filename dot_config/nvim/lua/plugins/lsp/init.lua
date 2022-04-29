@@ -131,7 +131,6 @@ lsp_installer.on_server_ready(function(server)
 			}),
 		}
 		opts.on_attach = function(client, bufnr)
-			-- formatting_callback(client, bufnr)
 			on_attach(client, bufnr)
 		end
 
@@ -178,6 +177,8 @@ lspconfig.sorbet.setup({
 	},
 	root_dir = root_pattern("sorbet"),
 })
+
+require("lspconfig").teal_ls.setup({})
 
 augroup("LspCustom", { clear = true })
 

@@ -37,6 +37,9 @@ set("n", "<A-O>", function()
 	api.nvim_buf_set_lines(0, line, line, true, { "" })
 end)
 
+set("n", "<Leader>l", "<cmd>vsplit %<CR>")
+set("n", "<Leader>h", "<cmd>botright vsplit %<CR>")
+
 -- vim.fn.getpos('v')
 -- vim.fn.getcurpos()
 

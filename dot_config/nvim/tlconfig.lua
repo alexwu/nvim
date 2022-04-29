@@ -1,7 +1,7 @@
 return {
-  include_dir = { "teal", "teal/types" },
+  include_dir = { "teal", "types", "vim.d.tl" },
   exclude = {},
-  global_env_def = "env",
+  global_env_def = "vim",
 
   gen_compat = "off",
   gen_target = "5.1",

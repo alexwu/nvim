@@ -100,21 +100,6 @@ require("neoclip").setup({
 	enable_persistent_history = true,
 })
 
-map("n", "<Leader><space>", function()
-	custom_pickers.buffers({
-		initial_mode = "normal",
-		ignore_current_buffer = true,
-		only_cwd = true,
-		sort_lastused = true,
-		path_display = { "smart" },
-		mappings = {
-			n = {
-				["<leader><space>"] = actions.close,
-			},
-		},
-	})
-end, { desc = "Select an open buffer" })
-
 map("n", { "<Leader>b" }, function()
 	custom_pickers.buffers({
 		initial_mode = "normal",
@@ -175,7 +160,7 @@ map("n", { "<D-p>", "<C-S-P>" }, function()
 			{
 				title = "Live Grep",
 				callback = builtin.live_grep,
-				description = "",
+				description = "Grep the current directory",
 			},
 			{
 				title = "Snippets",
@@ -191,15 +176,6 @@ map("n", { "<D-p>", "<C-S-P>" }, function()
 	})
 end)
 
--- local desc = vim.tbl_filter(function(keymap)
--- 	return keymap.desc ~= nil
--- end, vim.api.nvim_get_commands({}))
-
--- vim.pretty_print(desc)
-for i, entry in ipairs(vim.api.nvim_get_commands({})) do
-	vim.pretty_print(entry)
-end
-
 set("n", "<Leader>f", function()
 	custom_pickers.project_files({ prompt_title = "Find Files" })
 end, { desc = "Select files" })
@@ -208,7 +184,7 @@ set("n", "<Leader>d", function()
 	builtin.diagnostics()
 end)
 
-set("n", "<Leader>i", function()
+map("n", { "<leader><space>", "<Leader>i" }, function()
 	extensions.commander.related_files()
 end, { desc = "Select related files" })
 

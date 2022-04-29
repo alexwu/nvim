@@ -86,9 +86,9 @@ function M.on_attach(_, _bufnr)
 		vim.lsp.buf.formatting()
 	end, { silent = true })
 
-	set({ "n", "i" }, "<F8>", function()
-		vim.lsp.buf.formatting()
-	end, { silent = true })
+	-- set({ "n", "i" }, "<F8>", function()
+	-- 	vim.lsp.buf.formatting()
+	-- end, { silent = true })
 
 	set("v", "<F8>", function()
 		vim.lsp.buf.range_formatting()
