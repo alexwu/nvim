@@ -4,10 +4,7 @@ local actions = require("telescope.actions")
 local builtin = require("telescope.builtin")
 local custom_pickers = require("plugins.telescope.pickers")
 local autocmd = vim.api.nvim_create_autocmd
-
-require("telescope").load_extension("fzf")
-require("telescope").load_extension("project")
-require("telescope").load_extension("commander")
+local lazy = require("bombeelu.utils").lazy
 
 require("telescope").setup({
 	defaults = {
@@ -96,17 +93,20 @@ require("telescope").setup({
 	},
 })
 
+require("telescope").load_extension("fzf")
+require("telescope").load_extension("project")
+require("telescope").load_extension("commander")
+
 require("neoclip").setup({
 	enable_persistent_history = true,
 })
 
 map("n", { "<Leader>b" }, function()
-	custom_pickers.buffers({
+	builtin.buffers({
 		initial_mode = "normal",
 		ignore_current_buffer = true,
 		only_cwd = true,
 		sort_lastused = true,
-		should_jump = false,
 		path_display = { "smart" },
 		mappings = {
 			n = {
@@ -176,25 +176,19 @@ map("n", { "<D-p>", "<C-S-P>" }, function()
 	})
 end)
 
-set("n", "<Leader>f", function()
-	custom_pickers.project_files({ prompt_title = "Find Files" })
-end, { desc = "Select files" })
+set("n", "<Leader>f", lazy(custom_pickers.project_files, { prompt_title = "Find Files" }), { desc = "Select files" })
+set("n", "<Leader>d", lazy(builtin.diagnostics))
 
-set("n", "<Leader>d", function()
-	builtin.diagnostics()
-end)
-
-map("n", { "<leader><space>", "<Leader>i" }, function()
-	extensions.commander.related_files()
-end, { desc = "Select related files" })
+map(
+	"n",
+	{ "<leader><space>", "<Leader>i" },
+	lazy(extensions.commander.related_files),
+	{ desc = "Select related files" }
+)
 
 set("n", "<Leader>p", function()
 	extensions.project.project({})
 end, { noremap = true, silent = true, desc = "Select a project" })
-
-set("n", "<BSlash>s", function()
-	builtin.grep_string()
-end, { noremap = true, silent = true })
 
 autocmd("FileType", { pattern = "TelescopePrompt", command = "setlocal nocursorline" })
 

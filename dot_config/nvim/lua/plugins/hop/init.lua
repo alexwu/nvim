@@ -6,11 +6,11 @@ local custom = require("plugins.hop.custom")
 hop.setup({})
 
 set({ "n", "o" }, "s", function()
-  hop.hint_words({ multi_windows = true })
+  hop.hint_words({ multi_windows = false })
 end)
 
 set({ "n", "o" }, "gs", function()
-  custom.hint_diagnostics({ multi_windows = true })
+  hop.hint_words({ multi_windows = true })
 end)
 
 set("n", "go", function()

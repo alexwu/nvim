@@ -36,7 +36,7 @@ function M.on_attach(_, _bufnr)
 		telescope.lsp_definitions()
 	end)
 
-	set("n", "gr", function()
+	set("n", "grr", function()
 		telescope.lsp_references()
 	end)
 
@@ -83,7 +83,14 @@ function M.on_attach(_, _bufnr)
 	end, { silent = true })
 
 	set("n", "<BSlash>y", function()
-		vim.lsp.buf.formatting()
+		vim.lsp.buf.format({
+			async = true,
+			filter = function(clients)
+				return vim.tbl_filter(function(client)
+					return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+				end, clients)
+			end,
+		})
 	end, { silent = true })
 
 	-- set({ "n", "i" }, "<F8>", function()

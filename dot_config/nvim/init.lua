@@ -1,9 +1,9 @@
-_G.map = function(modes, mappings, callback)
+_G.map = function(modes, mappings, callback, opts)
 	if type(mappings) == "string" then
 		mappings = { mappings }
 	end
 	vim.tbl_map(function(mapping)
-		vim.keymap.set(modes, mapping, callback)
+		vim.keymap.set(modes, mapping, callback, opts)
 	end, mappings)
 end
 

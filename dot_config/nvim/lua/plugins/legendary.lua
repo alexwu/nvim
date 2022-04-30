@@ -36,7 +36,7 @@ M.setup = function()
 		autocmds = {
 			-- your autocmd tables here
 		},
-		auto_register_which_key = true,
+		auto_register_which_key = false,
 		scratchpad = {
 			-- configure how to show results of evaluated Lua code,
 			-- either 'print' or 'float'
