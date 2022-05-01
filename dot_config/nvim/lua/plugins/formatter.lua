@@ -1,4 +1,5 @@
-local set = vim.keymap.set
+local ex = require("bombeelu.utils").ex
+local map = require("bombeelu.utils").map
 
 local function prettier()
 	return {
@@ -65,6 +66,4 @@ require("formatter").setup({
 	},
 })
 
-set({ "n", "v" }, "<F8>", "<CMD>Format<CR>", { silent = true })
-set({ "n", "v" }, "<Leader>y", "<CMD>Format<CR>", { silent = true })
-set({ "n", "v" }, "gy", "<CMD>Format<CR>", { silent = true })
+map({ "n", "v" }, { "<F8>", "<Leader>y", "gy" }, ex("Format"), { silent = true })

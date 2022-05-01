@@ -34,27 +34,27 @@ function M.on_attach(_, _bufnr)
 	)
 	set("n", "gd", function()
 		telescope.lsp_definitions()
-	end)
+	end, { buffer = true })
 
 	set("n", "grr", function()
 		telescope.lsp_references()
-	end)
+	end, { buffer = true })
 
 	set("n", "gi", function()
 		telescope.lsp_implementations()
-	end)
+	end, { buffer = true })
 
 	set("n", "g-", function()
 		telescope.lsp_document_symbols()
-	end)
+	end, { buffer = true })
 
 	set("n", "gD", function()
 		vim.lsp.buf.type_definition()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "K", function()
 		vim.lsp.buf.hover()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "L", function()
 		vim.diagnostic.open_float(nil, {
@@ -64,23 +64,23 @@ function M.on_attach(_, _bufnr)
 			focusable = false,
 			border = "rounded",
 		})
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "<Leader>a", function()
 		require("code_action_menu").open_code_action_menu()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "ga", function()
 		require("code_action_menu").open_code_action_menu()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "[d", function()
 		vim.diagnostic.goto_prev()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "]d", function()
 		vim.diagnostic.goto_next()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	set("n", "<BSlash>y", function()
 		vim.lsp.buf.format({
@@ -91,7 +91,7 @@ function M.on_attach(_, _bufnr)
 				end, clients)
 			end,
 		})
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	-- set({ "n", "i" }, "<F8>", function()
 	-- 	vim.lsp.buf.formatting()
@@ -99,7 +99,7 @@ function M.on_attach(_, _bufnr)
 
 	set("v", "<F8>", function()
 		vim.lsp.buf.range_formatting()
-	end, { silent = true })
+	end, { silent = true, buffer = true })
 
 	vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
 	vim.api.nvim_create_autocmd("CursorHold", {

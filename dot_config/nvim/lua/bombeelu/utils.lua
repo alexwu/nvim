@@ -24,4 +24,10 @@ function M.map(modes, mappings, callback, opts)
 	end, mappings)
 end
 
+---@param name string
+---@return string
+function M.ex(name)
+	return string.format("<CMD>%s<CR>", name)
+end
+
 return M
