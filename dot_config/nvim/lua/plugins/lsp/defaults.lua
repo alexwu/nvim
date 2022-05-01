@@ -66,6 +66,12 @@ function M.on_attach(_, _bufnr)
 		})
 	end, { silent = true, buffer = true })
 
+	-- vim.lsp.buf.code_action({
+ --        filter = function(action)
+ --            return action.isPreferred
+ --        end,
+ --        apply = true,
+ --    })
 	set("n", "<Leader>a", function()
 		require("code_action_menu").open_code_action_menu()
 	end, { silent = true, buffer = true })

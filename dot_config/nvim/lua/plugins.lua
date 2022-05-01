@@ -38,6 +38,7 @@ return require("packer").startup({
 			end,
 			requires = { "JoosepAlviste/nvim-ts-context-commentstring" },
 		})
+		use({ "svermeulen/nvim-teal-maker", rocks = { "tl", "cyan" } })
 
 		-- important
 		use({

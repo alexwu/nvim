@@ -1,6 +1,8 @@
 local set = vim.keymap.set
 local api = vim.api
-local utils = require("utils")
+local utils = require("bombeelu.utils")
+local map = require("bombeelu.utils").map
+local ex = utils.ex
 
 vim.g.mapleader = " "
 
@@ -17,13 +19,13 @@ set({ "n", "i" }, "<C-k>", "<Up>")
 set({ "n", "i" }, "<C-h>", "<Left>")
 set({ "n", "i" }, "<C-l>", "<Right>")
 
-set("n", "<ESC>", "<cmd>noh<CR>")
-set("x", "<F2>", '"*y')
+set("n", "<ESC>", ex("noh"))
+set("x", "<F2>", '"*y', { desc = "Copy to clipboard" })
 set("n", "<A-BS>", "db")
 set("i", "<A-BS>", "<C-W>")
 
-set("n", "tt", "<cmd>tabnew<CR>")
-set("n", "tq", "<cmd>tabclose<CR>")
+set("n", "tt", ex("tabnew"))
+set("n", "tq", ex("tabclose"))
 set("n", "]t", "gt")
 set("n", "[T", "gT")
 set("n", "Q", function()

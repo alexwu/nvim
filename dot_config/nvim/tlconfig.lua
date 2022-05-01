@@ -1,5 +1,5 @@
 return {
-  include_dir = { "teal", "types", "vim.d.tl" },
+  include_dir = { "teal", "vim.d.tl" },
   exclude = {},
   global_env_def = "vim",
 
