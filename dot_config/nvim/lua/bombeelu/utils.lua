@@ -23,19 +23,68 @@ M.F = require("plenary.functional")
 ---@param mappings string|string[]
 ---@param callback string|function
 ---@param opts? table
-function M.map(modes, mappings, callback, opts)
+function M.set(modes, mappings, callback, opts)
 	if type(mappings) == "string" then
 		mappings = { mappings }
 	end
+
 	vim.tbl_map(function(mapping)
 		vim.keymap.set(modes, mapping, callback, opts)
 	end, mappings)
+end
+
+-- TODO: MEH, come up with something better
+function M.map(lhs, rhs, opts)
+	opts = if_nil(opts, {})
+	local modes = if_nil(vim.deepcopy(opts.modes), { "n" })
+	local args = vim.deepcopy(opts.args)
+	opts.modes = nil
+	opts.args = nil
+
+	if type(rhs) == "function" then
+		rhs = M.lazy(rhs, args)
+	end
+
+	M.set(modes, lhs, rhs, opts)
+end
+
+local function starts_with(str, start)
+	return str:sub(1, #start) == start
+end
+
+local function ends_with(str, ending)
+	return ending == "" or str:sub(-#ending) == ending
+end
+
+local function needs_command_wrapping(str)
+	if type(str) ~= "string" then
+		return false
+	end
+
+	return not starts_with(str, ":") and not starts_with(string, "<")
+end
+
+function M.nmap(lhs, rhs, opts)
+	opts = if_nil(opts, {})
+
+	if type(rhs) == "function" then
+		rhs = M.lazy(rhs)
+	elseif type(rhs) == "string" then
+	end
+
+	M.set("n", lhs, rhs, opts)
 end
 
 ---@param name string
 ---@return string
 function M.ex(name)
 	return string.format("<CMD>%s<CR>", name)
+end
+
+---@param name string
+---@return string
+function M.leader(name)
+	return string.format("<Leader>%s", name)
 end
 
 --- NOTE: Remove when upstreamed: https://github.com/neovim/neovim/pull/13896/files

@@ -1,5 +1,5 @@
 local ex = require("bombeelu.utils").ex
-local map = require("bombeelu.utils").map
+local set = require("bombeelu.utils").set
 
 local function prettier()
 	return {
@@ -66,4 +66,4 @@ require("formatter").setup({
 	},
 })
 
-map({ "n", "v" }, { "<F8>", "<Leader>y", "gy" }, ex("Format"), { silent = true })
+set({ "n", "v" }, { "<F8>", "<Leader>y", "gy" }, ex("Format"), { silent = true })

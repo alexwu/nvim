@@ -13,7 +13,6 @@ vim.opt.mouse = "ar"
 vim.opt.mousemodel = "popup_setpos"
 vim.opt.updatetime = 250
 vim.opt.hlsearch = true
-vim.opt.incsearch = true
 vim.opt.expandtab = true
 vim.opt.incsearch = true
 vim.opt.laststatus = 3

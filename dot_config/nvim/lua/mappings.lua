@@ -1,7 +1,5 @@
-local set = vim.keymap.set
-local api = vim.api
 local utils = require("bombeelu.utils")
-local map = require("bombeelu.utils").map
+local set = utils.set
 local ex = utils.ex
 
 vim.g.mapleader = " "
@@ -28,24 +26,15 @@ set("n", "tt", ex("tabnew"))
 set("n", "tq", ex("tabclose"))
 set("n", "]t", "gt")
 set("n", "[T", "gT")
-set("n", "Q", function()
-	api.nvim_win_close(0, false)
-end)
+set("n", "Q", ex("quit"))
 
 set("n", "<A-o>", "o<esc>")
-set("n", "<A-O>", function()
-	local pos = api.nvim_win_get_cursor(0)
-	local line = pos[1] - 1
-	api.nvim_buf_set_lines(0, line, line, true, { "" })
-end)
-
-set("n", "<Leader>l", "<cmd>vsplit %<CR>")
-set("n", "<Leader>h", "<cmd>botright vsplit %<CR>")
+set("n", "<A-O>", "O<esc>")
 
 -- vim.fn.getpos('v')
 -- vim.fn.getcurpos()
 
-map({ "v" }, "(", function()
+set({ "v" }, "(", function()
 	local bufnr = 0
 	local visual_modes = {
 		v = true,
@@ -82,11 +71,6 @@ map({ "v" }, "(", function()
 		return
 	end
 
-	-- vim.pretty_print("(" .. utils.get_visual_selection() ..")")
-	-- vim.pretty_print(region)
-	-- vim.pretty_print(start)
-	-- vim.pretty_print(finish)
-
 	local start_pair, finish_pair
 	if finish[2] < start[2] then
 		start_pair = finish
@@ -100,10 +84,6 @@ map({ "v" }, "(", function()
 	utils.insert_text(")", { finish_pair[1] + 1, finish_pair[2] + 1 })
 	utils.insert_text("(", { start_pair[1] + 1, start_pair[2] })
 end)
--- vim.pretty_print(vim.fn.getcurpos())
--- vim.pretty_print(api.nvim_win_get_cursor(0))
-
--- set("n", "<A-O>", "O<esc>")
 
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
 vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> q :cclose<CR>]])

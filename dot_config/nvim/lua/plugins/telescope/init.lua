@@ -1,10 +1,10 @@
-local set = vim.keymap.set
 local extensions = require("telescope").extensions
 local actions = require("telescope.actions")
 local builtin = require("telescope.builtin")
 local custom_pickers = require("plugins.telescope.pickers")
 local autocmd = vim.api.nvim_create_autocmd
 local lazy = require("bombeelu.utils").lazy
+local set = require("bombeelu.utils").set
 
 require("telescope").setup({
 	defaults = {
@@ -17,6 +17,7 @@ require("telescope").setup({
 		},
 		sorting_strategy = "ascending",
 		layout_strategy = "center",
+		dynamic_preview_title = true,
 		winblend = 10,
 		mappings = {
 			i = {
@@ -49,12 +50,21 @@ require("telescope").setup({
 			ignore_current_buffer = true,
 			cwd_only = true,
 			sort_lastused = true,
-			path_display = { "smart" },
+			path_display = function(opts, path)
+				local tail = require("telescope.utils").path_tail(path)
+				return string.format("%s (%s)", tail, path)
+			end,
 			mappings = {
 				n = {
 					["<leader><space>"] = actions.close,
 				},
 			},
+		},
+		lsp_definitions = {
+			initial_mode = "normal",
+		},
+		lsp_references = {
+			initial_mode = "normal",
 		},
 	},
 	extensions = {
@@ -64,29 +74,12 @@ require("telescope").setup({
 			override_file_sorter = true,
 			case_mode = "smart_case",
 		},
-		["ui-select"] = {
-			require("telescope.themes").get_dropdown({
-				layout_config = {
-					width = function()
-						return math.max(100, vim.fn.round(vim.o.columns * 0.3))
-					end,
-					height = function(_, _, max_lines)
-						return math.min(max_lines, 15)
-					end,
-				},
-			}),
-		},
 		project = {
 			base_dirs = {
 				"~/Code",
 				"~/Projects",
 			},
 			hidden_files = true,
-			mappings = {
-				n = {
-					["<leader><space>"] = actions.close,
-				},
-			},
 			load_session = true,
 		},
 		commander = {},
@@ -101,30 +94,16 @@ require("neoclip").setup({
 	enable_persistent_history = true,
 })
 
-map("n", { "<Leader>b" }, function()
-	builtin.buffers({
-		initial_mode = "normal",
-		ignore_current_buffer = true,
-		only_cwd = true,
-		sort_lastused = true,
-		path_display = { "smart" },
-		mappings = {
-			n = {
-				["<leader><space>"] = actions.close,
-			},
-		},
-	})
-end, { desc = "Select an open buffer" })
+set("n", { "<Leader><space>", "<Leader>b" }, lazy(builtin.buffers), { desc = "Select an open buffer" })
 
-map("n", { "<D-p>", "<C-S-P>" }, function()
+set("n", { "<D-p>", "<C-S-P>" }, function()
 	extensions.commander.commander({
 		command_list = {
 			{
 				title = "Find Files",
-				callback = custom_pickers.project_files,
+				callback = lazy(custom_pickers.project_files),
 				description = "Select files from current directory",
 			},
-			{ title = "Tests", callback = custom_pickers.find_tests },
 			{
 				title = "Buffers",
 				callback = function()
@@ -134,11 +113,6 @@ map("n", { "<D-p>", "<C-S-P>" }, function()
 						only_cwd = true,
 						sort_lastused = true,
 						path_display = { "smart" },
-						mappings = {
-							n = {
-								["<leader><space>"] = actions.close,
-							},
-						},
 					})
 				end,
 			},
@@ -178,17 +152,11 @@ end)
 
 set("n", "<Leader>f", lazy(custom_pickers.project_files, { prompt_title = "Find Files" }), { desc = "Select files" })
 set("n", "<Leader>d", lazy(builtin.diagnostics))
+set("n", "<Leader>g", lazy(custom_pickers.git_changes))
 
-map(
-	"n",
-	{ "<leader><space>", "<Leader>i" },
-	lazy(extensions.commander.related_files),
-	{ desc = "Select related files" }
-)
+set("n", { "<Leader>i" }, lazy(extensions.commander.related_files), { desc = "Select related files" })
 
-set("n", "<Leader>p", function()
-	extensions.project.project({})
-end, { noremap = true, silent = true, desc = "Select a project" })
+set("n", "<Leader>p", lazy(extensions.project.project), { noremap = true, silent = true, desc = "Select a project" })
 
 autocmd("FileType", { pattern = "TelescopePrompt", command = "setlocal nocursorline" })
 

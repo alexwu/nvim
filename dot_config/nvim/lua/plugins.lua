@@ -28,6 +28,7 @@ return require("packer").startup({
 			end,
 		})
 		use({ "nvim-lua/plenary.nvim" })
+		use({ "norcalli/nvim.lua" })
 		use({ "~/Code/neovim/nvim-snazzy" })
 		use({ "nvim-treesitter/nvim-treesitter" })
 		use({ "vigoux/architext.nvim" })
@@ -38,7 +39,9 @@ return require("packer").startup({
 			end,
 			requires = { "JoosepAlviste/nvim-ts-context-commentstring" },
 		})
-		use({ "svermeulen/nvim-teal-maker", rocks = { "tl", "cyan" } })
+		use({
+			"svermeulen/nvim-teal-maker", -- rocks = { "tl", "cyan" }
+		})
 
 		-- important
 		use({
@@ -95,7 +98,6 @@ return require("packer").startup({
 			requires = {
 				"nvim-lua/plenary.nvim",
 				"onsails/lspkind-nvim",
-				"hrsh7th/cmp-nvim-lua",
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-cmdline",
@@ -148,7 +150,7 @@ return require("packer").startup({
 				{ "nvim-telescope/telescope-ui-select.nvim" },
 				{ "tami5/sqlite.lua", module = "sqlite" },
 				{ "AckslD/nvim-neoclip.lua" },
-				{ "~/Projects/telescope-project.nvim" },
+				{ "nvim-telescope/telescope-project.nvim" },
 				{ "~/Projects/neovim/telescope-commander.nvim" },
 				{ "nvim-telescope/telescope-hop.nvim" },
 				{ "nvim-telescope/telescope-github.nvim" },
@@ -310,7 +312,23 @@ return require("packer").startup({
 		})
 
 		use({ "gennaro-tedesco/nvim-jqx", ft = { "json" } })
-		use({ "kevinhwang91/nvim-bqf" })
+		use({
+			"kevinhwang91/nvim-bqf",
+			config = function()
+				require("bqf").setup({
+					auto_enable = true,
+					auto_resize_height = true,
+					func_map = {
+						drop = "o",
+						openc = "O",
+						split = "<C-s>",
+						tabdrop = "<C-t>",
+						tabc = "",
+						ptogglemode = "z,",
+					},
+				})
+			end,
+		})
 
 		use({
 			"phaazon/hop.nvim",
@@ -348,9 +366,35 @@ return require("packer").startup({
 		})
 
 		use({
+			"da-moon/telescope-toggleterm.nvim",
+			event = "TermOpen",
+			requires = {
+				"akinsho/nvim-toggleterm.lua",
+				"nvim-telescope/telescope.nvim",
+				"nvim-lua/popup.nvim",
+				"nvim-lua/plenary.nvim",
+			},
+			config = function()
+				require("telescope").load_extension("toggleterm")
+			end,
+		})
+
+		use({
 			"folke/todo-comments.nvim",
 			config = function()
 				require("plugins.todo-comments")
+			end,
+		})
+		-- Lua
+		use({
+			"folke/trouble.nvim",
+			requires = "kyazdani42/nvim-web-devicons",
+			config = function()
+				require("trouble").setup({
+					auto_open = false,
+					auto_close = false,
+					mode = "document_diagnostics",
+				})
 			end,
 		})
 
@@ -367,6 +411,15 @@ return require("packer").startup({
 			requires = { "nvim-lua/plenary.nvim" },
 			config = function()
 				require("plugins.gitsigns")
+			end,
+		})
+
+		use({
+			"akinsho/git-conflict.nvim",
+			config = function()
+				require("git-conflict").setup({
+					disable_diagnostics = true,
+				})
 			end,
 		})
 
@@ -429,13 +482,22 @@ return require("packer").startup({
 		use({ "chaoren/vim-wordmotion" })
 		use({ "AndrewRadev/splitjoin.vim" })
 
+		-- use({
+		-- 	"karb94/neoscroll.nvim",
+		-- 	config = function()
+		-- 		require("plugins.neoscroll")
+		-- 	end,
+		-- })
+		--
 		use({
-			"karb94/neoscroll.nvim",
+			"declancm/cinnamon.nvim",
 			config = function()
-				require("plugins.neoscroll")
+				require("cinnamon").setup({
+					default_keymaps = true,
+					extra_keymaps = false,
+				})
 			end,
 		})
-
 		use({
 			"beauwilliams/focus.nvim",
 			config = function()
@@ -450,7 +512,11 @@ return require("packer").startup({
 		-- 	end,
 		-- })
 
+		-- neovim plugin development
 		use({ "rafcamlet/nvim-luapad", ft = { "lua" } })
+		use({ "nanotee/luv-vimdocs" })
+		use({ "milisims/nvim-luaref" })
+		use({ "folke/lua-dev.nvim" })
 
 		use({
 			"echasnovski/mini.nvim",
@@ -461,12 +527,22 @@ return require("packer").startup({
 		})
 
 		use({
-			"~/Code/neovim/nvim-treesitter-test-runner",
+			"~/Projects/neovim/spectacle.nvim",
 			requires = {
 				"nvim-lua/plenary.nvim",
 				"nvim-telescope/telescope.nvim",
 				"MunifTanjim/nui.nvim",
 			},
+			config = function()
+				require("spectacle").setup({
+					runners = {
+						jest = { ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" } },
+						vitest = { ft = "typescript", "typescriptreact" },
+						rspec = { ft = { "ruby" } },
+					},
+				})
+				require("telescope").load_extension("spectacle")
+			end,
 		})
 
 		use({

@@ -175,6 +175,19 @@ M.favorites = function(opts)
 	}):find()
 end
 
-M.find_tests = require("plugins.telescope.finders").find_tests
+function M.git_changes(opts)
+	opts = if_nil(opts, {})
+
+	pickers.new(opts, {
+		prompt_title = "Git Changes",
+		finder = finders.new_oneshot_job({
+			"git",
+			"diff",
+			"—name-only",
+			"origin",
+			[[$("git symbolic-ref refs/remotes/origin/HEAD | cut -d '/' -f4")]],
+		}),
+	})
+end
 
 return M

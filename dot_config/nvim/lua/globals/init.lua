@@ -8,4 +8,4 @@ vim.g.loaded_zipPlugin = 1
 vim.g.loaded_tar = 1
 vim.g.loaded_tarPlugin = 1
 
-_G.map = require("bombeelu.utils").map
+_G.map = require("bombeelu.utils").set

@@ -1,5 +1,6 @@
 local set = vim.keymap.set
 local Terminal = require("toggleterm.terminal").Terminal
+local nvim = require("nvim")
 
 local lazygit = Terminal:new({
 	cmd = "lazygit",
@@ -45,10 +46,8 @@ require("toggleterm").setup({
 	end,
 })
 
-vim.cmd [[
+vim.cmd([[
   if has('nvim')
-    let $GIT_EDITOR = "nvim --server $NVIM_SERVER --remote"
+    let $GIT_EDITOR = "nvim --server $NVIM --remote"
   endif
-]]
-vim.cmd([[autocmd FileType toggleterm nmap <buffer> - +]])
-vim.cmd([[autocmd FileType toggleterm nmap <buffer> <space><space> <cmd>ToggleTerm<CR>]])
+]])

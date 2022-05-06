@@ -2,7 +2,6 @@ local M = {}
 local scan = require("plenary.scandir")
 local Path = require("plenary.path")
 local finders = require("telescope.finders")
-local flatten = vim.tbl_flatten
 
 M.related_files = require("plugins.telescope.finders.related_files")
 

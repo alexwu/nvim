@@ -16,8 +16,8 @@ end
 local select_next = function(fallback)
 	if cmp.visible() then
 		cmp.select_next_item()
-	elseif luasnip.expand_or_jumpable() then
-		luasnip.expand_or_jump()
+		-- elseif luasnip.expand_or_jumpable() then
+		-- 	luasnip.expand_or_jump()
 	elseif has_words_before() then
 		cmp.complete()
 	else
@@ -28,15 +28,15 @@ end
 local select_prev = function(fallback)
 	if cmp.visible() then
 		cmp.select_prev_item()
-	elseif luasnip.jumpable(-1) then
-		luasnip.jump(-1)
+		-- elseif luasnip.jumpable(-1) then
+		-- 	luasnip.jump(-1)
 	else
 		fallback()
 	end
 end
 
 local preset = function()
-	if vim.env.TERM_PROGRAM == "iTerm.app" then
+	if vim.env.TERM_PROGRAM == "iTerm.app" or vim.g.neovide then
 		return "default"
 	else
 		return "codicons"
@@ -49,7 +49,6 @@ cmp.setup({
 		{ name = "nvim_lsp", max_item_count = 10 },
 		{ name = "treesitter", max_item_count = 10 },
 		{ name = "copilot" },
-		{ name = "nvim_lua" },
 		{ name = "luasnip", max_item_count = 3 },
 		{ name = "cmp_tabnine" },
 		{ name = "path" },

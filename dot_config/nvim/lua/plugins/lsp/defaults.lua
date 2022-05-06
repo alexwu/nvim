@@ -1,6 +1,7 @@
 local M = {}
-local set = vim.keymap.set
 local telescope = require("telescope.builtin")
+local lazy = require("bombeelu.utils").lazy
+local set = require("bombeelu.utils").set
 
 function M.on_attach(_, _bufnr)
 	local signs = {
@@ -32,9 +33,7 @@ function M.on_attach(_, _bufnr)
 		vim.lsp.handlers.hover,
 		{ border = "rounded", focusable = false }
 	)
-	set("n", "gd", function()
-		telescope.lsp_definitions()
-	end, { buffer = true })
+	set("n", "gd", lazy(telescope.lsp_definitions), { buffer = true })
 
 	set("n", "grr", function()
 		telescope.lsp_references()
@@ -67,11 +66,11 @@ function M.on_attach(_, _bufnr)
 	end, { silent = true, buffer = true })
 
 	-- vim.lsp.buf.code_action({
- --        filter = function(action)
- --            return action.isPreferred
- --        end,
- --        apply = true,
- --    })
+	--        filter = function(action)
+	--            return action.isPreferred
+	--        end,
+	--        apply = true,
+	--    })
 	set("n", "<Leader>a", function()
 		require("code_action_menu").open_code_action_menu()
 	end, { silent = true, buffer = true })

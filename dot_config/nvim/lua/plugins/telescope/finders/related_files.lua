@@ -1,6 +1,4 @@
-local scan = require("plenary.scandir")
 local Path = require("plenary.path")
-local finders = require("telescope.finders")
 local async_oneshot_finder = require("telescope.finders.async_oneshot_finder")
 local if_nil = vim.F.if_nil
 

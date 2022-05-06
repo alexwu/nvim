@@ -23,18 +23,18 @@ M.command_palette = function(opts)
 	pickers.new(opts, {
 		prompt_title = "Command Palette",
 		finder = require("plugins.telescope.finders").command_finder(),
-		finder = finders.new_table({
-			results = favorites,
-			entry_maker = function(entry)
-				return {
-					value = entry,
-					text = entry.name,
-					display = entry.name,
-					ordinal = entry.name,
-					filename = nil,
-				}
-			end,
-		}),
+		-- finder = finders.new_table({
+		-- 	results = favorites,
+		-- 	entry_maker = function(entry)
+		-- 		return {
+		-- 			value = entry,
+		-- 			text = entry.name,
+		-- 			display = entry.name,
+		-- 			ordinal = entry.name,
+		-- 			filename = nil,
+		-- 		}
+		-- 	end,
+		-- }),
 		previewer = false,
 		sorter = conf.generic_sorter(opts),
 		attach_mappings = function(_)
