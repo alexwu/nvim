@@ -39,8 +39,10 @@ return require("packer").startup({
 			end,
 			requires = { "JoosepAlviste/nvim-ts-context-commentstring" },
 		})
+
 		use({
-			"svermeulen/nvim-teal-maker", -- rocks = { "tl", "cyan" }
+			"svermeulen/nvim-teal-maker",
+			rocks = { "tl", "cyan" },
 		})
 
 		-- important
@@ -50,13 +52,16 @@ return require("packer").startup({
 				vim.g.polyglot_disabled = { "sensible", "ftdetect", "lua" }
 			end,
 		})
-		use({
-			"knubie/vim-kitty-navigator",
-			run = "cp ./*.py ~/.config/kitty/",
-			config = function()
-				require("plugins.kitty")
-			end,
-		})
+
+		if vim.env.TERM == "xterm-kitty" then
+			use({
+				"knubie/vim-kitty-navigator",
+				run = "cp ./*.py ~/.config/kitty/",
+				config = function()
+					require("plugins.kitty")
+				end,
+			})
+		end
 
 		use({
 			"mhartington/formatter.nvim",
@@ -369,7 +374,7 @@ return require("packer").startup({
 			"da-moon/telescope-toggleterm.nvim",
 			event = "TermOpen",
 			requires = {
-				"akinsho/nvim-toggleterm.lua",
+				"akinsho/toggleterm.nvim",
 				"nvim-telescope/telescope.nvim",
 				"nvim-lua/popup.nvim",
 				"nvim-lua/plenary.nvim",
@@ -385,7 +390,7 @@ return require("packer").startup({
 				require("plugins.todo-comments")
 			end,
 		})
-		-- Lua
+
 		use({
 			"folke/trouble.nvim",
 			requires = "kyazdani42/nvim-web-devicons",
@@ -572,6 +577,9 @@ return require("packer").startup({
 			open_fn = function()
 				return require("packer.util").float({ border = "rounded" })
 			end,
+		},
+		luarocks = {
+			python_cmd = "python3",
 		},
 	},
 })
