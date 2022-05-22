@@ -9,10 +9,6 @@ set({ "n", "o" }, "s", function()
 	hop.hint_words({ multi_windows = false })
 end)
 
--- set({ "n", "o" }, "gs", function()
---   hop.hint_words({ multi_windows = true })
--- end)
---
 set("n", "go", function()
 	extension.hint_locals()
 end)
@@ -22,8 +18,8 @@ set("n", "gl", function()
 end)
 
 set("n", "gsd", function()
-	custom.hint_diagnostics()
-end)
+	custom.hint_diagnostics({ multi_windows = true })
+end, { desc = "Hop to LSP diagnostic" })
 
 set("n", "go", function()
 	extension.hint_textobjects()
