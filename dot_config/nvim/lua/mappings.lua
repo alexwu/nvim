@@ -85,6 +85,29 @@ set({ "v" }, "(", function()
 	utils.insert_text("(", { start_pair[1] + 1, start_pair[2] })
 end)
 
+local chezmoi_apply = function()
+	local Job = require("plenary.job")
+
+	Job
+		:new({
+			command = "chezmoi",
+			args = { "apply" },
+			cwd = vim.loop.cwd(),
+			on_stderr = function(_, data)
+				vim.notify(data, "error")
+			end,
+			on_stdout = function(_, return_val)
+				vim.notify(return_val)
+			end,
+			on_exit = function(_, _)
+				vim.notify("chezmoi apply: successful")
+			end,
+		})
+		:start()
+end
+
+vim.api.nvim_create_user_command("Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
+
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
 vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> q :cclose<CR>]])
 vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> gd <C-]>]])

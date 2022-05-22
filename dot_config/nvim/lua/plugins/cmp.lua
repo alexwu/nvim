@@ -5,21 +5,29 @@ local compare = cmp.config.compare
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
 
-local has_words_before = function()
-	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-		return false
+local tab_next = function(fallback)
+	if cmp.visible() then
+		cmp.select_next_item()
+	elseif luasnip.expand_or_jumpable() then
+		luasnip.expand_or_jump()
+	else
+		fallback()
 	end
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local tab_prev = function(fallback)
+	if cmp.visible() then
+		cmp.select_prev_item()
+	elseif luasnip.jumpable(-1) then
+		luasnip.jump(-1)
+	else
+		fallback()
+	end
 end
 
 local select_next = function(fallback)
 	if cmp.visible() then
 		cmp.select_next_item()
-		-- elseif luasnip.expand_or_jumpable() then
-		-- 	luasnip.expand_or_jump()
-	elseif has_words_before() then
-		cmp.complete()
 	else
 		fallback()
 	end
@@ -28,8 +36,6 @@ end
 local select_prev = function(fallback)
 	if cmp.visible() then
 		cmp.select_prev_item()
-		-- elseif luasnip.jumpable(-1) then
-		-- 	luasnip.jump(-1)
 	else
 		fallback()
 	end
@@ -84,19 +90,22 @@ cmp.setup({
 		end
 	end,
 	mapping = mapping.preset.insert({
-		["<CR>"] = mapping.confirm(),
+		["<CR>"] = cmp.mapping.confirm({
+			behavior = cmp.ConfirmBehavior.Replace,
+			select = true,
+		}),
 		["<C-n>"] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert }), { "i", "c" }),
 		["<C-p>"] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert }), { "i", "c" }),
 		["<C-d>"] = mapping.scroll_docs(-4),
 		["<C-f>"] = mapping.scroll_docs(4),
-		["<Down>"] = mapping(select_next, { "i", "c" }),
-		["<Up>"] = mapping(select_prev, { "i", "c" }),
+		["<Down>"] = mapping(select_next),
+		["<Up>"] = mapping(select_prev),
 		["<C-e>"] = mapping({
 			i = mapping.abort(),
 			c = mapping.close(),
 		}),
-		["<Tab>"] = mapping(select_next, { "i", "c" }),
-		["<S-Tab>"] = mapping(select_prev, { "i", "c" }),
+		["<Tab>"] = mapping(tab_next, { "i", "c" }),
+		["<S-Tab>"] = mapping(tab_prev, { "i", "c" }),
 		["<C-l>"] = mapping(function(fallback)
 			if cmp.visible() then
 				return cmp.complete_common_string()
@@ -125,7 +134,6 @@ cmp.setup({
 				path = 0,
 				nvim_lsp = 1,
 				cmp_tabnine = 0,
-				nvim_lua = 0,
 				treesitter = 0,
 			},
 		}),
@@ -136,7 +144,7 @@ cmp.setup({
 })
 
 cmp.setup.cmdline("/", {
-	mapping = mapping.preset.cmdline(),
+	mapping = mapping.preset.cmdline({}),
 	sources = {
 		{ name = "buffer" },
 		{ name = "path" },
