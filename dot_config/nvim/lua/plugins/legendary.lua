@@ -45,7 +45,7 @@ M.setup = function()
 		},
 	})
 
-	-- map("n", "<C-S-P>", function ()
+	-- map("n", "<C-S-P>", function()
 	-- 	legendary.find()
 	-- end)
 end

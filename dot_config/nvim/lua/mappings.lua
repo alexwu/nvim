@@ -1,35 +1,41 @@
 local utils = require("bombeelu.utils")
 local set = utils.set
 local ex = utils.ex
+local reload = require("plenary.reload")
+local Job = require("plenary.job")
 
 vim.g.mapleader = " "
 
-set("n", "j", "gj")
-set("n", "k", "gk")
+set("n", "j", "gj", { desc = "Move down a display line" })
+set("n", "k", "gk", { desc = "Move up a display line" })
 
-set({ "x" }, "<C-j>", "5gj")
-set({ "x" }, "<C-k>", "5gk")
-set({ "x" }, "<C-h>", "5h")
-set({ "x" }, "<C-l>", "5l")
+set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
+set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
+set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })
+set({ "x" }, "<C-l>", "5l", { desc = "Move right 5 columns" })
 
-set({ "n", "i" }, "<C-j>", "<Down>")
-set({ "n", "i" }, "<C-k>", "<Up>")
-set({ "n", "i" }, "<C-h>", "<Left>")
-set({ "n", "i" }, "<C-l>", "<Right>")
+set({ "n", "i" }, "<C-j>", "<Down>", { desc = "Move down a  line" })
+set({ "n", "i" }, "<C-k>", "<Up>", { desc = "Move up a line" })
+set({ "n", "i" }, "<C-h>", "<Left>", { desc = "Move left a column" })
+set({ "n", "i" }, "<C-l>", "<Right>", { desc = "Move right a column" })
 
 set("n", "<ESC>", ex("noh"))
-set("x", "<F2>", '"*y', { desc = "Copy to clipboard" })
+set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db")
 set("i", "<A-BS>", "<C-W>")
 
-set("n", "tt", ex("tabnew"))
-set("n", "tq", ex("tabclose"))
+set("n", "tt", ex("tabnew"), { desc = "Create a new tab" })
+set("n", "tq", ex("tabclose"), { desc = "Close the current tab" })
 set("n", "]t", "gt")
 set("n", "[T", "gT")
 set("n", "Q", ex("quit"))
 
 set("n", "<A-o>", "o<esc>")
 set("n", "<A-O>", "O<esc>")
+
+set("n", "gg", "gg", {
+	desc = "Go to first line.",
+})
 
 -- vim.fn.getpos('v')
 -- vim.fn.getcurpos()
@@ -43,7 +49,7 @@ set({ "v" }, "(", function()
 	}
 
 	-- Return if not in visual mode
-	if visual_modes[vim.api.nvim_get_mode().mode] == nil then
+	if visual_modes[nvim.get_mode().mode] == nil then
 		return
 	end
 
@@ -86,7 +92,7 @@ set({ "v" }, "(", function()
 end)
 
 local chezmoi_apply = function()
-	local Job = require("plenary.job")
+	nvim.ex.wall()
 
 	Job
 		:new({
@@ -106,7 +112,21 @@ local chezmoi_apply = function()
 		:start()
 end
 
-vim.api.nvim_create_user_command("Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
+nvim.create_augroup("Bombeelu", { clear = true })
+nvim.create_autocmd("FileType", {
+	pattern = "qf",
+	group = "Bombeelu",
+	callback = function()
+		set("n", "<CR>", "<CR>" .. ex("cclose"), { buffer = true })
+	end,
+})
+
+nvim.create_user_command("Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
+
+nvim.create_user_command("Reload", function(opts)
+	local fargs = opts.fargs
+	reload.reload_module(fargs[1])
+end, { nargs = 1 })
 
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
 vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> q :cclose<CR>]])

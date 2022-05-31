@@ -43,15 +43,16 @@ vim.opt.termguicolors = true
 vim.opt.timeoutlen = 500
 vim.opt.pumheight = 10
 vim.opt.guifont = "FiraCode Nerd Font:h14"
-vim.opt.foldmethod="expr"
-vim.opt.foldexpr=vim.fn["nvim_treesitter#foldexpr"]()
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = vim.fn["nvim_treesitter#foldexpr"]()
+vim.opt.splitright = true
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
-	group = "YankHighlight",
-	callback = function()
-		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
-	end,
+  group = "YankHighlight",
+  callback = function()
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+  end,
 })
 
 -- disable python 2

@@ -1,6 +1,5 @@
 local set = vim.keymap.set
 local Terminal = require("toggleterm.terminal").Terminal
-local nvim = require("nvim")
 
 local lazygit = Terminal:new({
 	cmd = "lazygit",

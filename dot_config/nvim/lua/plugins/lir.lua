@@ -1,6 +1,5 @@
 local actions = require("lir.actions")
 local clipboard_actions = require("lir.clipboard.actions")
-local set = vim.keymap.set
 
 require("lir").setup({
 	show_hidden_files = true,

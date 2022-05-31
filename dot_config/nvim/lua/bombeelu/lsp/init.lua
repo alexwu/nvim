@@ -9,7 +9,7 @@ return setmetatable({}, {
 		elseif has_custom then
 			return custom
 		else
-			vim.notify("lsp config for" .. k .. " not found", "err")
+			return require("lspconfig")[k]
 		end
 	end,
 })
