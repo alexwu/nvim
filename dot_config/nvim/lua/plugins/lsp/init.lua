@@ -8,6 +8,7 @@ local lsp_installer = require("nvim-lsp-installer")
 local set = vim.keymap.set
 
 lsp_installer.setup({
+  automatic_installation = false,
   ensure_installed = {
     "clangd",
     "eslint",
@@ -16,6 +17,7 @@ lsp_installer.setup({
     "jsonls",
     "rust_analyzer",
     "sumneko_lua",
+    "taplo",
     "tsserver",
   },
 })
@@ -26,9 +28,11 @@ lsp.go.setup({ on_attach = on_attach, capabilities = capabilities })
 -- lsp.graphql.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
+lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
+lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.typescript.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
 
