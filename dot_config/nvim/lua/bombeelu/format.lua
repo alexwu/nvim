@@ -1,4 +1,3 @@
-local u = require("bombeelu.utils")
 local lazy = require("bombeelu.utils").lazy
 local set = require("bombeelu.utils").set
 local defaults = require("formatter.defaults")
@@ -6,12 +5,12 @@ local stylua = require("formatter.filetypes.lua").stylua
 local black = require("formatter.filetypes.python").black
 local rustfmt = require("formatter.filetypes.rust").rustfmt
 local gofmt = require("formatter.filetypes.go").gofmt
+local denofmt = require("formatter.filetypes.typescript").denofmt
 
 local function rubyfmt()
   return {
     exe = "rubyfmt",
-    args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
-    stdin = false,
+    stdin = true,
   }
 end
 
@@ -42,17 +41,17 @@ end
 require("formatter").setup({
   logging = false,
   filetype = {
-    typescript = { defaults.prettier },
-    typescriptreact = { defaults.prettier },
-    javascript = { defaults.prettier },
-    javascriptreact = { defaults.prettier },
+    typescript = { denofmt, defaults.prettier },
+    typescriptreact = { denofmt, defaults.prettier },
+    javascript = { denofmt, defaults.prettier },
+    javascriptreact = { denofmt, defaults.prettier },
     go = { gofmt },
     graphql = { defaults.prettier },
     json = { defaults.prettier },
     jsonc = { defaults.prettier },
     html = { defaults.prettier },
     css = { defaults.prettier },
-    ruby = { rubyfmt },
+    ruby = { rubyfmt, rufo },
     rust = { rustfmt },
     lua = { stylua },
     python = { black },
@@ -83,7 +82,11 @@ end
 
 local function format_range()
   if use_lsp(true) then
-    vim.lsp.buf.range_formatting()
+    vim.lsp.buf.range_formatting({
+      filter = function(client)
+        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+      end,
+    })
   else
   end
 end

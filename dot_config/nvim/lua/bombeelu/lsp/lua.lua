@@ -13,11 +13,14 @@ function lua.setup(opts)
         if fname == vim.loop.os_homedir() then
           return nil
         end
+
         return root_pattern or fname
       end,
       settings = {
         Lua = {
-          diagnostics = { enable = false, globals = { "vim", "use", "use_rocks" } },
+          semantic = { enable = true },
+          diagnostics = { enable = false },
+          completion = { autoRequire = false },
           workspace = {
             library = vim.api.nvim_get_runtime_file("", true),
           },

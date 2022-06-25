@@ -1,4 +1,5 @@
 local if_nil = vim.F.if_nil
+local mk_repeatable = require("bombeelu.repeat").mk_repeatable
 
 local M = {}
 
@@ -64,11 +65,18 @@ local function needs_command_wrapping(str)
   return not starts_with(str, ":") and not starts_with(string, "<")
 end
 
-function M.nmap(lhs, rhs, opts)
+function M.nmap(lhs, rhs, opts, copts)
   opts = if_nil(opts, {})
+  copts = if_nil(copts, {})
+
+  local should_repeat = if_nil(copts.should_repeat, false)
 
   if type(rhs) == "function" then
-    rhs = M.lazy(rhs)
+    if should_repeat then
+      rhs = mk_repeatable(M.lazy(rhs))
+    else
+      rhs = M.lazy(rhs)
+    end
   elseif type(rhs) == "string" then
   end
 
@@ -171,6 +179,9 @@ function M.get_visual_selection()
   if start[1] ~= finish[1] then
     lines[#lines] = vim.fn.strpart(lines[#lines], region[finish[1]][1], region[finish[1]][2] - region[finish[1]][1])
   end
+  vim.pretty_print(start)
+  vim.pretty_print(finish)
+  vim.pretty_print(line1_end)
   return table.concat(lines)
 end
 
@@ -211,5 +222,16 @@ function M.flatten(t)
 end
 
 -- M.root_pattern = require("lspconfig").util.root_pattern
+
+-- NOTE: pos is currently 1 indexed cause lua. Should i handle that outside this function?
+M.insert_text = function(text, pos, opts)
+	opts = if_nil(opts, {})
+	pos = if_nil(pos, vim.api.nvim_win_get_cursor(0))
+
+	local bufnr = if_nil(opts.bufnr, 0)
+
+	vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], { text })
+end
+
 
 return M

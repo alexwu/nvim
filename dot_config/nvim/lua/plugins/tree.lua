@@ -107,10 +107,10 @@ tree.setup({
   git = {
     ignore = false,
   },
-  disable_netrw = true,
-  hijack_netrw = true,
+  disable_netrw = false,
+  hijack_netrw = false,
   hijack_cursor = true,
-  hijack_unnamed_buffer_when_opening = true,
+  hijack_unnamed_buffer_when_opening = false,
   update_cwd = true,
   respect_buf_cwd = true,
   ignore_ft_on_setup = { "startify", "dashboard", "netrw", "help" },
@@ -121,6 +121,7 @@ tree.setup({
     mappings = {
       list = {
         { key = "-", action = "dir-up", action_cb = collapsed_dir_up },
+        -- { key = "-", action = "" },
         { key = "s", action = "" },
         { key = "<C-n>", action = "close" },
         { key = "<C-k>", action = "" },
@@ -141,7 +142,7 @@ tree.setup({
     ignore_list = { "help" },
   },
   hijack_directories = {
-    enable = true,
+    enable = false,
   },
   diagnostics = {
     enable = true,

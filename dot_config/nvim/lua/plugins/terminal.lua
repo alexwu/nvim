@@ -4,7 +4,7 @@ local Terminal = require("toggleterm.terminal").Terminal
 local lazygit = Terminal:new({
 	cmd = "lazygit",
 	direction = "float",
-	hidden = true,
+	hidden = false,
 })
 
 vim.api.nvim_create_user_command("LazyGit", function()
@@ -23,7 +23,7 @@ require("toggleterm").setup({
 			return vim.o.columns * 0.8
 		end
 	end,
-	open_mapping = [[<c-\>]],
+	open_mapping = [[<A-\>]],
 	hide_numbers = true,
 	shade_filetypes = {},
 	shade_terminals = true,
@@ -32,7 +32,7 @@ require("toggleterm").setup({
 	insert_mappings = true,
 	persist_size = true,
 	direction = "float",
-	close_on_exit = true,
+	close_on_exit = false,
 	float_opts = {
 		border = "rounded",
 		width = vim.fn.round(0.9 * vim.o.columns),

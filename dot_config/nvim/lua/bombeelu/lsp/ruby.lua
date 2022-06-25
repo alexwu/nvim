@@ -11,7 +11,7 @@ function ruby.setup(opts)
       "documentSymbols",
       "foldingRanges",
       "selectionRanges",
-      -- "semanticHighlighting", TODO: Add when support is added to neovim
+      "semanticHighlighting",
       "formatting",
       "codeActions",
     }
@@ -39,6 +39,60 @@ function ruby.setup(opts)
       },
     }
   end
+
+  opts.capabilities["workspace"]["semanticTokens"] = { refreshSupport = true }
+
+  opts.capabilities.textDocument.semanticTokens = {
+    semanticTokens = {
+      dynamicRegistration = false,
+      tokenTypes = {
+        "namespace",
+        "type",
+        "class",
+        "enum",
+        "interface",
+        "struct",
+        "typeParameter",
+        "parameter",
+        "variable",
+        "property",
+        "enumMember",
+        "event",
+        "function",
+        "method",
+        "macro",
+        "keyword",
+        "modifier",
+        "comment",
+        "string",
+        "number",
+        "regexp",
+        "operator",
+      },
+      tokenModifiers = {
+        "declaration",
+        "definition",
+        "readonly",
+        "static",
+        "deprecated",
+        "abstract",
+        "async",
+        "modification",
+        "documentation",
+        "defaultLibrary",
+      },
+      formats = { "relative" },
+      requests = {
+        -- TODO(smolck): Add support for this
+        -- range = true;
+        full = { delta = false },
+      },
+
+      overlappingTokenSupport = true,
+      -- TODO(theHamsta): Add support for this
+      multilineTokenSupport = false,
+    },
+  }
 
   lspconfig.ruby_lsp.setup(opts)
 end

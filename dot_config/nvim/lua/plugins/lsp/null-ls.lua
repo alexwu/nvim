@@ -129,7 +129,7 @@ end
 
 local gh_comments = {
   method = null_ls.methods.DIAGNOSTICS,
-  filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+  filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "ruby" },
   generator = null_ls.generator({
     command = "gh",
     args = { "comments" },
@@ -171,21 +171,25 @@ M.setup = function(opts)
   opts = opts or {}
 
   null_ls.setup({
+    log_level = "info",
     sources = {
       -- null_ls.builtins.formatting.rubocop.with({
       -- 	command = "bundle",
       -- 	args = vim.list_extend({ "exec", "rubocop" }, null_ls.builtins.formatting.rubocop._opts.args),
       -- }),
-      null_ls.builtins.formatting.rufo,
-      null_ls.builtins.diagnostics.rubocop.with({
-        command = "bundle",
-        args = vim.list_extend({ "exec", "rubocop" }, require("null-ls").builtins.diagnostics.rubocop._opts.args),
-      }),
+      -- null_ls.builtins.formatting.rufo,
+      -- null_ls.builtins.diagnostics.rubocop.with({
+      --   command = "bundle",
+      --   args = vim.list_extend({ "exec", "rubocop" }, require("null-ls").builtins.diagnostics.rubocop._opts.args),
+      -- }),
       null_ls.builtins.formatting.pg_format,
       null_ls.builtins.formatting.prismaFmt,
       null_ls.builtins.formatting.black,
       null_ls.builtins.formatting.clang_format,
-      null_ls.builtins.formatting.prettier,
+      -- null_ls.builtins.formatting.prettier,
+      null_ls.builtins.formatting.deno_fmt.with({
+        extra_args = { "--options-line-width", 120 },
+      }),
       null_ls.builtins.diagnostics.zsh,
       null_ls.builtins.diagnostics.selene.with({
         condition = function(utils)
@@ -198,7 +202,9 @@ M.setup = function(opts)
         end,
       }),
       null_ls.builtins.formatting.stylua,
-      null_ls.builtins.code_actions.refactoring,
+      -- null_ls.builtins.code_actions.refactoring,
+      null_ls.builtins.code_actions.gitsigns,
+      require("plugins.lsp.null-ls.code_actions.selene"),
     },
     on_attach = on_attach,
   })

@@ -1,23 +1,46 @@
-local lspconfig = require("lspconfig")
-local root_pattern = lspconfig.util.root_pattern
+local M = {}
 
-local sorbet = {}
+function M.setup(opts)
+  require("ruby").setup({
+    sorbet = {
+      experimental = true,
+      on_attach = opts.on_attach,
+      capabilities = opts.capabilities,
+    },
+  })
 
-function sorbet.setup(opts)
-	lspconfig.sorbet.setup({
-		on_attach = opts.on_attach,
-		capabilities = opts.capabilities,
-		filetypes = { "ruby" },
-		cmd = {
-			"bundle",
-			"exec",
-			"srb",
-			"tc",
-			"--lsp",
-			"--enable-all-beta-lsp-features",
-		},
-		root_dir = root_pattern("sorbet"),
-	})
+  -- opts.capabilities.sorbetShowSymbolProvider = tru
+  --
+  -- lspconfig.sorbet.setup({
+  --   on_attach = opts.on_attach,
+  --   capabilities = opts.capabilities,
+  --   filetypes = { "ruby" },
+  --   cmd = {
+  --     "bundle",
+  --     "exec",
+  --     "srb",
+  --     "tc",
+  --     "--lsp",
+  --     -- "--enable-all-beta-lsp-features",
+  --     "--enable-all-experimental-lsp-features",
+  --   },
+  --   root_dir = root_pattern("sorbet"),
+  --   commands = {
+  --     SorbetFormat = {
+  --       function()
+  --         sorbet.format()
+  --       end,
+  --       description = "Format using sorbet",
+  --     },
+  --   },
+  -- })
 end
 
-return sorbet
+function M.format()
+  vim.lsp.buf.format({
+    name = "sorbet",
+    async = true,
+  })
+end
+
+return M

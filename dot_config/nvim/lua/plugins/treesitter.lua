@@ -1,14 +1,5 @@
 local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
 
--- parser_config.lua = {
---   install_info = {
---     url = "~/Projects/neovim/tree-sitter-lua", -- local path or git repo
---     files = { "src/parser.c" },
---     generate_requires_npm = true,
---   },
--- }
---
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
     "bash",

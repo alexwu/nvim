@@ -44,14 +44,4 @@ M.tree_width = function(percentage)
 	return math.min(40, vim.fn.round(vim.o.columns * percentage))
 end
 
--- NOTE: pos is currently 1 indexed cause lua. Should i handle that outside this function?
-M.insert_text = function(text, pos, opts)
-	opts = if_nil(opts, {})
-	pos = if_nil(pos, api.nvim_win_get_cursor(0))
-
-	local bufnr = if_nil(opts.bufnr, 0)
-
-	api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], { text })
-end
-
 return M

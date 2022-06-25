@@ -13,7 +13,6 @@ lsp_installer.setup({
     "clangd",
     "eslint",
     "gopls",
-    -- "graphql",
     "jsonls",
     "rust_analyzer",
     "sumneko_lua",
@@ -25,12 +24,12 @@ lsp_installer.setup({
 lsp.clangd.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.go.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.graphql.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
+lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.typescript.setup({ on_attach = on_attach, capabilities = capabilities })

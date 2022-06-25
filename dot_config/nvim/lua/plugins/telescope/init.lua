@@ -5,6 +5,7 @@ local custom_pickers = require("plugins.telescope.pickers")
 local autocmd = vim.api.nvim_create_autocmd
 local lazy = require("bombeelu.utils").lazy
 local set = require("bombeelu.utils").set
+local mk_repeatable = require("bombeelu.repeat").mk_repeatable
 
 require("telescope").setup({
   defaults = {

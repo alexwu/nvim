@@ -3,7 +3,7 @@ local telescope = require("telescope.builtin")
 local lazy = require("bombeelu.utils").lazy
 local set = require("bombeelu.utils").set
 
-function M.on_attach(_, _bufnr)
+function M.on_attach(client, bufnr)
   local signs = {
     Error = "✘ ",
     Warn = " ",
@@ -11,8 +11,8 @@ function M.on_attach(_, _bufnr)
     Info = " ",
   }
 
-  for type, icon in pairs(signs) do
-    local hl = "DiagnosticSign" .. type
+  for name, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. name
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
   end
 
@@ -33,27 +33,19 @@ function M.on_attach(_, _bufnr)
     vim.lsp.handlers.hover,
     { border = "rounded", focusable = false }
   )
+
   set("n", "gd", lazy(telescope.lsp_definitions), { buffer = true, desc = "Go to definition" })
-
-  set("n", "gr", function()
-    telescope.lsp_references()
-  end, { buffer = true, desc = "Go to references" })
-
-  set("n", "gi", function()
-    telescope.lsp_implementations()
-  end, { buffer = true, desc = "Go to implementation" })
-
-  set("n", "g-", function()
-    telescope.lsp_document_symbols()
-  end, { buffer = true, desc = "Select LSP document symbol" })
+  set("n", "gr", lazy(telescope.lsp_references), { buffer = true, desc = "Go to references" })
+  set("n", "gi", lazy(telescope.lsp_implementations), { buffer = true, desc = "Go to implementation" })
+  set("n", "g-", lazy(telescope.lsp_document_symbols), { buffer = true, desc = "Select LSP document symbol" })
 
   set("n", "gD", function()
     vim.lsp.buf.type_definition()
   end, { silent = true, buffer = true, desc = "Go to type definition" })
 
-  -- set("n", "K", function()
-  -- 	vim.lsp.buf.hover()
-  -- end, { silent = true, buffer = true })
+  set("n", "K", function()
+  	vim.lsp.buf.hover()
+  end, { silent = true, buffer = true })
 
   set("n", "L", function()
     vim.diagnostic.open_float(nil, {
@@ -71,6 +63,7 @@ function M.on_attach(_, _bufnr)
   --        end,
   --        apply = true,
   --    })
+
   set("n", "<Leader>a", function()
     require("code_action_menu").open_code_action_menu()
   end, { silent = true, buffer = true, desc = "Select a code action" })
@@ -94,8 +87,8 @@ function M.on_attach(_, _bufnr)
   set("n", "<BSlash>y", function()
     vim.lsp.buf.format({
       async = true,
-      filter = function(client)
-        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+      filter = function(c)
+        return c.name ~= "tsserver" and c.name ~= "jsonls" and c.name ~= "sumneko_lua"
       end,
     })
   end, { silent = true, buffer = true, desc = "Format file with LSP" })
@@ -105,9 +98,31 @@ function M.on_attach(_, _bufnr)
   end, { silent = true, buffer = true, desc = "Format range" })
 
   vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
+  if client.server_capabilities.semanticTokensProvider then
+    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+      group = "LspDiagnosticsConfig",
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.semantic_tokens_full()
+      end,
+    })
+  end
+
+  -- if client.server_capabilities.semanticTokensProvider then
+  --   vim.pretty_print("this works")
+  --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+  --     buffer = bufnr,
+  --     group = "LspDiagnosticsConfig",
+  --     callback = function()
+  --       require("plugins.lsp.semantic_tokens").refresh(vim.api.nvim_get_current_buf())
+  --     end,
+  --   })
+  --   -- vim.cmd([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.buf.semantic_tokens_full()]])
+  -- end
+  --
   vim.api.nvim_create_autocmd("CursorHold", {
-    pattern = "*",
     group = "LspDiagnosticsConfig",
+    buffer = bufnr,
     callback = function()
       vim.diagnostic.open_float(nil, {
         scope = "cursor",
@@ -119,10 +134,10 @@ function M.on_attach(_, _bufnr)
     end,
   })
   vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-    pattern = "*",
     group = "LspDiagnosticsConfig",
+    buffer = bufnr,
     callback = function()
-      require("nvim-lightbulb").update_lightbulb()
+      require("nvim-lightbulb").update_lightbulb({ ignore = { "null-ls" } })
     end,
   })
 end
@@ -130,9 +145,12 @@ end
 local capabilities = function()
   local cmp_capabilities = vim.lsp.protocol.make_client_capabilities()
   cmp_capabilities = require("cmp_nvim_lsp").update_capabilities(cmp_capabilities)
+
   return cmp_capabilities
 end
 
 M.capabilities = capabilities()
+
+M.handlers = {}
 
 return M

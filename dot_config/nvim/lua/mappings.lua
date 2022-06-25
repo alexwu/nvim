@@ -1,11 +1,20 @@
 local utils = require("bombeelu.utils")
+local keys = require("bombeelu.keys")
 local set = utils.set
 local ex = utils.ex
 local reload = require("plenary.reload")
 local Job = require("plenary.job")
+local repeatable = require("bombeelu.repeat").mk_repeatable
 
 vim.g.mapleader = " "
 
+set(
+  "n",
+  "]t",
+  repeatable(function()
+    nvim.feedkeys("gt", "n", true)
+  end)
+)
 set("n", "j", "gj", { desc = "Move down a display line" })
 set("n", "k", "gk", { desc = "Move up a display line" })
 
@@ -21,111 +30,150 @@ set({ "n", "i" }, "<C-l>", "<Right>", { desc = "Move right a column" })
 
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
-set("n", "<A-BS>", "db")
-set("i", "<A-BS>", "<C-W>")
+set("n", "<A-BS>", "db", { desc = "Delete previous word" })
+set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
 
 set("n", "tt", ex("tabnew"), { desc = "Create a new tab" })
 set("n", "tq", ex("tabclose"), { desc = "Close the current tab" })
-set("n", "]t", "gt")
-set("n", "[T", "gT")
+-- set("n", "]t", "gt")
+set("n", "[t", "gT")
 set("n", "Q", ex("quit"))
 
 set("n", "<A-o>", "o<esc>")
 set("n", "<A-O>", "O<esc>")
 
 set("n", "gg", "gg", {
-	desc = "Go to first line.",
+  desc = "Go to first line",
 })
 
--- vim.fn.getpos('v')
--- vim.fn.getcurpos()
+local ts = require("vim.treesitter")
+local ts_utils = require("nvim-treesitter.ts_utils")
+local function surround_node(start_text, end_text, node, bufnr)
+  if not node then
+    return
+  end
+
+  local start_row, start_col, end_row, end_col = node:range()
+  local lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col, {})
+
+  -- local lines = vim.split(ts.get_node_text(node, bufnr), "\n")
+  lines[1] = string.format("%s%s", start_text, lines[1])
+  lines[#lines] = string.format("%s%s", lines[#lines], end_text)
+
+  vim.api.nvim_buf_set_text(bufnr, start_row, start_col, end_row, end_col, lines)
+end
+
+local function surround_selection(mode, start_pair, end_pair, range, opts)
+  local bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
+  local start_row = range.start_row - 1
+  local start_col = range.start_col - 1
+  local end_row = range.end_row - 1
+  local end_col = range.end_col
+
+  local lines
+  if mode == "V" then
+    lines = vim.api.nvim_buf_get_lines(opts.bufnr, range.start_row, range.end_row, {})
+  else
+    lines = vim.api.nvim_buf_get_text(opts.bufnr, start_row, start_col, end_row, end_col, {})
+  end
+
+  lines[1] = string.format("%s%s", start_pair, lines[1])
+  lines[#lines] = string.format("%s%s", lines[#lines], end_pair)
+
+  if mode == "V" then
+    vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, true, lines)
+  else
+    vim.api.nvim_buf_set_text(bufnr, start_row, start_col, end_row, end_col, lines)
+  end
+end
+
+local function get_selection()
+  local mode = vim.api.nvim_get_mode().mode
+  if mode ~= "v" and mode ~= "V" then
+    return
+  end
+
+  local positions = {
+    vim.fn.getpos("v"),
+    vim.fn.getpos("."),
+  }
+
+  table.sort(positions, function(a, b)
+    if mode == "v" and a[2] == b[2] then
+      return a[3] < b[3]
+    end
+
+    return a[2] < b[2]
+  end)
+
+  return positions[1], positions[2]
+end
 
 set({ "v" }, "(", function()
-	local bufnr = 0
-	local visual_modes = {
-		v = true,
-		V = true,
-		-- [t'<C-v>'] = true, -- Visual block does not seem to be supported by vim.region
-	}
+  local bufnr = vim.api.nvim_get_current_buf()
+  local mode = vim.api.nvim_get_mode().mode
+  local start_pos, end_pos = get_selection()
 
-	-- Return if not in visual mode
-	if visual_modes[nvim.get_mode().mode] == nil then
-		return
-	end
+  surround_selection(mode, "(", ")", {
+    start_row = start_pos[2],
+    start_col = start_pos[3],
+    end_row = end_pos[2],
+    end_col = end_pos[3],
+  }, { bufnr = bufnr })
 
-	local options = {}
-	options.adjust = function(pos1, pos2)
-		if vim.fn.visualmode() == "V" then
-			pos1[3] = 1
-			pos2[3] = 2 ^ 31 - 1
-		end
+  keys.esc(true)
+end, { desc = "Surround selection with parentheses" })
 
-		if pos1[2] > pos2[2] then
-			pos2[3], pos1[3] = pos1[3], pos2[3]
-			return pos2, pos1
-		elseif pos1[2] == pos2[2] and pos1[3] > pos2[3] then
-			return pos2, pos1
-		else
-			return pos1, pos2
-		end
-	end
+set({ "v" }, "{", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local mode = vim.api.nvim_get_mode().mode
+  local start_pos, end_pos = get_selection()
 
-	utils.get_visual_selection()
-	local region, start, finish = utils.get_marked_region("v", ".")
-	if start == nil or finish == nil then
-		vim.notify("now wtf do i do", vim.log.levels.ERROR)
-		return
-	end
+  surround_selection(mode, "{", "}", {
+    start_row = start_pos[2],
+    start_col = start_pos[3],
+    end_row = end_pos[2],
+    end_col = end_pos[3],
+  }, { bufnr = bufnr })
 
-	local start_pair, finish_pair
-	if finish[2] < start[2] then
-		start_pair = finish
-		finish_pair = start
-	else
-		start_pair = start
-		finish_pair = finish
-	end
-
-	-- utils.insert_text("fuck", start_pair, { finish_pair[1], -1 })
-	utils.insert_text(")", { finish_pair[1] + 1, finish_pair[2] + 1 })
-	utils.insert_text("(", { start_pair[1] + 1, start_pair[2] })
-end)
+  keys.esc(true)
+end, { desc = "Surround selection with curly braces" })
 
 local chezmoi_apply = function()
-	nvim.ex.wall()
+  nvim.ex.wall()
 
-	Job
-		:new({
-			command = "chezmoi",
-			args = { "apply" },
-			cwd = vim.loop.cwd(),
-			on_stderr = function(_, data)
-				vim.notify(data, "error")
-			end,
-			on_stdout = function(_, return_val)
-				vim.notify(return_val)
-			end,
-			on_exit = function(_, _)
-				vim.notify("chezmoi apply: successful")
-			end,
-		})
-		:start()
+  Job
+    :new({
+      command = "chezmoi",
+      args = { "apply" },
+      cwd = vim.loop.cwd(),
+      on_stderr = function(_, data)
+        vim.notify(data, "error")
+      end,
+      on_stdout = function(_, return_val)
+        vim.notify(return_val)
+      end,
+      on_exit = function(_, _)
+        vim.notify("chezmoi apply: successful")
+      end,
+    })
+    :start()
 end
 
 nvim.create_augroup("Bombeelu", { clear = true })
 nvim.create_autocmd("FileType", {
-	pattern = "qf",
-	group = "Bombeelu",
-	callback = function()
-		set("n", "<CR>", "<CR>" .. ex("cclose"), { buffer = true })
-	end,
+  pattern = "qf",
+  group = "Bombeelu",
+  callback = function()
+    set("n", "<CR>", "<CR>" .. ex("cclose"), { buffer = true })
+  end,
 })
 
 nvim.create_user_command("Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
 
 nvim.create_user_command("Reload", function(opts)
-	local fargs = opts.fargs
-	reload.reload_module(fargs[1])
+  local fargs = opts.fargs
+  reload.reload_module(fargs[1])
 end, { nargs = 1 })
 
 vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
