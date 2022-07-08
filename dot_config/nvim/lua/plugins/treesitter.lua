@@ -108,3 +108,8 @@ require("nvim-treesitter.parsers").ft_to_lang = function(ft)
   end
   return ft_to_lang(ft)
 end
+
+-- vim.cmd([[
+-- set foldmethod=expr
+-- set foldexpr=nvim_treesitter#foldexpr()
+-- ]])

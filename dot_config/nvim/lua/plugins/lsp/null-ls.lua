@@ -188,8 +188,9 @@ M.setup = function(opts)
       null_ls.builtins.formatting.clang_format,
       -- null_ls.builtins.formatting.prettier,
       null_ls.builtins.formatting.deno_fmt.with({
-        extra_args = { "--options-line-width", 120 },
+        extra_args = { "--options-line-width", 100 },
       }),
+      null_ls.builtins.formatting.rustywind,
       null_ls.builtins.diagnostics.zsh,
       null_ls.builtins.diagnostics.selene.with({
         condition = function(utils)

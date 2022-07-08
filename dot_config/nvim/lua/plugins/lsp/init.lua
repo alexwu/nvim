@@ -14,7 +14,6 @@ lsp_installer.setup({
     "eslint",
     "gopls",
     "jsonls",
-    "rust_analyzer",
     "sumneko_lua",
     "taplo",
     "tsserver",

@@ -1,11 +1,22 @@
 local lazy = require("bombeelu.utils").lazy
 local set = require("bombeelu.utils").set
 local defaults = require("formatter.defaults")
-local stylua = require("formatter.filetypes.lua").stylua
-local black = require("formatter.filetypes.python").black
-local rustfmt = require("formatter.filetypes.rust").rustfmt
-local gofmt = require("formatter.filetypes.go").gofmt
-local denofmt = require("formatter.filetypes.typescript").denofmt
+local detect = require("plenary.filetype").detect
+
+local function organize_imports_sync()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local tsserver_is_attached = false
+  for _, client in ipairs(vim.lsp.buf_get_clients(bufnr)) do
+    if client.name == "tsserver" then
+      tsserver_is_attached = true
+      break
+    end
+  end
+
+  if tsserver_is_attached then
+    require("nvim-lsp-ts-utils").organize_imports_sync(bufnr)
+  end
+end
 
 local function rubyfmt()
   return {
@@ -22,6 +33,14 @@ local function rufo()
   }
 end
 
+local function dprint()
+  return {
+    exe = "dprint",
+    args = { "fmt", "--stdin", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+    stdin = true,
+  }
+end
+
 local function lsp_formatters(range)
   local clients = vim.lsp.get_active_clients({ bufnr = nvim.get_current_buf() })
 
@@ -30,31 +49,35 @@ local function lsp_formatters(range)
       return false
     end
 
-    if range then
+    if range and client.server_capabilities.documentRangeFormattingProvider ~= nil then
       return client.server_capabilities.documentRangeFormattingProvider
     end
 
-    return client.server_capabilities.documentFormattingProvider
+    return client.server_capabilities.documentFormattingProvider ~= nil
   end, clients)
 end
 
 require("formatter").setup({
   logging = false,
   filetype = {
-    typescript = { denofmt, defaults.prettier },
-    typescriptreact = { denofmt, defaults.prettier },
-    javascript = { denofmt, defaults.prettier },
-    javascriptreact = { denofmt, defaults.prettier },
-    go = { gofmt },
+    typescript = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
+    typescriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
+    javascript = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
+    javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
+    go = { require("formatter.filetypes.go").gofmt },
     graphql = { defaults.prettier },
     json = { defaults.prettier },
     jsonc = { defaults.prettier },
     html = { defaults.prettier },
     css = { defaults.prettier },
     ruby = { rubyfmt, rufo },
-    rust = { rustfmt },
-    lua = { stylua },
-    python = { black },
+    rust = {
+      require("formatter.filetypes.rust").rustfmt,
+    },
+    lua = { require("formatter.filetypes.lua").stylua },
+    python = {
+      require("formatter.filetypes.python").black,
+    },
   },
 })
 
@@ -93,3 +116,37 @@ end
 
 set({ "n" }, { "<F8>", "<Leader>y", "gy" }, lazy(format), { silent = true, desc = "Format" })
 set({ "v" }, { "<F8>", "<Leader>y", "gy" }, lazy(format_range), { silent = true, desc = "Format range" })
+
+vim.cmd([[
+function! s:formatter_complete(...)
+  return luaeval('require("formatter.complete").complete(_A)', a:000)
+endfunction
+
+command! -nargs=? -range=% -bar
+\   -complete=customlist,s:formatter_complete
+\   Fmt lua require("formatter.format").format(
+\     <q-args>, <q-mods>, <line1>, <line2>)
+]])
+
+function upper_first(str)
+  return (str:gsub("^%l", string.upper))
+end
+
+nvim.create_augroup("bombeelu.format", { clear = true })
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = "bombeelu.format",
+  callback = function(o)
+    local bufnr = o.buf
+    local config = require("formatter.config")
+    local formatters = config.formatters_for_filetype(detect(nvim.buf_get_name(bufnr)))
+    for _, formatter_function in ipairs(formatters) do
+      local formatter = formatter_function()
+      if formatter ~= nil then
+        local exe = formatter.exe
+        vim.api.nvim_buf_create_user_command(bufnr, upper_first(exe), function(opts)
+          require("formatter.format").format(exe, opts.mods, opts.line1, opts.line2)
+        end, { range = "%", bar = true })
+      end
+    end
+  end,
+})

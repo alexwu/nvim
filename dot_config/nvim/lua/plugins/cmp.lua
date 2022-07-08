@@ -6,21 +6,18 @@ local lspkind = require("lspkind")
 local luasnip = require("luasnip")
 local tabnine = require("cmp_tabnine.config")
 
-tabnine:setup({
-  max_lines = 1000,
-  max_num_results = 20,
-  sort = true,
-  run_on_every_keystroke = true,
-  snippet_placeholder = "..",
-  ignored_file_types = {},
-  show_prediction_strength = true,
-})
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
 
 local tab_next = function(fallback)
   if cmp.visible() then
     cmp.select_next_item()
   elseif luasnip.expand_or_locally_jumpable() then
     luasnip.expand_or_jump()
+  elseif has_words_before() then
+    cmp.complete()
   else
     fallback()
   end
@@ -39,6 +36,8 @@ end
 local select_next = function(fallback)
   if cmp.visible() then
     cmp.select_next_item()
+  elseif has_words_before() then
+    cmp.complete()
   else
     fallback()
   end
@@ -102,7 +101,7 @@ cmp.setup({
   mapping = mapping.preset.insert({
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
+      select = false,
     }),
     ["<C-n>"] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert })),
     ["<C-p>"] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert })),
@@ -167,6 +166,16 @@ cmp.setup.cmdline(":", {
   }, {
     { name = "cmdline" },
   }),
+})
+
+tabnine:setup({
+  max_lines = 1000,
+  max_num_results = 20,
+  sort = true,
+  run_on_every_keystroke = true,
+  snippet_placeholder = "..",
+  ignored_file_types = {},
+  show_prediction_strength = true,
 })
 
 require("cmp-npm").setup({})

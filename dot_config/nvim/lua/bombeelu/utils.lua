@@ -221,17 +221,35 @@ function M.flatten(t)
   return result
 end
 
--- M.root_pattern = require("lspconfig").util.root_pattern
-
 -- NOTE: pos is currently 1 indexed cause lua. Should i handle that outside this function?
 M.insert_text = function(text, pos, opts)
-	opts = if_nil(opts, {})
-	pos = if_nil(pos, vim.api.nvim_win_get_cursor(0))
+  opts = if_nil(opts, {})
+  pos = if_nil(pos, vim.api.nvim_win_get_cursor(0))
 
-	local bufnr = if_nil(opts.bufnr, 0)
+  local bufnr = if_nil(opts.bufnr, 0)
 
-	vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], { text })
+  vim.api.nvim_buf_set_text(bufnr, pos[1] - 1, pos[2], pos[1] - 1, pos[2], { text })
 end
 
+M.path = (function()
+  local function exists(filename)
+    local stat = vim.loop.fs_stat(filename)
+    return stat and stat.type or false
+  end
+
+  local function is_dir(filename)
+    return exists(filename) == "directory"
+  end
+
+  local function is_file(filename)
+    return exists(filename) == "file"
+  end
+
+  return {
+    exists = exists,
+    is_dir = is_dir,
+    is_file = is_file,
+  }
+end)()
 
 return M

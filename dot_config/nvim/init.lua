@@ -1,12 +1,5 @@
 require("globals")
 
--- vim.opt.rtp:append(vim.fn.expand("~/.luarocks/lib/luarocks/rocks-5.1"))
-
-local ok, tealmaker = pcall(require, "tealmaker")
-if ok and vim.fn.executable("tl") == 1 then
-  tealmaker.build_all()
-end
-
 if vim.fn.has("gui_vimr") == 1 or vim.fn.exists("g:vscode") == 1 then
   require("snazzy").setup({ theme = "dark", transparent = false })
 else
@@ -26,3 +19,12 @@ end
 
 require("options")
 require("mappings")
+require("bombeelu.commands")
+require("bombeelu.autocommands")
+
+require("bombeelu.projects.ruby")
+
+require("bombeelu.rename").setup()
+vim.keymap.set("n", "<leader>rn", function()
+  require("bombeelu.rename").rename({ default = vim.fn.expand("<cword>") })
+end, { expr = true })

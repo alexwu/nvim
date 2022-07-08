@@ -6,6 +6,7 @@ local hint_with = require("hop").hint_with
 local get_window_context = require("hop.window").get_window_context
 local hint_with = require("hop").hint_with
 local get_window_context = require("hop.window").get_window_context
+local ts = vim.treesitter
 
 local wrap_targets = require("hop-extensions.utils").wrap_targets
 local override_opts = require("hop-extensions.utils").override_opts
@@ -72,27 +73,55 @@ local function ts_filter_window(node, contexts, nodes_set)
   end
 end
 
+local get_definitions_lookup_table = ts_utils.memoize_by_buf_tick(function(bufnr)
+  local definitions = M.get_definitions(bufnr)
+  local result = {}
+
+  for _, definition in ipairs(definitions) do
+    for _, node_entry in ipairs(locals.get_local_nodes(definition)) do
+      local scopes = locals.get_definition_scopes(node_entry.node, bufnr, node_entry.scope)
+      -- Always use the highest valid scope
+      local scope = scopes[#scopes]
+      local node_text = ts.query.get_node_text(node_entry.node, bufnr)
+      local id = locals.get_definition_id(scope, node_text)
+
+      result[id] = node_entry
+    end
+  end
+
+  return result
+end)
+
 local ts_usages = function(hint_opts)
+  local bufnr = nvim.get_current_buf()
   local context = get_window_context(hint_opts)
   local node = ts_utils.get_node_at_cursor()
-  local scopes = locals.get_scope_tree(node)
 
-  if not scopes or vim.tbl_isempty(scopes) then
-    return {}
-  end
-  local usages = locals.find_usages(node, scopes[1])
+  local lookup_table = locals.get_definitions_lookup_table(bufnr)
 
-  vim.pretty_print(usages)
-  local out = {}
-  for _, usage in ipairs(usages) do
-    vim.pretty_print(vim.treesitter.get_node_text(usage, vim.api.nvim_get_current_buf()))
+  local definitions = locals.get_definitions(bufnr)
+  for _, def in ipairs(definitions) do
+    vim.pretty_print(def)
+    vim.pretty_print(ts.query.get_node_text(def, bufnr))
   end
 
+  -- local results = {}
+  -- for _, scope in locals.iter_scope_tree(node, bufnr) do
+  --   local usages = locals.find_usages(node, scope, bufnr)
+  -- end
+
+  -- vim.pretty_print(usages)
+  -- local out = {}
+  -- for _, usage in ipairs(usages) do
+  --   vim.pretty_print(vim.treesitter.get_node_text(usage, vim.api.nvim_get_current_buf()))
+  -- end
+  --
   return {}
 end
 
 M.hint_usages = function(opts)
-  hint_with(ts_usages, override_opts(opts))
+  ts_usages(opts)
+  -- hint_with(ts_usages, override_opts(opts))
 end
 
 return M

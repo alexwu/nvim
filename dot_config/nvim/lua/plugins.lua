@@ -38,19 +38,12 @@ return require("packer").startup({
     use({ "~/Projects/neovim/nvim-snazzy" })
     use({ "nvim-treesitter/nvim-treesitter" })
 
-    use({ "vigoux/architext.nvim", disable = true })
     use({
       "numToStr/Comment.nvim",
       config = function()
         require("plugins.commenting")
       end,
       requires = { "JoosepAlviste/nvim-ts-context-commentstring" },
-    })
-
-    use({
-      "svermeulen/nvim-teal-maker",
-      rocks = { "tl", "cyan" },
-      disable = true,
     })
 
     -- important
@@ -114,7 +107,7 @@ return require("packer").startup({
         "hrsh7th/cmp-nvim-lsp",
         "nvim-telescope/telescope.nvim",
         "b0o/schemastore.nvim",
-        "weilbith/nvim-code-action-menu",
+        "~/Projects/neovim/nvim-code-action-menu",
       },
     })
 
@@ -128,12 +121,24 @@ return require("packer").startup({
         "hrsh7th/cmp-path",
         "nvim-lua/plenary.nvim",
         "onsails/lspkind-nvim",
-        "~/Projects/neovim/cmp-treesitter",
         "saadparwaiz1/cmp_luasnip",
         "nvim-treesitter/nvim-treesitter",
+        "~/Projects/neovim/cmp-treesitter",
       },
       config = function()
         require("plugins.cmp")
+      end,
+    })
+
+    use({
+      "ray-x/lsp_signature.nvim",
+      config = function()
+        require("lsp_signature").setup({
+          bind = true,
+          handler_opts = {
+            border = "rounded",
+          },
+        })
       end,
     })
 
@@ -188,20 +193,14 @@ return require("packer").startup({
     })
 
     use({
-      "ibhagwan/fzf-lua",
-      requires = { "kyazdani42/nvim-web-devicons" },
-      config = function()
-        require("bombeelu.fzf")
-      end,
-      disable = true,
-    })
-
-    use({
       "ahmedkhalf/project.nvim",
       config = function()
         require("project_nvim").setup({
           exclude_dirs = { vim.fn.expand("~"), vim.fn.expand("~/.config"), vim.fn.expand("~/.local/share") },
-          ignore_lsp = { "null-ls", "copilot" },
+          ignore_lsp = { "null-ls", "null_ls", "null-ls.nvim", "copilot" },
+          detection_methods = { "pattern", "lsp" },
+          patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "Gemfile", "selene.toml" },
+          silent_chdir = true,
         })
         require("telescope").load_extension("projects")
 
@@ -209,16 +208,6 @@ return require("packer").startup({
           require("telescope").extensions.projects.projects()
         end, {})
       end,
-    })
-
-    use({
-      "ldelossa/gh.nvim",
-      requires = { "ldelossa/litee.nvim" },
-      config = function()
-        require("litee.lib").setup()
-        require("litee.gh").setup()
-      end,
-      disable = true,
     })
     use({ "MunifTanjim/nui.nvim" })
 
@@ -245,10 +234,22 @@ return require("packer").startup({
         { "SmiteshP/nvim-gps", requires = "nvim-treesitter/nvim-treesitter" },
       },
       config = function()
-        require("statusline")
+        require("statusline").setup()
       end,
     })
 
+    use({
+      "SmiteshP/nvim-navic",
+      requires = "neovim/nvim-lspconfig",
+    })
+
+    -- use({
+    --   "feline-nvim/feline.nvim",
+    --   config = function()
+    --     require("statusline").setup("feline")
+    --   end,
+    -- })
+    --
     use({ "nvim-treesitter/nvim-treesitter-textobjects", requires = "nvim-treesitter/nvim-treesitter" })
     use({ "nvim-treesitter/nvim-treesitter-refactor", requires = "nvim-treesitter/nvim-treesitter" })
     use({ "RRethy/nvim-treesitter-textsubjects", requires = "nvim-treesitter/nvim-treesitter" })
@@ -357,6 +358,8 @@ return require("packer").startup({
     use({
       "simrat39/rust-tools.nvim",
       requires = {
+        "neovim/nvim-lspconfig",
+        "hrsh7th/nvim-cmp",
         "nvim-lua/popup.nvim",
         "nvim-lua/plenary.nvim",
         "nvim-telescope/telescope.nvim",
@@ -422,18 +425,6 @@ return require("packer").startup({
     })
 
     use({
-      "tamago324/lir.nvim",
-      requires = {
-        "nvim-lua/plenary.nvim",
-        "kyazdani42/nvim-web-devicons",
-      },
-      config = function()
-        require("plugins.lir")
-      end,
-      disable = true,
-    })
-
-    use({
       "akinsho/toggleterm.nvim",
       config = function()
         require("plugins.terminal")
@@ -462,19 +453,6 @@ return require("packer").startup({
     })
 
     use({
-      "folke/trouble.nvim",
-      requires = "kyazdani42/nvim-web-devicons",
-      config = function()
-        require("trouble").setup({
-          auto_open = false,
-          auto_close = false,
-          mode = "document_diagnostics",
-        })
-      end,
-      disable = true,
-    })
-
-    use({
       "norcalli/nvim-colorizer.lua",
       config = function()
         require("colorizer").setup()
@@ -497,15 +475,6 @@ return require("packer").startup({
           disable_diagnostics = true,
         })
       end,
-    })
-
-    use({
-      "TimUntersberger/neogit",
-      requires = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim" },
-      config = function()
-        require("neogit").setup({ integrations = { diffview = true } })
-      end,
-      disable = true,
     })
 
     use({
@@ -558,18 +527,6 @@ return require("packer").startup({
     use({ "chaoren/vim-wordmotion" })
     use({ "AndrewRadev/splitjoin.vim" })
 
-    -- use({
-    -- 	"karb94/neoscroll.nvim",
-    -- 	config = function()
-    -- 		require("plugins.neoscroll")
-    -- 	end,
-    --   cond = function()
-    --     return not vim.g.neovide
-    --   end,
-    --   event = "BufEnter",
-    -- })
-    --
-
     use({
       "declancm/cinnamon.nvim",
       config = function()
@@ -601,10 +558,8 @@ return require("packer").startup({
       config = function()
         require("key-menu").set("n", "<Leader>")
         require("key-menu").set("n", "g")
-        require("key-menu").set("n", "S")
+        require("key-menu").set("n", "s")
         require("key-menu").set("n", "<Bslash>")
-        -- require("key-menu").set("n", "d")
-        -- require("key-menu").set("n", "f")
       end,
     })
 
@@ -619,6 +574,33 @@ return require("packer").startup({
       branch = "stable",
       require = function()
         require("mini.bufremove").setup()
+        -- require("mini.surround").setup({
+        --   -- Add custom surroundings to be used on top of builtin ones. For more
+        --   -- information with examples, see `:h MiniSurround.config`.
+        --   custom_surroundings = nil,
+        --
+        --   -- Duration (in ms) of highlight when calling `MiniSurround.highlight()`
+        --   highlight_duration = 500,
+        --
+        --   -- Module mappings. Use `''` (empty string) to disable one.
+        --   mappings = {
+        --     add = "", -- Add surrounding in Normal and Visual modes
+        --     delete = "ds", -- Delete surrounding
+        --     find = "", -- Find surrounding (to the right)
+        --     find_left = "", -- Find surrounding (to the left)
+        --     highlight = "", -- Highlight surrounding
+        --     replace = "cs", -- Replace surrounding
+        --     update_n_lines = "", -- Update `n_lines`
+        --   },
+        --
+        --   -- Number of lines within which surrounding is searched
+        --   n_lines = 20,
+        --
+        --   -- How to search for surrounding (first inside current line, then inside
+        --   -- neighborhood). One of 'cover', 'cover_or_next', 'cover_or_prev',
+        --   -- 'cover_or_nearest'. For more details, see `:h MiniSurround.config`.
+        --   search_method = "cover",
+        -- })
       end,
     })
 
@@ -693,34 +675,7 @@ return require("packer").startup({
       use({
         "rcarriga/neotest",
         config = function()
-          require("neotest").setup({
-            adapters = {
-              require("neotest-plenary"),
-              require("neotest-vim-test")({
-                ignore_file_types = { "python", "vim", "lua", "ts", "tsx", "rb", "go" },
-              }),
-              require("neotest-rspec"),
-              require("neotest-jest"),
-              require("neotest-go"),
-            },
-          })
-
-          vim.api.nvim_create_user_command("TestToggle", function()
-            require("neotest").summary.toggle()
-          end, {})
-
-          vim.api.nvim_create_user_command("TestRun", function()
-            require("neotest").run.run()
-          end, {})
-          vim.api.nvim_create_user_command("TestRunFile", function()
-            require("neotest").run.run(vim.fn.expand("%"))
-          end, {})
-          vim.api.nvim_create_user_command("TestAttach", function()
-            require("neotest").run.attach()
-          end, {})
-          vim.api.nvim_create_user_command("TestStop", function()
-            require("neotest").run.stop()
-          end, {})
+          require("bombeelu.neotest").setup()
         end,
         requires = {
           "nvim-lua/plenary.nvim",
@@ -765,6 +720,76 @@ return require("packer").startup({
       requires = {
         { "MunifTanjim/nui.nvim" },
       },
+      config = function()
+        require("fine-cmdline").setup({
+          cmdline = {
+            enable_keymaps = true,
+            smart_history = true,
+            prompt = ": ",
+          },
+          popup = {
+            position = {
+              row = "10%",
+              col = "50%",
+            },
+            size = {
+              width = "60%",
+            },
+            border = {
+              style = "rounded",
+            },
+            win_options = {
+              winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+            },
+          },
+          hooks = {
+            before_mount = function(input)
+              -- code
+            end,
+            after_mount = function(input)
+              -- code
+            end,
+            set_keymaps = function(imap, feedkeys)
+              -- code
+            end,
+          },
+        })
+        -- vim.api.nvim_set_keymap("n", ":", "<cmd>FineCmdline<CR>", { noremap = true })
+      end,
+    })
+
+    use({
+      "lewis6991/satellite.nvim",
+      config = function()
+        require("satellite").setup({ current_only = true })
+      end,
+    })
+
+    use({
+      "sidebar-nvim/sidebar.nvim",
+      config = function()
+        require("bombeelu.sidebar").setup()
+      end,
+    })
+
+    use({
+      "kevinhwang91/nvim-ufo",
+      requires = "kevinhwang91/promise-async",
+      config = function()
+        vim.wo.foldcolumn = "2"
+        vim.wo.foldlevel = 99
+        vim.wo.foldenable = true
+
+        vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+        vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+
+        require("ufo").setup({
+          provider_selector = function(bufnr, filetype)
+            return { "lsp", "treesitter", "indent" }
+          end,
+        })
+      end,
+      disable = true,
     })
 
     if packer_bootstrap then

@@ -2,8 +2,6 @@ local utils = require("bombeelu.utils")
 local keys = require("bombeelu.keys")
 local set = utils.set
 local ex = utils.ex
-local reload = require("plenary.reload")
-local Job = require("plenary.job")
 local repeatable = require("bombeelu.repeat").mk_repeatable
 
 vim.g.mapleader = " "
@@ -109,73 +107,30 @@ local function get_selection()
   return positions[1], positions[2]
 end
 
-set({ "v" }, "(", function()
+local function surround_mapping(pair)
   local bufnr = vim.api.nvim_get_current_buf()
   local mode = vim.api.nvim_get_mode().mode
   local start_pos, end_pos = get_selection()
 
-  surround_selection(mode, "(", ")", {
+  surround_selection(mode, pair[1], pair[2], {
     start_row = start_pos[2],
     start_col = start_pos[3],
     end_row = end_pos[2],
     end_col = end_pos[3],
   }, { bufnr = bufnr })
 
+  -- This puts it into normal mode afterwards. Config option?
   keys.esc(true)
-end, { desc = "Surround selection with parentheses" })
-
-set({ "v" }, "{", function()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local mode = vim.api.nvim_get_mode().mode
-  local start_pos, end_pos = get_selection()
-
-  surround_selection(mode, "{", "}", {
-    start_row = start_pos[2],
-    start_col = start_pos[3],
-    end_row = end_pos[2],
-    end_col = end_pos[3],
-  }, { bufnr = bufnr })
-
-  keys.esc(true)
-end, { desc = "Surround selection with curly braces" })
-
-local chezmoi_apply = function()
-  nvim.ex.wall()
-
-  Job
-    :new({
-      command = "chezmoi",
-      args = { "apply" },
-      cwd = vim.loop.cwd(),
-      on_stderr = function(_, data)
-        vim.notify(data, "error")
-      end,
-      on_stdout = function(_, return_val)
-        vim.notify(return_val)
-      end,
-      on_exit = function(_, _)
-        vim.notify("chezmoi apply: successful")
-      end,
-    })
-    :start()
 end
 
-nvim.create_augroup("Bombeelu", { clear = true })
-nvim.create_autocmd("FileType", {
-  pattern = "qf",
-  group = "Bombeelu",
-  callback = function()
-    set("n", "<CR>", "<CR>" .. ex("cclose"), { buffer = true })
-  end,
-})
+set({ "v" }, { "(", ")" }, function()
+  surround_mapping({ "(", ")" })
+end, { desc = "Surround selection with parentheses" })
 
-nvim.create_user_command("Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
+set({ "v" }, { "{", "}" }, function()
+  surround_mapping({ "{", "}" })
+end, { desc = "Surround selection with curly braces" })
 
-nvim.create_user_command("Reload", function(opts)
-  local fargs = opts.fargs
-  reload.reload_module(fargs[1])
-end, { nargs = 1 })
-
-vim.cmd([[autocmd FileType qf nnoremap <buffer> <silent> <ESC> :cclose<CR>]])
-vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> q :cclose<CR>]])
-vim.cmd([[autocmd FileType help nnoremap <buffer> <silent> gd <C-]>]])
+set({ "v" }, { "[", "]" }, function()
+  surround_mapping({ "[", "]" })
+end, { desc = "Surround selection with square brackets" })

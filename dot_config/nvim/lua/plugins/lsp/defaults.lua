@@ -1,9 +1,17 @@
-local M = {}
 local telescope = require("telescope.builtin")
 local lazy = require("bombeelu.utils").lazy
 local set = require("bombeelu.utils").set
+local navic = require("nvim-navic")
 
+local M = {}
+
+-- FIXME: Some of this will get called multiple times unnecessarily. This might need the project config stuff?
 function M.on_attach(client, bufnr)
+  vim.pretty_print(client.server_capabilities.documentSymbolProvider)
+  if client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
+
   local signs = {
     Error = "✘ ",
     Warn = " ",
@@ -29,10 +37,8 @@ function M.on_attach(client, bufnr)
     update_in_insert = false,
   })
 
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-    vim.lsp.handlers.hover,
-    { border = "rounded", focusable = false }
-  )
+  vim.lsp.handlers["textDocument/hover"] =
+    vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
 
   set("n", "gd", lazy(telescope.lsp_definitions), { buffer = true, desc = "Go to definition" })
   set("n", "gr", lazy(telescope.lsp_references), { buffer = true, desc = "Go to references" })
@@ -44,7 +50,7 @@ function M.on_attach(client, bufnr)
   end, { silent = true, buffer = true, desc = "Go to type definition" })
 
   set("n", "K", function()
-  	vim.lsp.buf.hover()
+    vim.lsp.buf.hover()
   end, { silent = true, buffer = true })
 
   set("n", "L", function()
@@ -84,15 +90,6 @@ function M.on_attach(client, bufnr)
     vim.diagnostic.goto_next()
   end, { silent = true, buffer = true, desc = "Go to next diagnostic" })
 
-  set("n", "<BSlash>y", function()
-    vim.lsp.buf.format({
-      async = true,
-      filter = function(c)
-        return c.name ~= "tsserver" and c.name ~= "jsonls" and c.name ~= "sumneko_lua"
-      end,
-    })
-  end, { silent = true, buffer = true, desc = "Format file with LSP" })
-
   set("v", "<F8>", function()
     vim.lsp.buf.range_formatting()
   end, { silent = true, buffer = true, desc = "Format range" })
@@ -108,18 +105,6 @@ function M.on_attach(client, bufnr)
     })
   end
 
-  -- if client.server_capabilities.semanticTokensProvider then
-  --   vim.pretty_print("this works")
-  --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-  --     buffer = bufnr,
-  --     group = "LspDiagnosticsConfig",
-  --     callback = function()
-  --       require("plugins.lsp.semantic_tokens").refresh(vim.api.nvim_get_current_buf())
-  --     end,
-  --   })
-  --   -- vim.cmd([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.buf.semantic_tokens_full()]])
-  -- end
-  --
   vim.api.nvim_create_autocmd("CursorHold", {
     group = "LspDiagnosticsConfig",
     buffer = bufnr,
@@ -142,14 +127,17 @@ function M.on_attach(client, bufnr)
   })
 end
 
-local capabilities = function()
-  local cmp_capabilities = vim.lsp.protocol.make_client_capabilities()
-  cmp_capabilities = require("cmp_nvim_lsp").update_capabilities(cmp_capabilities)
+local make_capabilities = function()
+  local cap = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  cap.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true,
+  }
 
-  return cmp_capabilities
+  return cap
 end
 
-M.capabilities = capabilities()
+M.capabilities = make_capabilities()
 
 M.handlers = {}
 
