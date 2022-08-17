@@ -114,7 +114,7 @@ autocmd("FileType", {
   pattern = { "LspInfo", "null-ls-info" },
   group = "LspCustom",
   callback = function()
-    set("n", "q", lazy(nvim.ex.quit), { buffer = true })
+    set("n", "q", lazy(nvim.cmd.quit), { buffer = true })
   end,
 })
 

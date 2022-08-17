@@ -616,7 +616,7 @@ return require("packer").startup({
       "simrat39/inlay-hints.nvim",
       config = function()
         require("inlay-hints").setup({
-          renderer = "inlay-hints/render/virtline",
+          renderer = "inlay-hints/render/eol",
           hints = {
             parameter = {
               show = false,

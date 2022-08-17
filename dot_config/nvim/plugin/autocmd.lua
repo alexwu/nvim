@@ -9,7 +9,7 @@ nvim.create_autocmd("FileType", {
   group = "bombeelu.autocmd",
   callback = function()
     set("n", "<CR>", "<CR>" .. ex("cclose"), { buffer = true })
-    set("n", "<ESC>", lazy(nvim.ex.cclose), { buffer = true })
+    set("n", "<ESC>", lazy(vim.cmd.cclose), { buffer = true })
   end,
 })
 

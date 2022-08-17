@@ -27,7 +27,7 @@ function M.setup(opts)
           diagnostics = {
             enable = true,
             disabled = { "unresolved-proc-macro" },
-            enableExperimental = true,
+            enableExperimental = false,
           },
           checkOnSave = {
             command = "clippy",

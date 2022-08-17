@@ -1,7 +1,7 @@
 if pcall(require, "plenary") then
 local Job = require("plenary.job")
 local chezmoi_apply = function()
-  nvim.ex.wall()
+  vim.cmd.wall()
 
   Job:new({
     command = "chezmoi",
