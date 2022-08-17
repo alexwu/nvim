@@ -34,21 +34,23 @@ function M.set(modes, mappings, callback, opts)
   end, mappings)
 end
 
--- TODO: MEH, come up with something better
--- function M.map(lhs, rhs, opts)
---   opts = if_nil(opts, {})
---   local modes = if_nil(vim.deepcopy(opts.modes), { "n" })
---   local args = vim.deepcopy(opts.args)
---   opts.modes = nil
---   opts.args = nil
---
---   if type(rhs) == "function" then
---     rhs = M.lazy(rhs, args)
---   end
---
---   M.set(modes, lhs, rhs, opts)
--- end
---
+---@param mappings string|string[]
+---@param callback string|function
+---@param opts? table
+function M.keymap(mappings, callback, opts)
+  opts = if_nil(opts, {})
+  local modes = if_nil(opts.modes, "")
+  opts.modes = nil
+
+  if type(mappings) == "string" then
+    mappings = { mappings }
+  end
+
+  vim.tbl_map(function(mapping)
+    vim.keymap.set(modes, mapping, callback, opts)
+  end, mappings)
+end
+
 local function starts_with(str, start)
   return str:sub(1, #start) == start
 end
@@ -179,9 +181,6 @@ function M.get_visual_selection()
   if start[1] ~= finish[1] then
     lines[#lines] = vim.fn.strpart(lines[#lines], region[finish[1]][1], region[finish[1]][2] - region[finish[1]][1])
   end
-  vim.pretty_print(start)
-  vim.pretty_print(finish)
-  vim.pretty_print(line1_end)
   return table.concat(lines)
 end
 
@@ -251,5 +250,63 @@ M.path = (function()
     is_file = is_file,
   }
 end)()
+
+local function can_merge(v)
+  return type(v) == "table" and (vim.tbl_isempty(v) or not vim.tbl_islist(v))
+end
+
+local function tbl_extend(behavior, deep_extend, ...)
+  if behavior ~= "error" and behavior ~= "keep" and behavior ~= "force" then
+    error('invalid "behavior": ' .. tostring(behavior))
+  end
+
+  if select("#", ...) < 2 then
+    error("wrong number of arguments (given " .. tostring(1 + select("#", ...)) .. ", expected at least 3)")
+  end
+
+  local ret = {}
+  if vim._empty_dict_mt ~= nil and getmetatable(select(1, ...)) == vim._empty_dict_mt then
+    ret = vim.empty_dict()
+  end
+
+  for i = 1, select("#", ...) do
+    local tbl = select(i, ...)
+    vim.validate({ ["after the second argument"] = { tbl, "t" } })
+    if tbl then
+      for k, v in pairs(tbl) do
+        if deep_extend and can_merge(v) and can_merge(ret[k]) then
+          ret[k] = tbl_extend(behavior, true, ret[k], v)
+        elseif behavior ~= "force" and ret[k] ~= nil then
+          if behavior == "error" then
+            error("key found in more than one map: " .. k)
+          end -- Else behavior is "keep".
+        else
+          ret[k] = v
+        end
+      end
+    end
+  end
+  return ret
+end
+
+--- Merges the values similar to vim.tbl_deep_extend with the **force** behavior,
+--- but the values can be any type, in which case they override the values on the left.
+--- Values will me merged in-place in the first left-most table. If you want the result to be in
+--- a new table, then simply pass an empty table as the first argument `vim.merge({}, ...)`
+function M.merge(...)
+  local values = { ... }
+  local ret = values[1]
+  for i = 2, #values, 1 do
+    local value = values[i]
+    if can_merge(ret) and can_merge(value) then
+      for k, v in pairs(value) do
+        ret[k] = M.merge(ret[k], v)
+      end
+    else
+      ret = value
+    end
+  end
+  return ret
+end
 
 return M

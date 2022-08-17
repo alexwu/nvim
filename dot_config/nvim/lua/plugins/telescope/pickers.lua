@@ -89,16 +89,18 @@ M.buffers = function(opts)
     return vim.api.nvim_set_current_buf(bufnr)
   end
 
-  pickers.new(opts, {
-    prompt_title = "Buffers",
-    finder = finders.new_table({
-      results = buffers,
-      entry_maker = opts.entry_maker or make_entry.gen_from_buffer(opts),
-    }),
-    previewer = conf.grep_previewer(opts),
-    sorter = conf.generic_sorter(opts),
-    default_selection_index = default_selection_idx,
-  }):find()
+  pickers
+    .new(opts, {
+      prompt_title = "Buffers",
+      finder = finders.new_table({
+        results = buffers,
+        entry_maker = opts.entry_maker or make_entry.gen_from_buffer(opts),
+      }),
+      previewer = conf.grep_previewer(opts),
+      sorter = conf.generic_sorter(opts),
+      default_selection_index = default_selection_idx,
+    })
+    :find()
 end
 
 M.project_files = function(opts)
@@ -112,11 +114,13 @@ end
 M.related_files = function(opts)
   opts = if_nil(opts, {})
 
-  pickers.new(opts, {
-    results_title = "Related Files",
-    finder = require("plugins.telescope.finders").related_files(),
-    sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
-  }):find()
+  pickers
+    .new(opts, {
+      results_title = "Related Files",
+      finder = require("plugins.telescope.finders").related_files(),
+      sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
+    })
+    :find()
 end
 
 M.snippets = function(opts)
@@ -126,15 +130,17 @@ M.snippets = function(opts)
   opts.winnr = vim.api.nvim_get_current_win()
   opts.ft = opts.ft or vim.bo.ft
 
-  pickers.new(opts, {
-    results_title = "Snippets",
-    finder = require("plugins.telescope.finders").luasnip(opts),
-    sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
-    attach_mappings = function()
-      actions.select_default:replace(custom_actions.expand_snippet)
-      return true
-    end,
-  }):find()
+  pickers
+    .new(opts, {
+      results_title = "Snippets",
+      finder = require("plugins.telescope.finders").luasnip(opts),
+      sorter = require("telescope.sorters").get_generic_fuzzy_sorter(),
+      attach_mappings = function()
+        actions.select_default:replace(custom_actions.expand_snippet)
+        return true
+      end,
+    })
+    :find()
 end
 
 M.favorites = function(opts)
@@ -146,44 +152,47 @@ M.favorites = function(opts)
   opts.winnr = vim.api.nvim_get_current_win()
   opts.ft = vim.bo.ft
 
-  pickers.new(opts, {
-    prompt_title = "Favorites",
-    finder = finders.new_table({
-      results = favorites,
-      entry_maker = function(entry)
-        return {
-          value = entry,
-          text = entry.name,
-          display = entry.name,
-          ordinal = entry.name,
-          filename = nil,
-        }
-      end,
-    }),
-    previewer = false,
-    sorter = conf.generic_sorter(opts),
-    attach_mappings = function(_)
-      actions.select_default:replace(function(_)
-        local selection = action_state.get_selected_entry()
-        if not selection then
-          vim.notify("[telescope] Nothing currently selected")
-          return
-        end
+  pickers
+    .new(opts, {
+      prompt_title = "Favorites",
+      finder = finders.new_table({
+        results = favorites,
+        entry_maker = function(entry)
+          return {
+            value = entry,
+            text = entry.name,
+            display = entry.name,
+            ordinal = entry.name,
+            filename = nil,
+          }
+        end,
+      }),
+      previewer = false,
+      sorter = conf.generic_sorter(opts),
+      attach_mappings = function(_)
+        actions.select_default:replace(function(_)
+          local selection = action_state.get_selected_entry()
+          if not selection then
+            vim.notify("[telescope] Nothing currently selected")
+            return
+          end
 
-        selection.value.callback(opts)
-      end)
-      return true
-    end,
-  }):find()
+          selection.value.callback(opts)
+        end)
+        return true
+      end,
+    })
+    :find()
 end
 
 M.default_branch = nil
--- M.cwd = project.get_project_root()
 M.cwd = vim.loop.cwd()
 
 ---@param async boolean
-function M.get_default_branch(async)
-  if M.default_branch ~= nil and M.cwd == vim.loop.cwd() then
+function M.get_default_branch(opts)
+  opts = if_nil(opts, {})
+
+  if not opts.force and M.default_branch ~= nil and M.cwd == vim.loop.cwd() then
     return M.default_branch
   end
 
@@ -206,53 +215,49 @@ function M.get_default_branch(async)
     end,
   })
 
-  if async then
+  if opts.async then
     job:start()
   else
     job:sync()
   end
 end
 
-Job
-  :new({
-    command = "gh",
-    args = {
-      "repo",
-      "view",
-      "--json",
-      "defaultBranchRef",
-      "--jq",
-      ".defaultBranchRef.name",
-    },
-    cwd = vim.loop.cwd(),
-    on_exit = function(j, data)
-      if data == 0 then
-        local result = j:result()
-        M.default_branch = result[1]
-      end
-    end,
-  })
-  :start()
-
 function M.git_changes(opts)
   opts = if_nil(opts, {})
 
-  local default_branch = M.get_default_branch(false)
+  local default_branch = M.get_default_branch()
 
-  pickers.new(opts, {
-    prompt_title = "Git Changes",
-    previewer = conf.file_previewer(opts),
-    sorter = conf.generic_sorter(opts),
-    -- finder = finders.new_table({ results = results, entry_maker = make_entry.gen_from_file(opts) }),
-    finder = finders.new_oneshot_job({
-      "git",
-      "diff",
-      "--name-only",
-      default_branch,
-    }, {
-      entry_maker = opts.entry_maker or make_entry.gen_from_file(opts),
-    }),
-  }):find()
+  pickers
+    .new(opts, {
+      prompt_title = "Git Changes",
+      previewer = conf.file_previewer(opts),
+      sorter = conf.generic_sorter(opts),
+      finder = finders.new_oneshot_job({
+        "git",
+        "diff",
+        "--name-only",
+        default_branch,
+      }, {
+        entry_maker = opts.entry_maker or make_entry.gen_from_file(opts),
+      }),
+    })
+    :find()
 end
+
+-- previewer = previewers.new_buffer_previewer {
+--   define_preview = function(self, entry, status)
+--      -- Execute another command using the highlighted entry
+--     return require('telescope.previewers.utils').job_maker(
+--         {"terraform", "state", "list", entry.value},
+--         self.state.bufnr,
+--         {
+--           callback = function(bufnr, content)
+--             if content ~= nil then
+--               require('telescope.previewers.utils').regex_highlighter(bufnr, 'terraform')
+--             end
+--           end,
+--         })
+--   end
+--   }
 
 return M

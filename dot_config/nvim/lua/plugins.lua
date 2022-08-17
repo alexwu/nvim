@@ -157,7 +157,6 @@ return require("packer").startup({
       requires = "hrsh7th/nvim-cmp",
     })
 
-    use({ "github/copilot.vim", disable = true })
     use({
       "zbirenbaum/copilot.lua",
       event = "InsertEnter",
@@ -188,13 +187,10 @@ return require("packer").startup({
         { "nvim-lua/plenary.nvim" },
         { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
         { "kyazdani42/nvim-web-devicons" },
-        { "nvim-telescope/telescope-ui-select.nvim" },
         { "tami5/sqlite.lua", module = "sqlite" },
         { "AckslD/nvim-neoclip.lua" },
         { "~/Projects/neovim/telescope-commander.nvim" },
         { "~/Projects/neovim/telescope-related-files" },
-        { "nvim-telescope/telescope-hop.nvim" },
-        { "nvim-telescope/telescope-github.nvim" },
       },
       config = function()
         require("plugins.telescope")
@@ -361,9 +357,7 @@ return require("packer").startup({
       end,
     })
 
-    -- TODO: Once inlay hints are supported
-    -- use({ "jose-elias-alvarez/typescript.nvim" })
-    use({ "jose-elias-alvarez/nvim-lsp-ts-utils" })
+    use({ "jose-elias-alvarez/typescript.nvim" })
 
     use({
       "simrat39/rust-tools.nvim",
@@ -519,9 +513,9 @@ return require("packer").startup({
     })
 
     use({
-      "alexwu/surround.nvim",
+      "kylechui/nvim-surround",
       config = function()
-        require("surround").setup({ mappings_style = "surround", prompt = false })
+        require("nvim-surround").setup({})
       end,
     })
 
@@ -558,12 +552,10 @@ return require("packer").startup({
         require("key-menu").set("n", "s")
         require("key-menu").set("n", "<Bslash>")
       end,
+      disable = true,
     })
 
     -- neovim plugin development
-    use({ "rafcamlet/nvim-luapad", ft = { "lua" } })
-    use({ "nanotee/luv-vimdocs" })
-    use({ "milisims/nvim-luaref" })
     use({ "folke/lua-dev.nvim" })
 
     use({
@@ -571,33 +563,6 @@ return require("packer").startup({
       branch = "stable",
       require = function()
         require("mini.bufremove").setup()
-        -- require("mini.surround").setup({
-        --   -- Add custom surroundings to be used on top of builtin ones. For more
-        --   -- information with examples, see `:h MiniSurround.config`.
-        --   custom_surroundings = nil,
-        --
-        --   -- Duration (in ms) of highlight when calling `MiniSurround.highlight()`
-        --   highlight_duration = 500,
-        --
-        --   -- Module mappings. Use `''` (empty string) to disable one.
-        --   mappings = {
-        --     add = "", -- Add surrounding in Normal and Visual modes
-        --     delete = "ds", -- Delete surrounding
-        --     find = "", -- Find surrounding (to the right)
-        --     find_left = "", -- Find surrounding (to the left)
-        --     highlight = "", -- Highlight surrounding
-        --     replace = "cs", -- Replace surrounding
-        --     update_n_lines = "", -- Update `n_lines`
-        --   },
-        --
-        --   -- Number of lines within which surrounding is searched
-        --   n_lines = 20,
-        --
-        --   -- How to search for surrounding (first inside current line, then inside
-        --   -- neighborhood). One of 'cover', 'cover_or_next', 'cover_or_prev',
-        --   -- 'cover_or_nearest'. For more details, see `:h MiniSurround.config`.
-        --   search_method = "cover",
-        -- })
       end,
     })
 
@@ -620,6 +585,7 @@ return require("packer").startup({
             ruby = { "rspec" },
           },
         })
+
         require("telescope").load_extension("spectacle")
       end,
       disable = true,
@@ -647,17 +613,39 @@ return require("packer").startup({
     })
 
     use({
-      "ericpubu/lsp_codelens_extensions.nvim",
-      requires = { "nvim-lua/plenary.nvim", "mfussenegger/nvim-dap" },
-      config = function()
-        require("codelens_extensions").setup()
-      end,
-    })
-
-    use({
       "simrat39/inlay-hints.nvim",
       config = function()
-        require("inlay-hints").setup()
+        require("inlay-hints").setup({
+          renderer = "inlay-hints/render/virtline",
+          hints = {
+            parameter = {
+              show = false,
+              highlight = "LspInlayHints",
+            },
+            type = {
+              show = true,
+              highlight = "LspInlayHints",
+            },
+          },
+          only_current_line = false,
+          eol = {
+            right_align = false,
+            right_align_padding = 7,
+            parameter = {
+              separator = ", ",
+              format = function(hints)
+                return string.format(" <- (%s)", hints)
+              end,
+            },
+
+            type = {
+              separator = ", ",
+              format = function(hints)
+                return string.format(" => (%s)", hints)
+              end,
+            },
+          },
+        })
       end,
     })
 

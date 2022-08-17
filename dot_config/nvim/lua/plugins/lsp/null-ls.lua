@@ -186,15 +186,25 @@ M.setup = function(opts)
       null_ls.builtins.formatting.prismaFmt,
       null_ls.builtins.formatting.black,
       null_ls.builtins.formatting.clang_format,
-      -- null_ls.builtins.formatting.prettier,
+      -- null_ls.builtins.formatting.prettier.with({
+      --   prefer_local = "node_modules/.bin",
+      -- }),
       null_ls.builtins.formatting.deno_fmt.with({
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json" },
         extra_args = { "--options-line-width", 100 },
       }),
       null_ls.builtins.formatting.rustywind,
       null_ls.builtins.diagnostics.zsh,
+      -- null_ls.builtins.diagnostics.selene.with({
+      --   condition = function(utils)
+      --     return utils.root_has_file({ "selene.toml" })
+      --   end,
+      -- }),
       null_ls.builtins.diagnostics.selene.with({
-        condition = function(utils)
-          return utils.root_has_file({ "selene.toml" })
+        cwd = function(_params)
+          return vim.fs.dirname(
+            vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
+          ) or vim.fn.expand("~/.config/nvim/selene.toml") -- fallback value
         end,
       }),
       null_ls.builtins.diagnostics.luacheck.with({

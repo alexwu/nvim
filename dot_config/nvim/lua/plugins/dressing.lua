@@ -6,9 +6,11 @@ require("dressing").setup({
     enabled = true,
 
     -- Priority list of preferred vim.select implementations
-    backend = { "telescope", "nui" },
+    backend = { "telescope" },
 
-    telescope = require("telescope.themes").get_dropdown(),
+    telescope = require("telescope.themes").get_dropdown({
+      initial_mode = "normal",
+    }),
 
     -- Options for nui Menu
     nui = {

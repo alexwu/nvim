@@ -7,15 +7,16 @@ function M.setup()
     adapters = {
       require("neotest-plenary"),
       require("neotest-vim-test")({
-        ignore_file_types = { "python", "vim", "lua", "ts", "tsx", "rb", "go" },
+        ignore_file_types = { "python", "vim", "lua", "ts", "tsx", "ruby", "go" },
       }),
       require("neotest-rspec"),
       require("neotest-jest"),
       require("neotest-go"),
+      require("neotest-rust"),
     },
   })
 
-  nvim.create_user_command("TestToggle", function()
+  nvim.create_user_command("TestSummary", function()
     neotest.summary.toggle()
   end, {})
 

@@ -1,8 +1,14 @@
+[selene]
+base = "lua51"
+name = "neovim"
+
 [vim]
 any = true
 [nvim]
 any = true
 [keymap]
+any = true
+[key]
 any = true
 [set]
 any = true

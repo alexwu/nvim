@@ -103,8 +103,6 @@ cmp.setup({
       behavior = cmp.ConfirmBehavior.Replace,
       select = false,
     }),
-    ["<C-n>"] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert })),
-    ["<C-p>"] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert })),
     ["<C-d>"] = mapping.scroll_docs(-4),
     ["<C-f>"] = mapping.scroll_docs(4),
     ["<Down>"] = mapping(select_next),
@@ -113,6 +111,8 @@ cmp.setup({
       i = mapping.abort(),
       c = mapping.close(),
     }),
+    ["<C-n>"] = mapping(tab_next),
+    ["<C-p>"] = mapping(tab_prev),
     ["<Tab>"] = mapping(tab_next),
     ["<S-Tab>"] = mapping(tab_prev),
     ["<C-l>"] = mapping(function(fallback)
@@ -123,28 +123,36 @@ cmp.setup({
     end),
   }),
   formatting = {
-    format = lspkind.cmp_format({
-      preset = preset(),
-      mode = "symbol_text",
-      menu = {
-        buffer = "[Buffer]",
-        cmp_tabnine = "[TabNine]",
-        copilot = "[Copilot]",
-        crates = "[Crates]",
-        luasnip = "[LuaSnip]",
-        npm = "[npm]",
-        nvim_lsp = "[LSP]",
-        path = "[Path]",
-        treesitter = "[TreeSitter]",
-      },
-      dup = {
-        buffer = 0,
-        path = 0,
-        nvim_lsp = 1,
-        cmp_tabnine = 0,
-        treesitter = 0,
-      },
-    }),
+    format = function(entry, vim_item)
+      if entry.source.name == "copilot" then
+        vim_item.kind = "[] Copilot"
+        vim_item.kind_hl_group = "CmpItemKindCopilot"
+        return vim_item
+      end
+
+      return lspkind.cmp_format({
+        preset = preset(),
+        mode = "symbol_text",
+        menu = {
+          buffer = "[Buffer]",
+          cmp_tabnine = "[TabNine]",
+          copilot = "[Copilot]",
+          crates = "[Crates]",
+          luasnip = "[LuaSnip]",
+          npm = "[npm]",
+          nvim_lsp = "[LSP]",
+          path = "[Path]",
+          treesitter = "[TreeSitter]",
+        },
+        dup = {
+          buffer = 0,
+          path = 0,
+          nvim_lsp = 1,
+          cmp_tabnine = 0,
+          treesitter = 0,
+        },
+      })(entry, vim_item)
+    end,
   },
   experimental = {
     ghost_text = { highlight = "CmpGhostText" },
@@ -180,5 +188,19 @@ tabnine:setup({
 
 require("cmp-npm").setup({})
 
-vim.cmd([[autocmd FileType toml lua require('cmp').setup.buffer { sources = { { name = 'crates' } } }]])
-vim.cmd([[autocmd FileType TelescopePrompt lua require('cmp').setup.buffer { enabled = false }]])
+nvim.create_augroup("bombeelu.cmp", { clear = true })
+nvim.create_autocmd("FileType", {
+  pattern = "toml",
+  group = "bombeelu.cmp",
+  callback = function()
+    require("cmp").setup.buffer({ sources = { { name = "crates" } } })
+  end,
+})
+
+nvim.create_autocmd("FileType", {
+  pattern = "TelescopePrompt",
+  group = "bombeelu.cmp",
+  callback = function()
+    require("cmp").setup.buffer({ enabled = false })
+  end,
+})

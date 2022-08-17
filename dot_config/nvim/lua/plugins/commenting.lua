@@ -1,13 +1,12 @@
 require("Comment").setup({
   toggler = {
-    line = "<C-/>",
-    -- line = "<C-/><C-/>",
-    block = "<C-b>",
+    line = "<C-/><C-/>",
+    block = "<C-b><C-b>",
   },
   opleader = {
-    line = "gc",
-    block = "gb",
- },
+    line = "<C-/>",
+    block = "<C-b>",
+  },
   -- NOTE: The example below is a proper integration and it is RECOMMENDED.
   ---@param ctx Ctx
   pre_hook = function(ctx)

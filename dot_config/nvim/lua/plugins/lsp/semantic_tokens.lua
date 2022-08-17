@@ -105,6 +105,59 @@ function M.on_full(err, response, ctx, config)
   end
 end
 
+function M.on_range(err, response, ctx, config)
+  active_requests[ctx.bufnr] = false
+  local client = vim.lsp.get_client_by_id(ctx.client_id)
+  if not client then
+    return
+  end
+  if config and config.on_invalidate_range then
+    config.on_invalidate_range(ctx, 0, -1)
+  end
+  -- if tick has changed our response is outdated!
+  -- FIXME: this is should be done properly here and in the codelens implementation. Handlers should
+  -- not be responsible of checking whether their responses are still valid.
+  if
+    err
+    or not response
+    or not config
+    or not config.on_token
+    or last_tick[ctx.bufnr] ~= vim.api.nvim_buf_get_changedtick(ctx.bufnr)
+  then
+    return
+  end
+  local legend = client.server_capabilities.semanticTokensProvider.legend
+  local token_types = legend.tokenTypes
+  local token_modifiers = legend.tokenModifiers
+  local data = response.data
+
+  local line
+  local start_char = 0
+  for i = 1, #data, 5 do
+    local delta_line = data[i]
+    line = line and line + delta_line or delta_line
+    local delta_start = data[i + 1]
+    start_char = delta_line == 0 and start_char + delta_start or delta_start
+
+    -- data[i+3] +1 because Lua tables are 1-indexed
+    local token_type = token_types[data[i + 3] + 1]
+    local modifiers = modifiers_from_number(data[i + 4], token_modifiers)
+
+    local token = {
+      line = line,
+      start_char = start_char,
+      length = data[i + 2],
+      type = token_type,
+      modifiers = modifiers,
+      offset_encoding = client.offset_encoding,
+    }
+
+    if token_type and config and config.on_token then
+      config.on_token(ctx, token)
+    end
+  end
+end
+
 --- |lsp-handler| for the method `textDocument/semanticTokens/refresh`
 ---
 function M.on_refresh(err, _, ctx, _)
@@ -140,6 +193,23 @@ function M.refresh(bufnr)
     if not last_tick[bufnr] or last_tick[bufnr] < vim.api.nvim_buf_get_changedtick(bufnr) then
       M._save_tick(bufnr)
       vim.lsp.buf_request(bufnr, "textDocument/semanticTokens/full", params)
+    end
+  end
+end
+
+function M.range(bufnr, range)
+  if bufnr == 0 then
+    bufnr = vim.api.nvim_get_current_buf()
+  end
+
+  if not range then
+    range = vim.lsp.util.make_range_params()
+  end
+  if not active_requests[bufnr] then
+    local params = { textDocument = { uri = vim.uri_from_bufnr(bufnr) }, range = range }
+    if not last_tick[bufnr] or last_tick[bufnr] < vim.api.nvim_buf_get_changedtick(bufnr) then
+      M._save_tick(bufnr)
+      vim.lsp.buf_request(bufnr, "textDocument/semanticTokens/range", params)
     end
   end
 end

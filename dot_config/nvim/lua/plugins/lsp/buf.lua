@@ -30,4 +30,12 @@ function M.semantic_tokens_full()
   return request("textDocument/semanticTokens/full", params)
 end
 
+function M.semantic_tokens_range()
+  local params = { textDocument = util.make_text_document_params() }
+  require("plugins.lsp.semantic_tokens")._save_tick(vim.api.nvim_get_current_buf())
+  return request("textDocument/semanticTokens/full", params)
+end
+
+function M.selection_range() end
+
 return M

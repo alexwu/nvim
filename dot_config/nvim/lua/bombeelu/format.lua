@@ -2,6 +2,7 @@ local lazy = require("bombeelu.utils").lazy
 local set = require("bombeelu.utils").set
 local defaults = require("formatter.defaults")
 local detect = require("plenary.filetype").detect
+local util = require("formatter.util")
 
 local function organize_imports_sync()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -18,6 +19,18 @@ local function organize_imports_sync()
   end
 end
 
+local function prettier()
+  return {
+    exe = "yarn prettier",
+    args = {
+      "--stdin-filepath",
+      util.escape_path(util.get_current_buffer_file_path()),
+    },
+    stdin = true,
+    try_node_modules = true,
+  }
+end
+
 local function rubyfmt()
   return {
     exe = "rubyfmt",
@@ -29,7 +42,7 @@ local function rufo()
   return {
     exe = "rufo",
     args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
-    stdin = false,
+    stdin = true,
   }
 end
 
@@ -66,11 +79,11 @@ require("formatter").setup({
     javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
     go = { require("formatter.filetypes.go").gofmt },
     graphql = { defaults.prettier },
-    json = { defaults.prettier },
-    jsonc = { defaults.prettier },
+    json = { dprint, defaults.prettier },
+    jsonc = { dprint, defaults.prettier },
     html = { defaults.prettier },
     css = { defaults.prettier },
-    ruby = { rubyfmt, rufo },
+    ruby = { rubyfmt, rufo, defaults.prettier },
     rust = {
       require("formatter.filetypes.rust").rustfmt,
     },
@@ -78,6 +91,7 @@ require("formatter").setup({
     python = {
       require("formatter.filetypes.python").black,
     },
+    toml = { dprint },
   },
 })
 
@@ -114,8 +128,8 @@ local function format_range()
   end
 end
 
-set({ "n" }, { "<F8>", "<Leader>y", "gy" }, lazy(format), { silent = true, desc = "Format" })
-set({ "v" }, { "<F8>", "<Leader>y", "gy" }, lazy(format_range), { silent = true, desc = "Format range" })
+set({ "n" }, { "<F8>", "<Leader>y", "gq" }, lazy(format), { silent = true, desc = "Format" })
+set({ "v" }, { "<F8>", "<Leader>y" }, lazy(format_range), { silent = true, desc = "Format range" })
 
 vim.cmd([[
 function! s:formatter_complete(...)

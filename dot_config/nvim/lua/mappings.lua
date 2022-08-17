@@ -2,64 +2,76 @@ local utils = require("bombeelu.utils")
 local keys = require("bombeelu.keys")
 local set = utils.set
 local ex = utils.ex
+local lazy = utils.lazy
 local repeatable = require("bombeelu.repeat").mk_repeatable
 
 vim.g.mapleader = " "
 
-set(
-  "n",
-  "]t",
-  repeatable(function()
-    nvim.feedkeys("gt", "n", true)
-  end)
+key.map(
+  { "j", "<Down>" },
+  'v:count || mode(1)[0:1] == "no" ? "j" : "gj"',
+  { expr = true, modes = "n", desc = "Move down a line" }
 )
-set("n", "j", "gj", { desc = "Move down a display line" })
-set("n", "k", "gk", { desc = "Move up a display line" })
+key.map(
+  { "k", "<Up>" },
+  'v:count || mode(1)[0:1] == "no" ? "k" : "gk"',
+  { expr = true, modes = "n", desc = "Move up a line" }
+)
+
+key.map({ "<" }, "<gv", { modes = "x" })
+key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
+
+key.map("gs", [[:%s/\<<C-R><C-W>\>\C//g<left><left>]], { modes = { "n" } })
 
 set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
 set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
 set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })
 set({ "x" }, "<C-l>", "5l", { desc = "Move right 5 columns" })
 
-set({ "n", "i" }, "<C-j>", "<Down>", { desc = "Move down a  line" })
-set({ "n", "i" }, "<C-k>", "<Up>", { desc = "Move up a line" })
-set({ "n", "i" }, "<C-h>", "<Left>", { desc = "Move left a column" })
-set({ "n", "i" }, "<C-l>", "<Right>", { desc = "Move right a column" })
+set({ "i" }, "<C-j>", "<Down>", { desc = "Move down a  line" })
+set({ "i" }, "<C-k>", "<Up>", { desc = "Move up a line" })
+set({ "i" }, "<C-h>", "<Left>", { desc = "Move left a column" })
+set({ "i" }, "<C-l>", "<Right>", { desc = "Move right a column" })
 
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })
 set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
 
-set("n", "tt", ex("tabnew"), { desc = "Create a new tab" })
-set("n", "tq", ex("tabclose"), { desc = "Close the current tab" })
--- set("n", "]t", "gt")
+set("n", "tt", lazy(vim.cmd.tabnew), { desc = "Create a new tab" })
+set("n", "tq", lazy(vim.cmd.tabclose), { desc = "Close the current tab" })
+
+set("n", "]t", "gt")
 set("n", "[t", "gT")
-set("n", "Q", ex("quit"))
+set("n", "Q", lazy(vim.cmd.quit))
 
 set("n", "<A-o>", "o<esc>")
 set("n", "<A-O>", "O<esc>")
 
-set("n", "gg", "gg", {
-  desc = "Go to first line",
-})
+local function scroll_half_page(dir, opts)
+  opts = vim.F.if_nil(opts, {})
+  local bufnr = vim.F.if_nil(opts.bufnr, nvim.get_current_buf())
+  local line_count = nvim.buf_line_count(bufnr)
+  local height = nvim.win_get_height(0)
+  local half_height = math.floor(height / 2)
+  local row, col = unpack(nvim.win_get_cursor(0))
 
-local ts = require("vim.treesitter")
-local ts_utils = require("nvim-treesitter.ts_utils")
-local function surround_node(start_text, end_text, node, bufnr)
-  if not node then
-    return
+  if dir == "down" then
+    local next_pos = math.min(line_count, row + half_height)
+    nvim.win_set_cursor(0, { next_pos, col })
+  else
+    local next_pos = math.max(1, row - half_height)
+    nvim.win_set_cursor(0, { next_pos, col })
   end
-
-  local start_row, start_col, end_row, end_col = node:range()
-  local lines = vim.api.nvim_buf_get_text(bufnr, start_row, start_col, end_row, end_col, {})
-
-  -- local lines = vim.split(ts.get_node_text(node, bufnr), "\n")
-  lines[1] = string.format("%s%s", start_text, lines[1])
-  lines[#lines] = string.format("%s%s", lines[#lines], end_text)
-
-  vim.api.nvim_buf_set_text(bufnr, start_row, start_col, end_row, end_col, lines)
 end
+
+set("n", "<C-d>", function()
+  scroll_half_page("down")
+end)
+
+set("n", "<C-u>", function()
+  scroll_half_page("up")
+end)
 
 local function surround_selection(mode, start_pair, end_pair, range, opts)
   local bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
@@ -134,3 +146,15 @@ end, { desc = "Surround selection with curly braces" })
 set({ "v" }, { "[", "]" }, function()
   surround_mapping({ "[", "]" })
 end, { desc = "Surround selection with square brackets" })
+
+set({ "v" }, { "q" }, function()
+  surround_mapping({ [["]], [["]] })
+end, { desc = "Surround selection with double quotes" })
+
+set({ "v" }, { [[']] }, function()
+  surround_mapping({ "'", "'" })
+end, { desc = "Surround selection with single quotes" })
+
+set({ "v" }, { [[`]], [[`]] }, function()
+  surround_mapping({ "`", "`" })
+end, { desc = "Surround selection with backtick" })

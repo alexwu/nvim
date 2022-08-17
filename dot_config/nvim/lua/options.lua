@@ -43,7 +43,6 @@ vim.opt.termguicolors = true
 vim.opt.timeoutlen = 500
 vim.opt.pumheight = 10
 vim.opt.guifont = "FiraCode Nerd Font:h14"
-vim.opt.splitright = true
 vim.opt.fillchars = "foldclose:,foldopen:"
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })
