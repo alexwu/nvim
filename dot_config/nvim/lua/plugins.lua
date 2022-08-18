@@ -248,13 +248,6 @@ return require("packer").startup({
       requires = "neovim/nvim-lspconfig",
     })
 
-    -- use({
-    --   "feline-nvim/feline.nvim",
-    --   config = function()
-    --     require("statusline").setup("feline")
-    --   end,
-    -- })
-    --
     use({ "nvim-treesitter/nvim-treesitter-textobjects", requires = "nvim-treesitter/nvim-treesitter" })
     use({ "nvim-treesitter/nvim-treesitter-refactor", requires = "nvim-treesitter/nvim-treesitter" })
     use({ "nvim-treesitter/nvim-treesitter-context", requires = "nvim-treesitter/nvim-treesitter" })
@@ -414,7 +407,7 @@ return require("packer").startup({
 
     use({
       "phaazon/hop.nvim",
-      requires = { "indianboy42/hop-extensions", "nvim-telescope/telescope.nvim" },
+      requires = { "nvim-telescope/telescope.nvim" },
       config = function()
         require("plugins.hop")
       end,
