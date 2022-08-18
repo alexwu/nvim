@@ -3,19 +3,11 @@ if has('mouse')
   set mouse=a
 endif
 
-" Move up and down over screen lines instead of file lines
-nnoremap j gj
-nnoremap k gk
-nnoremap <c-j> 5gj
-nnoremap <c-k> 5gk
-nnoremap <c-h> 5h
-nnoremap <c-l> 5l
-
 " Move between splits with CTRL+Arrow Keys
-nnoremap <C-Down> <C-W><C-J>
-nnoremap <C-Up> <C-W><C-K>
-nnoremap <C-Right> <C-W><C-L>
-nnoremap <C-Left> <C-W><C-H>
+nnoremap <C-j> <C-W><C-J>
+nnoremap <C-k> <C-W><C-K>
+nnoremap <C-l> <C-W><C-L>
+nnoremap <C-h> <C-W><C-H>
 
 inoremap <c-j> <Down>
 inoremap <c-k> <Up>
@@ -39,7 +31,7 @@ map <space> <leader>
 
 xmap <C-_> <Plug>VSCodeCommentary
 omap <C-_> <Plug>VSCodeCommentary
-nmap <C-_> <Plug>VSCodeCommentary
-nmap <C-_><C-_> <Plug>VSCodeCommentaryCommentaryLine
+nmap <C-_> <Plug>VSCodeCommentaryCommentaryLine
 
 map <leader>y <Cmd>call VSCodeNotify("editor.action.formatDocument") <CR>
+map <C-S-P> <Cmd>call VSCodeNotifyVisual("workbench.action.showCommands", 1)<CR>

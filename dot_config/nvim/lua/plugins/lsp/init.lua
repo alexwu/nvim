@@ -25,10 +25,7 @@ end
 
 vim.diagnostic.config({
   virtual_text = false,
-  -- virtual_lines = {
-  --   only_current_line = true,
-  -- },
-  virtal_lines = true,
+  virtual_lines = true,
   underline = {},
   signs = true,
   float = {
@@ -114,7 +111,7 @@ autocmd("FileType", {
   pattern = { "LspInfo", "null-ls-info" },
   group = "LspCustom",
   callback = function()
-    set("n", "q", lazy(nvim.cmd.quit), { buffer = true })
+    set("n", "q", lazy(vim.cmd.quit), { buffer = true })
   end,
 })
 

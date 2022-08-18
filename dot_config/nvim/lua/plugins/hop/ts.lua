@@ -5,10 +5,6 @@ local window = require("hop.window")
 local wrap_targets = require("plugins.hop.utils").wrap_targets
 local override_opts = require("plugins.hop.utils").override_opts
 
-local function ends_with(str, ending)
-  return ending == "" or str:sub(-#ending) == ending
-end
-
 local function treesitter_filter_window(node, contexts, nodes_set)
   local context = contexts[1].contexts[1]
   local line, col, start = node:start()

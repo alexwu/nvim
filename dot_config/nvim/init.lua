@@ -1,10 +1,12 @@
 require("globals")
 require("bombeelu.nvim")
+require("bombeelu.autocmd")
+require("bombeelu.commands")
 
 if vim.g.vscode then
 --  require("vscode")
 else
-  --  require("impatient")
+  require("impatient")
   require("plugins")
   require("plugins.treesitter")
 end

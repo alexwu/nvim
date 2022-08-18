@@ -5,12 +5,12 @@ local custom = require("plugins.hop.custom")
 
 hop.setup({})
 
-set("n", { "s", "S" }, function()
+set("n", { "s" }, function()
   custom.hint_wordmotion({ multi_windows = false })
 end, { desc = "Jump to a word" })
 
 set("o", { "<Bslash>" }, function()
-  custom.hint_char1({ multi_windows = false })
+  hop.hint_char1({ multi_windows = false })
 end, { desc = "Jump to a word" })
 
 set({ "n", "o" }, { "sw", "<Bslash>w" }, function()
@@ -21,9 +21,8 @@ keymap({ "sb" }, function()
   custom.hint_wordmotion({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
 end, { desc = "Jump backword to a word", modes = { "n", "o" } })
 
--- TODO: Constrain this to scope
-set({ "n", "o" }, { "ss" }, function()
-  custom.hint_wordmotion({ multi_windows = false })
+set({ "n", "o" }, { "S" }, function()
+  hop.hint_char2({ multi_windows = false })
 end, { desc = "Jump to a line" })
 
 set("n", "sl", function()
@@ -46,7 +45,7 @@ set({ "n", "o" }, "sF", function()
   hop.hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
 end, { desc = "Jump backward on current line" })
 
-keymap("st", function()
+key.map("st", function()
   hop.hint_char1({
     direction = require("hop.hint").HintDirection.AFTER_CURSOR,
     current_line_only = true,
@@ -54,7 +53,7 @@ keymap("st", function()
   })
 end, { desc = "Jump to the selected character" })
 
-keymap("sT", function()
+key.map("sT", function()
   hop.hint_char1({
     direction = require("hop.hint").HintDirection.BEFORE_CURSOR,
     current_line_only = true,

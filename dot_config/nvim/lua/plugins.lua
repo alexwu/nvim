@@ -642,6 +642,60 @@ return require("packer").startup({
       end,
     })
 
+    use({
+      "j-hui/fidget.nvim",
+      config = function()
+        require("fidget").setup({
+          sources = {
+            ["null-ls"] = {
+              ignore = true,
+            },
+          },
+        })
+      end,
+    })
+
+    use({
+      "mrshmllow/document-color.nvim",
+      config = function()
+        require("document-color").setup({
+          mode = "foreground",
+        })
+      end,
+    })
+
+    use({
+      "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+      config = function()
+        require("lsp_lines").setup()
+
+        vim.keymap.set("n", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
+      end,
+    })
+
+    use({
+      "andrewferrier/debugprint.nvim",
+      config = function()
+        require("debugprint").setup()
+      end,
+    })
+
+    use({
+      "kevinhwang91/nvim-ufo",
+      requires = "kevinhwang91/promise-async",
+      config = function()
+        vim.o.foldcolumn = "1"
+        vim.o.foldlevel = 99
+        vim.o.foldlevelstart = 99
+        vim.o.foldenable = true
+
+        vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+        vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+
+        require("ufo").setup()
+      end,
+    })
+
     if packer_bootstrap then
       require("packer").sync()
     end
