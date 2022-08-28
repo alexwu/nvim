@@ -9,5 +9,7 @@ vim.g.loaded_tar = 1
 vim.g.loaded_tarPlugin = 1
 
 _G.keymap = require("bombeelu.utils").keymap
-_G.key = { map = require("bombeelu.utils").keymap }
+_G.key = {
+  map = require("bombeelu.utils").keymap,
+}
 _G.set = require("bombeelu.utils").set

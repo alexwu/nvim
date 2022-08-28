@@ -1,7 +1,13 @@
 local ih = require("inlay-hints")
+local ft = require("plenary.filetype")
+local defaults = require("plugins.lsp.defaults")
+
 local M = {}
 
 function M.setup(opts)
+  local o = vim.F.if_nil(opts, {})
+  local on_attach = vim.F.if_nil(o.on_attach, defaults.on_attach)
+
   require("rust-tools").setup({
     tools = {
       executor = require("rust-tools/executors").toggleterm,
@@ -13,15 +19,7 @@ function M.setup(opts)
       end,
     },
     server = {
-      on_attach = function(c, b)
-        opts.on_attach(c, b)
-        ih.on_attach(c, b)
-
-        -- key.map("J", function()
-        --   require("rust-tools.join_lines").join_lines()
-        -- end, { modes = "x", buffer = b })
-      end,
-      capabilities = opts.capabilities,
+      on_attach = on_attach,
       settings = {
         ["rust-analyzer"] = {
           diagnostics = {

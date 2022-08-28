@@ -6,7 +6,6 @@ local lsp = require("bombeelu.lsp")
 local on_attach = require("plugins.lsp.defaults").on_attach
 local repeatable = require("bombeelu.repeat").mk_repeatable
 local set = require("bombeelu.utils").set
-local telescope = require("telescope.builtin")
 
 local augroup = nvim.create_augroup
 local autocmd = nvim.create_autocmd
@@ -25,7 +24,6 @@ end
 
 vim.diagnostic.config({
   virtual_text = false,
-  virtual_lines = true,
   underline = {},
   signs = true,
   float = {
@@ -43,7 +41,7 @@ lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
 -- lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
-lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
+-- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
@@ -66,10 +64,33 @@ local function hover()
   end
 end
 
-set("n", "gd", lazy(telescope.lsp_definitions), { desc = "Go to definition" })
-set("n", "gr", lazy(telescope.lsp_references), { desc = "Go to references" })
-set("n", "gi", lazy(telescope.lsp_implementations), { desc = "Go to implementation" })
-set("n", "<Leader>s", lazy(telescope.lsp_document_symbols), { desc = "Select LSP document symbol" })
+vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
+
+local function smart_diagnostic_hover()
+  if vim.diagnostic.config().virtual_lines then
+    return
+  end
+
+  vim.diagnostic.open_float(nil, {
+    scope = "cursor",
+    show_header = false,
+    source = "always",
+    focusable = false,
+    border = "rounded",
+  })
+end
+
+vim.api.nvim_create_autocmd("CursorHold", {
+  group = "LspDiagnosticsConfig",
+  callback = smart_diagnostic_hover,
+})
+
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+  group = "LspDiagnosticsConfig",
+  callback = function()
+    require("nvim-lightbulb").update_lightbulb({ ignore = { "null-ls" } })
+  end,
+})
 
 set("n", "gy", function()
   vim.lsp.buf.type_definition()
@@ -102,6 +123,23 @@ set(
   end),
   { silent = true, desc = "Go to previous diagnostic" }
 )
+
+set("n", "<Leader>a", function()
+  vim.lsp.buf.code_action()
+end, { silent = true, desc = "Select a code action" })
+
+set("n", "ga", function()
+  vim.lsp.buf.code_action({
+    apply = true,
+    filter = function(action)
+      return action.preferred == true
+    end,
+  })
+end, { silent = true, desc = "Apply preferred code action" })
+
+set("v", "<Leader>a", function()
+  vim.lsp.buf.code_action()
+end, { silent = true, desc = "Select a code action for the selected visual range" })
 
 set("n", "K", hover, { silent = true })
 

@@ -1,27 +1,28 @@
 local lazy = require("bombeelu.utils").lazy
+local find_node_modules = require("bombeelu.utils").find_node_modules
 local set = require("bombeelu.utils").set
 local defaults = require("formatter.defaults")
 local detect = require("plenary.filetype").detect
 local util = require("formatter.util")
 
-local function organize_imports_sync()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local tsserver_is_attached = false
-  for _, client in ipairs(vim.lsp.buf_get_clients(bufnr)) do
-    if client.name == "tsserver" then
-      tsserver_is_attached = true
-      break
-    end
-  end
-
-  if tsserver_is_attached then
-    require("nvim-lsp-ts-utils").organize_imports_sync(bufnr)
-  end
+local function bedazzle()
+  return {
+    exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/release/bedazzle"),
+    name = "Bedazzle",
+    args = { "--stdin" },
+    stdin = true,
+  }
 end
 
 local function prettier()
+  local node_modules = find_node_modules(vim.loop.cwd())
+  if not node_modules then
+    return defaults.prettier()
+  end
+
   return {
-    exe = "yarn prettier",
+    exe = table.concat({ node_modules, "node_modules", ".bin", "prettier" }, "/"),
+    name = "Prettier",
     args = {
       "--stdin-filepath",
       util.escape_path(util.get_current_buffer_file_path()),
@@ -73,17 +74,17 @@ end
 require("formatter").setup({
   logging = false,
   filetype = {
-    typescript = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
-    typescriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
-    javascript = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
-    javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, defaults.prettier },
+    typescript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
+    typescriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
+    javascript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
+    javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     go = { require("formatter.filetypes.go").gofmt },
-    graphql = { defaults.prettier },
-    json = { dprint, defaults.prettier },
-    jsonc = { dprint, defaults.prettier },
-    html = { defaults.prettier },
-    css = { defaults.prettier },
-    ruby = { rubyfmt, rufo, defaults.prettier },
+    graphql = { prettier },
+    json = { dprint, prettier },
+    jsonc = { dprint, prettier },
+    html = { prettier },
+    css = { prettier },
+    ruby = { rubyfmt, rufo, prettier, bedazzle },
     rust = {
       require("formatter.filetypes.rust").rustfmt,
     },
@@ -142,7 +143,7 @@ command! -nargs=? -range=% -bar
 \     <q-args>, <q-mods>, <line1>, <line2>)
 ]])
 
-function upper_first(str)
+local function upper_first(str)
   return (str:gsub("^%l", string.upper))
 end
 
@@ -157,7 +158,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
       local formatter = formatter_function()
       if formatter ~= nil then
         local exe = formatter.exe
-        vim.api.nvim_buf_create_user_command(bufnr, upper_first(exe), function(opts)
+        local name = vim.F.if_nil(formatter.name, formatter.exe)
+        vim.api.nvim_buf_create_user_command(bufnr, upper_first(name), function(opts)
           require("formatter.format").format(exe, opts.mods, opts.line1, opts.line2)
         end, { range = "%", bar = true })
       end

@@ -5,7 +5,6 @@ local finders = require("telescope.finders")
 local make_entry = require("telescope.make_entry")
 local pickers = require("telescope.pickers")
 local Job = require("plenary.job")
-local project = require("project_nvim.project")
 
 local conf = require("telescope.config").values
 local filter = vim.tbl_filter

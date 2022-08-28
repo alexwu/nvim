@@ -1,5 +1,4 @@
 local null_ls = require("null-ls")
-local helpers = require("null-ls.helpers")
 local on_attach = require("plugins.lsp.defaults").on_attach
 local Path = require("plenary.path")
 
@@ -135,7 +134,6 @@ local gh_comments = {
     args = { "comments" },
     to_stdin = true,
     from_stderr = false,
-    -- choose an output format (raw, json, or line)
     format = "json",
     -- check_exit_code = function(code, stderr)
     --   local success = code <= 1
@@ -165,41 +163,30 @@ local gh_comments = {
   }),
 }
 
-null_ls.register(gh_comments)
+-- null_ls.register(gh_comments)
 
 M.setup = function(opts)
   opts = opts or {}
 
   null_ls.setup({
-    log_level = "info",
+    log_level = "debug",
+    debug = false,
     sources = {
-      -- null_ls.builtins.formatting.rubocop.with({
-      -- 	command = "bundle",
-      -- 	args = vim.list_extend({ "exec", "rubocop" }, null_ls.builtins.formatting.rubocop._opts.args),
-      -- }),
-      -- null_ls.builtins.formatting.rufo,
-      -- null_ls.builtins.diagnostics.rubocop.with({
-      --   command = "bundle",
-      --   args = vim.list_extend({ "exec", "rubocop" }, require("null-ls").builtins.diagnostics.rubocop._opts.args),
-      -- }),
       null_ls.builtins.formatting.pg_format,
-      null_ls.builtins.formatting.prismaFmt,
       null_ls.builtins.formatting.black,
       null_ls.builtins.formatting.clang_format,
-      -- null_ls.builtins.formatting.prettier.with({
-      --   prefer_local = "node_modules/.bin",
+      null_ls.builtins.formatting.just,
+      -- null_ls.builtins.formatting.deno_fmt.with({
+      --   filetypes = { "javascriptreact", "typescriptreact" },
+      --   extra_args = { "--options-line-width", 100 },
       -- }),
-      null_ls.builtins.formatting.deno_fmt.with({
-        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json" },
-        extra_args = { "--options-line-width", 100 },
+      -- null_ls.builtins.formatting.dprint,
+      -- null_ls.builtins.formatting.prettier_d,
+      null_ls.builtins.formatting.prettier.with({
+        prefer_local = "node_modules/.bin",
       }),
       null_ls.builtins.formatting.rustywind,
       null_ls.builtins.diagnostics.zsh,
-      -- null_ls.builtins.diagnostics.selene.with({
-      --   condition = function(utils)
-      --     return utils.root_has_file({ "selene.toml" })
-      --   end,
-      -- }),
       null_ls.builtins.diagnostics.selene.with({
         cwd = function(_params)
           return vim.fs.dirname(
@@ -207,15 +194,20 @@ M.setup = function(opts)
           ) or vim.fn.expand("~/.config/nvim/selene.toml") -- fallback value
         end,
       }),
-      null_ls.builtins.diagnostics.luacheck.with({
-        condition = function(utils)
-          return utils.root_has_file({ ".luacheckrc" })
+      require("plugins.lsp.null-ls.code_actions.selene").with({
+        cwd = function(_params)
+          return vim.fs.dirname(
+            vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
+          ) or vim.fn.expand("~/.config/nvim/selene.toml") -- fallback value
         end,
       }),
+      -- null_ls.builtins.diagnostics.luacheck.with({
+      --   condition = function(utils)
+      --     return utils.root_has_file({ ".luacheckrc" })
+      --   end,
+      -- }),
       null_ls.builtins.formatting.stylua,
-      -- null_ls.builtins.code_actions.refactoring,
       null_ls.builtins.code_actions.gitsigns,
-      require("plugins.lsp.null-ls.code_actions.selene"),
     },
     on_attach = on_attach,
   })

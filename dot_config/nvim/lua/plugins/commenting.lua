@@ -1,11 +1,11 @@
 require("Comment").setup({
   toggler = {
-    line = "<C-/><C-/>",
-    block = "<C-b><C-b>",
+    line = "<C-/>",
+    block = "<C-b>",
   },
   opleader = {
     line = "<C-/>",
-    block = "<C-b>",
+    block = "gb",
   },
   -- NOTE: The example below is a proper integration and it is RECOMMENDED.
   ---@param ctx Ctx

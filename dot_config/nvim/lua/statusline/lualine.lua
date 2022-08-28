@@ -71,18 +71,18 @@ require("lualine").setup({
         separator = { left = "" },
         right_padding = 2,
       },
-      {
-        "windows",
-        mode = 4,
-        windowss_color = {
-          active = { bg = colors.purple, fg = colors.black, gui = "bold" },
-        },
-        on_click = function(count, button, modifiers)
-          vim.pretty_print(count)
-          vim.pretty_print(button)
-          vim.pretty_print(modifiers)
-        end,
-      },
+      -- {
+      --   "windows",
+      --   mode = 4,
+      --   windowss_color = {
+      --     active = { bg = colors.purple, fg = colors.black, gui = "bold" },
+      --   },
+      --   on_click = function(count, button, modifiers)
+      --     vim.pretty_print(count)
+      --     vim.pretty_print(button)
+      --     vim.pretty_print(modifiers)
+      --   end,
+      -- },
     },
     lualine_b = {
       { "branch", color = { fg = "#3a3d4d", bg = "#f1f1f0" }, separator = { right = "" } },
@@ -104,7 +104,7 @@ require("lualine").setup({
         update_in_insert = false,
         always_visible = false,
       },
-      { gps.get_location, cond = gps.is_available },
+      -- { gps.get_location, cond = gps.is_available },
     },
     lualine_x = { "filetype" },
     lualine_y = {},
@@ -131,6 +131,7 @@ require("lualine").setup({
   --       },
   --       separator = { right = "" },
   --     },
+  --     { gps.get_location, cond = gps.is_available },
   --   },
   --   lualine_x = {},
   --   lualine_y = {},

@@ -45,9 +45,9 @@ M.setup = function()
     },
   })
 
-  vim.keymap.set("n", "<Leader>k", function()
+  key.map({ "<C-S-P>" }, function()
     legendary.find()
-  end)
+  end, { modes = { "n", "i", "x" } })
 end
 
 return M

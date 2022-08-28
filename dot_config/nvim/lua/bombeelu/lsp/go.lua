@@ -1,6 +1,5 @@
-local path = require("nvim-lsp-installer.core.path")
-local install_root_dir = path.concat({ vim.fn.stdpath("data"), "lsp_servers" })
 local ft = require("plenary.filetype")
+local defaults = require("plugins.lsp.defaults")
 
 local go = {}
 
@@ -10,15 +9,19 @@ function go.setup(opts)
     return
   end
 
+  local o = vim.F.if_nil(opts, {})
+  local capabilities = vim.F.if_nil(o.capabilities, defaults.capabilities)
+  local on_attach = vim.F.if_nil(o.on_attach, defaults.on_attach)
+
   require("go").setup({
-    gopls_cmd = { install_root_dir .. "/go/gopls" },
+    -- gopls_cmd = { install_root_dir .. "/go/gopls" },
     fillstruct = "gopls",
     dap_debug = true,
     dap_debug_gui = true,
-    lsp_on_attach = opts.on_attach,
+    lsp_on_attach = on_attach,
     lsp_diag_hdlr = false,
     lsp_cfg = {
-      capabilities = opts.capabilities,
+      capabilities = capabilities,
       -- settings = {
       --   gopls = {
       --     experimentalPostfixCompletions = true,

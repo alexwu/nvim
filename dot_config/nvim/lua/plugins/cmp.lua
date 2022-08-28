@@ -4,7 +4,6 @@ local mapping = cmp.mapping
 local compare = cmp.config.compare
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
-local tabnine = require("cmp_tabnine.config")
 
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -12,7 +11,7 @@ local has_words_before = function()
 end
 
 local tab_next = function(fallback)
-  if cmp.visible() then
+  if cmp.visible() and has_words_before() then
     cmp.select_next_item()
   elseif luasnip.expand_or_locally_jumpable() then
     luasnip.expand_or_jump()
@@ -111,8 +110,8 @@ cmp.setup({
       i = mapping.abort(),
       c = mapping.close(),
     }),
-    ["<C-n>"] = mapping(tab_next),
-    ["<C-p>"] = mapping(tab_prev),
+    ["<C-n>"] = mapping(select_next),
+    ["<C-p>"] = mapping(select_prev),
     ["<Tab>"] = mapping(tab_next),
     ["<S-Tab>"] = mapping(tab_prev),
     ["<C-l>"] = mapping(function(fallback)
@@ -124,19 +123,13 @@ cmp.setup({
   }),
   formatting = {
     format = function(entry, vim_item)
-      if entry.source.name == "copilot" then
-        vim_item.kind = "[] Copilot"
-        vim_item.kind_hl_group = "CmpItemKindCopilot"
-        return vim_item
-      end
-
       return lspkind.cmp_format({
         preset = preset(),
         mode = "symbol_text",
         menu = {
           buffer = "[Buffer]",
-          cmp_tabnine = "[TabNine]",
-          copilot = "[Copilot]",
+          cmp_tabnine = "[]",
+          copilot = "[]",
           crates = "[Crates]",
           luasnip = "[LuaSnip]",
           npm = "[npm]",
@@ -160,7 +153,26 @@ cmp.setup({
 })
 
 cmp.setup.cmdline("/", {
-  mapping = mapping.preset.cmdline({}),
+  mapping = mapping.preset.cmdline({
+    ["<Down>"] = {
+      c = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          fallback()
+        end
+      end,
+    },
+    ["<Up>"] = {
+      c = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end,
+    },
+  }),
   sources = {
     { name = "buffer" },
     { name = "path" },
@@ -176,17 +188,7 @@ cmp.setup.cmdline(":", {
   }),
 })
 
-tabnine:setup({
-  max_lines = 1000,
-  max_num_results = 20,
-  sort = true,
-  run_on_every_keystroke = true,
-  snippet_placeholder = "..",
-  ignored_file_types = {},
-  show_prediction_strength = true,
-})
-
-require("cmp-npm").setup({})
+-- require("cmp-npm").setup({})
 
 nvim.create_augroup("bombeelu.cmp", { clear = true })
 nvim.create_autocmd("FileType", {

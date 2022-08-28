@@ -1,11 +1,20 @@
+local ft = require("plenary.filetype")
+local defaults = require("plugins.lsp.defaults")
+
 local M = {}
 
 function M.setup(opts)
+  local fts = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
+  if not vim.tbl_contains(fts, ft.detect(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))) then
+    return
+  end
+
+  local o = vim.F.if_nil(opts, {})
+  local on_attach = vim.F.if_nil(o.on_attach, defaults.on_attach)
+
   require("typescript").setup({
     server = {
-      on_attach = function(c, bufnr)
-        opts.on_attach(c, bufnr)
-      end,
+      on_attach = on_attach,
       init_options = {
         hostInfo = "neovim",
         preferences = {
@@ -19,31 +28,6 @@ function M.setup(opts)
           includeInlayEnumMemberValueHints = true,
         },
       },
-
-      --   settings = {
-      --     javascript = {
-      --       inlayHints = {
-      --         includeInlayEnumMemberValueHints = true,
-      --         includeInlayFunctionLikeReturnTypeHints = true,
-      --         includeInlayFunctionParameterTypeHints = true,
-      --         includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-      --         includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-      --         includeInlayPropertyDeclarationTypeHints = true,
-      --         includeInlayVariableTypeHints = true,
-      --       },
-      --     },
-      --     typescript = {
-      --       inlayHints = {
-      --         includeInlayEnumMemberValueHints = true,
-      --         includeInlayFunctionLikeReturnTypeHints = true,
-      --         includeInlayFunctionParameterTypeHints = true,
-      --         includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-      --         includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-      --         includeInlayPropertyDeclarationTypeHints = true,
-      --         includeInlayVariableTypeHints = true,
-      --       },
-      --     },
-      --   },
     },
   })
 end

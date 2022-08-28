@@ -23,6 +23,11 @@ key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
 
 key.map("gs", [[:%s/\<<C-R><C-W>\>\C//g<left><left>]], { modes = { "n" } })
 
+set({ "n" }, "<C-j>", "<C-w><C-j>")
+set({ "n" }, "<C-h>", "<C-w><C-h>")
+set({ "n" }, "<C-k>", "<C-w><C-k>")
+set({ "n" }, "<C-l>", "<C-w><C-l>")
+
 set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
 set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
 set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })

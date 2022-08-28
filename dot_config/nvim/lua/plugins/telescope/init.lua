@@ -35,12 +35,16 @@ require("telescope").setup({
         ["<esc>"] = actions.close,
         ["<C-j>"] = actions.move_selection_next,
         ["<C-k>"] = actions.move_selection_previous,
+        ["<C-n>"] = actions.move_selection_next,
+        ["<C-p>"] = actions.move_selection_previous,
         ["<C-u>"] = false,
       },
       n = {
         ["q"] = actions.close,
         ["<C-j>"] = actions.move_selection_next,
         ["<C-k>"] = actions.move_selection_previous,
+        ["<C-n>"] = actions.move_selection_next,
+        ["<C-p>"] = actions.move_selection_previous,
       },
     },
   }),
@@ -82,7 +86,7 @@ require("telescope").setup({
       no_ignore = false,
     },
     buffers = {
-      initial_mode = "normal",
+      initial_mode = "insert",
       layout_config = default_layout_config,
       layout_strategy = "center",
       ignore_current_buffer = true,
@@ -112,12 +116,12 @@ require("telescope").setup({
       end,
     },
     lsp_definitions = {
-      initial_mode = "normal",
+      initial_mode = "insert",
       layout_config = default_layout_config,
       layout_strategy = "center",
     },
     lsp_references = {
-      initial_mode = "normal",
+      initial_mode = "insert",
       layout_config = default_layout_config,
       layout_strategy = "center",
     },
@@ -141,7 +145,8 @@ require("telescope").setup({
   },
 })
 
-require("telescope").load_extension("fzf")
+-- require("telescope").load_extension("fzf")
+-- require("telescope").load_extension("commander")
 require("telescope").load_extension("related_files")
 
 require("neoclip").setup({
@@ -150,7 +155,7 @@ require("neoclip").setup({
 
 set("n", { "<Leader><space>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
 
-set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
+-- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
 
 set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Select files" })
 set(
@@ -162,8 +167,12 @@ set(
 set("n", "<Leader>d", lazy(builtin.diagnostics), { desc = "Select diagnostics " })
 set("n", "<Leader>g", lazy(custom_pickers.git_changes), { desc = "Select from changed files since default branch" })
 set("n", "<Leader>i", lazy(extensions.related_files.related_files), { desc = "Select related files" })
-set("n", "<Leader>p", lazy(extensions.projects.projects), { noremap = true, silent = true, desc = "Select a project" })
+-- set("n", "<Leader>p", lazy(extensions.projects.projects), { noremap = true, silent = true, desc = "Select a project" })
 set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
+set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
+set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
+set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
+set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
 
 augroup("bombeelu.telescope", { clear = true })
 autocmd("FileType", { group = "bombeelu.telescope", pattern = "TelescopePrompt", command = "setlocal nocursorline" })
