@@ -153,7 +153,7 @@ require("neoclip").setup({
   enable_persistent_history = true,
 })
 
-set("n", { "<Leader><space>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
+set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
 
 -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
 
@@ -174,11 +174,12 @@ set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
 set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
 set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
 
-augroup("bombeelu.telescope", { clear = true })
+local group = augroup("bombeelu.telescope", { clear = true })
+
 autocmd("FileType", { group = "bombeelu.telescope", pattern = "TelescopePrompt", command = "setlocal nocursorline" })
 nvim.create_autocmd({ "VimEnter", "DirChanged" }, {
   pattern = "*",
-  group = "bombeelu.telescope",
+  group = group,
   callback = function()
     vim.g.default_branch = custom_pickers.get_default_branch({ force = true })
   end,

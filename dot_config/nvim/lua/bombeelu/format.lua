@@ -42,7 +42,7 @@ end
 local function rufo()
   return {
     exe = "rufo",
-    args = { vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+    args = { "--filename", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
     stdin = true,
   }
 end

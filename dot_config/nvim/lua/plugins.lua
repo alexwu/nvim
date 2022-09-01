@@ -134,19 +134,19 @@ return require("packer").startup({
     --   end,
     -- })
 
-    -- use({
-    --   "knubie/vim-kitty-navigator",
-    --   run = "cp ./*.py ~/.config/kitty/",
-    --   setup = function()
-    --     vim.g.kitty_navigator_no_mappings = 1
-    --   end,
-    --   config = function()
-    --     require("plugins.kitty")
-    --   end,
-    --   cond = function()
-    --     return vim.env.TERM == "xterm-kitty" and not vim.g.vscode
-    --   end,
-    -- })
+    use({
+      "knubie/vim-kitty-navigator",
+      run = "cp ./*.py ~/.config/kitty/",
+      setup = function()
+        -- vim.g.kitty_navigator_no_mappings = 0
+      end,
+      config = function()
+        require("plugins.kitty")
+      end,
+      cond = function()
+        return vim.env.TERM == "xterm-kitty" and not vim.g.vscode
+      end,
+    })
 
     use({
       "mhartington/formatter.nvim",
@@ -251,6 +251,8 @@ return require("packer").startup({
         "~/Projects/neovim/nvim-code-action-menu",
         "simrat39/inlay-hints.nvim",
         "stevearc/dressing.nvim",
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
       },
       after = {
         "nvim-cmp",
@@ -391,6 +393,8 @@ return require("packer").startup({
             "justfile",
             "!.cargo/",
             "!.rustup/",
+            "!.node_modules/",
+            "!.config/",
           },
           silent_chdir = true,
         })
@@ -476,7 +480,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
-      disable = true,
+      disable = false,
     })
 
     use({
@@ -492,7 +496,7 @@ return require("packer").startup({
 
     use({
       "jose-elias-alvarez/null-ls.nvim",
-      requires = { "lewis6991/gitsigns.nvim" },
+      requires = { "lewis6991/gitsigns.nvim", "williamboman/mason.nvim" },
       config = function()
         require("plugins.lsp.null-ls").setup()
       end,
@@ -715,25 +719,22 @@ return require("packer").startup({
       end,
     })
 
-    --       use({
-    --         "linty-org/key-menu.nvim",
-    --         setup = function()
-    --           vim.o.timeoutlen = 500
-    --         end,
-    --         config = function()
-    --           require("key-menu").set("n", "<Leader>")
-    --           require("key-menu").set("n", "g")
-    --           require("key-menu").set("n", "s")
-    --           require("key-menu").set("n", "<Bslash>")
-    --         end,
-    --         disable = true,
-    --         cond = function()
-    --           return vim.g.vscode
-    --         end,
-    --       })
+    use({
+      "linty-org/key-menu.nvim",
+      setup = function()
+        vim.o.timeoutlen = 500
+      end,
+      config = function()
+        require("key-menu").set("n", "<Leader>")
+        require("key-menu").set("n", "s")
+        require("key-menu").set("n", "<Bslash>")
+      end,
+      cond = function()
+        return vim.g.vscode
+      end,
+    })
 
-    --       -- neovim plugin development
-    --       -- use({ "folke/lua-dev.nvim" })
+    use({ "folke/lua-dev.nvim" })
 
     use({
       "echasnovski/mini.nvim",
@@ -796,7 +797,7 @@ return require("packer").startup({
       config = function()
         if not vim.g.vscode then
           require("inlay-hints").setup({
-            renderer = "inlay-hints/render/eol",
+            renderer = "inlay-hints/render/dynamic",
             hints = {
               parameter = {
                 show = false,
@@ -828,7 +829,6 @@ return require("packer").startup({
           })
         end
       end,
-      opt = false,
     })
 
     use({
@@ -939,6 +939,68 @@ return require("packer").startup({
       "luukvbaal/stabilize.nvim",
       config = function()
         require("stabilize").setup()
+      end,
+    })
+
+    use({
+      "nvim-neotest/neotest",
+      requires = {
+        "nvim-lua/plenary.nvim",
+        "nvim-treesitter/nvim-treesitter",
+        "antoinemadec/FixCursorHold.nvim",
+        "haydenmeade/neotest-jest",
+        "olimorris/neotest-rspec",
+        "nvim-neotest/neotest-vim-test",
+      },
+      config = function()
+        require("bombeelu.neotest").setup()
+      end,
+    })
+
+    use({
+      "rmagatti/goto-preview",
+      config = function()
+        require("goto-preview").setup({})
+        -- vim.keymap.set("n", "gd", require("goto-preview").goto_preview_definition)
+      end,
+    })
+
+    use({
+      "vigoux/notifier.nvim",
+      config = function()
+        require("notifier").setup({
+          -- You configuration here
+        })
+      end,
+    })
+
+    use({
+      "zbirenbaum/neodim",
+      event = "LspAttach",
+      requires = "neovim/nvim-lspconfig",
+      config = function()
+        require("neodim").setup({
+          -- alpha = 0.5,
+          -- blend_color = "#282a36",
+          -- update_in_insert = {
+          --   enable = true,
+          --   delay = 100,
+          -- },
+          -- hide = {
+          --   virtual_text = true,
+          --   signs = true,
+          --   underline = true,
+          -- },
+        })
+      end,
+    })
+
+    use({
+      "ggandor/leap.nvim",
+      config = function()
+        -- set("n", "<Leader><Leader>", function()
+        --   require("leap").leap({ target_windows = { vim.fn.win_getid() } })
+        -- end)
       end,
     })
 

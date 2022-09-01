@@ -56,7 +56,7 @@ local stages = function()
 	}
 end
 
-vim.notify = require("notify")
+-- vim.notify = require("notify")
 require("notify").setup({
 	timeout = 50,
 	stages = stages(),

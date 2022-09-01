@@ -169,19 +169,18 @@ M.setup = function(opts)
   opts = opts or {}
 
   null_ls.setup({
-    log_level = "debug",
+    -- log_level = "debug",
     debug = false,
     sources = {
-      null_ls.builtins.formatting.pg_format,
-      null_ls.builtins.formatting.black,
-      null_ls.builtins.formatting.clang_format,
+      -- null_ls.builtins.formatting.pg_format,
+      -- null_ls.builtins.formatting.black,
+      -- null_ls.builtins.formatting.clang_format,
       null_ls.builtins.formatting.just,
       -- null_ls.builtins.formatting.deno_fmt.with({
       --   filetypes = { "javascriptreact", "typescriptreact" },
       --   extra_args = { "--options-line-width", 100 },
       -- }),
-      -- null_ls.builtins.formatting.dprint,
-      -- null_ls.builtins.formatting.prettier_d,
+      null_ls.builtins.formatting.dprint,
       null_ls.builtins.formatting.prettier.with({
         prefer_local = "node_modules/.bin",
       }),
@@ -201,13 +200,13 @@ M.setup = function(opts)
           ) or vim.fn.expand("~/.config/nvim/selene.toml") -- fallback value
         end,
       }),
-      -- null_ls.builtins.diagnostics.luacheck.with({
-      --   condition = function(utils)
-      --     return utils.root_has_file({ ".luacheckrc" })
-      --   end,
-      -- }),
+      null_ls.builtins.diagnostics.luacheck.with({
+        condition = function(utils)
+          return utils.root_has_file({ ".luacheckrc" })
+        end,
+      }),
       null_ls.builtins.formatting.stylua,
-      null_ls.builtins.code_actions.gitsigns,
+      -- null_ls.builtins.code_actions.gitsigns,
     },
     on_attach = on_attach,
   })

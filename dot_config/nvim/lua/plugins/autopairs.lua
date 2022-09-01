@@ -8,9 +8,9 @@ npairs.setup({
 	enable_afterquote = true,
 })
 
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-local cmp = require("cmp")
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+-- local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+-- local cmp = require("cmp")
+-- cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 -- TODO: Autowrap (like afterquote!) scenarios
 -- TODO: js/jsx/ts/tsx import statements

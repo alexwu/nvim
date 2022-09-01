@@ -78,11 +78,12 @@ tree.setup({
     float = {
       enable = true,
       open_win_config = {
-        height = math.max(vim.o.lines - 2, 20),
+        height = math.max(vim.o.lines - 4, 20),
+        -- height = 0.9,
       },
     },
-    adaptive_size = false,
-    width = tree_width(0.2),
+    adaptive_size = true,
+    width = tree_width(0.3),
     preserve_window_proportions = false,
     hide_root_folder = true,
     mappings = {

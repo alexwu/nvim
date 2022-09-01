@@ -8,6 +8,8 @@ vim.g.loaded_zipPlugin = 1
 vim.g.loaded_tar = 1
 vim.g.loaded_tarPlugin = 1
 
+local modes = { "", "n", "v", "x", "s", "o", "i", "l", "c", "t" }
+
 _G.keymap = require("bombeelu.utils").keymap
 _G.key = {
   map = require("bombeelu.utils").keymap,

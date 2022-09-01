@@ -107,7 +107,7 @@ require("nvim-treesitter.configs").setup({
   context_commentstring = { enable = true, enable_autocmd = false },
   matchup = { enable = true },
   highlight_current_node = {
-    enable = true,
+    enable = false,
   },
 })
 

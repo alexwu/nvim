@@ -110,7 +110,7 @@ set(
   "n",
   "]g",
   repeatable(function()
-    vim.diagnostic.goto_next()
+    vim.diagnostic.goto_next({ float = false })
   end),
   { silent = true, desc = "Go to next diagnostic" }
 )
@@ -119,7 +119,7 @@ set(
   "n",
   "[g",
   repeatable(function()
-    vim.diagnostic.goto_prev()
+    vim.diagnostic.goto_prev({ float = false })
   end),
   { silent = true, desc = "Go to previous diagnostic" }
 )

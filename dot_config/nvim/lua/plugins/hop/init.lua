@@ -5,54 +5,54 @@ local custom = require("plugins.hop.custom")
 
 hop.setup({})
 
-set({ "n", "x", "o" }, { "s", "<Bslash>" }, function()
-  hop.hint_char2({ multi_windows = false })
-end, { desc = "Jump to a word" })
+set({ "n", "x", "o" }, { "S", "ss", "<Bslash>" }, function()
+  hop.hint_char1({ multi_windows = false })
+end, { desc = "Hop to a specified character" })
 
-set({ "n", "o" }, { "Sw", "<Bslash>w" }, function()
+set({ "n", "o" }, { "s", "<Bslash>w" }, function()
   custom.hint_wordmotion({ current_line_only = false })
-end, { desc = "Jump forward to a word" })
+end, { desc = "Hop forward to a word" })
 
-set({ "n" }, { "Sj" }, function()
+set({ "n" }, { "sj" }, function()
   hop.hint_vertical({ current_line_only = false })
-end, { desc = "Jump forward to a word" })
+end, { desc = "Hop forward to a word" })
 
-key.map({ "Sb" }, function()
+key.map({ "sb" }, function()
   custom.hint_wordmotion({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
-end, { desc = "Jump backword to a word", modes = { "n", "o" } })
+end, { desc = "Hop backword to a word", modes = { "n", "o" } })
 
-set("n", {"<Bslash>l", "Sl"}, function()
+set("n", { "<Bslash>l", "sl" }, function()
   ts.hint_locals()
-end, { desc = "Jump to treesitter local" })
+end, { desc = "Hop to treesitter local" })
 
-set("n", { "<Bslash>d", "Sd" }, function()
+set("n", { "<Bslash>d", "sd" }, function()
   custom.hint_diagnostics({ multi_windows = false })
-end, { desc = "Jump to diagnostic" })
+end, { desc = "Hop to diagnostic" })
 
-set("n", { "<Bslash>r", "Sr" }, function()
+set("n", { "<Bslash>r", "sr" }, function()
   custom.hint_usages({ multi_windows = false })
-end, { desc = "Jump to usage of word under cursor" })
+end, { desc = "Hop to usage of word under cursor" })
 
-set({ "n", "o" }, "Sf", function()
+set({ "n", "o" }, "sf", function()
   hop.hint_char1({ direction = require("hop.hint").HintDirection.AFTER_CURSOR, current_line_only = true })
-end, { desc = "Jump forward on current line" })
+end, { desc = "Hop forward on current line" })
 
-set({ "n", "o" }, "SF", function()
+set({ "n", "o" }, "sF", function()
   hop.hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
-end, { desc = "Jump backward on current line" })
+end, { desc = "Hop backward on current line" })
 
-key.map("St", function()
+key.map("st", function()
   hop.hint_char1({
     direction = require("hop.hint").HintDirection.AFTER_CURSOR,
     current_line_only = true,
     hint_offset = -1,
   })
-end, { desc = "Jump to the selected character" })
+end, { desc = "Hop to the selected character" })
 
-key.map("ST", function()
+key.map("sT", function()
   hop.hint_char1({
     direction = require("hop.hint").HintDirection.BEFORE_CURSOR,
     current_line_only = true,
     hint_offset = 1,
   })
-end, { desc = "Jump back to the selected character" })
+end, { desc = "Hop back to the selected character" })
