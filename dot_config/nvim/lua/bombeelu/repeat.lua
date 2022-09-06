@@ -16,7 +16,7 @@ function M.mk_repeatable(fn)
     repeat_fn = function()
       fn(unpack(args, 1, nargs))
       local vimfn = vim.fn
-      local sequence = string.format("%sRepeat", api.nvim_replace_termcodes("<Plug>", true, true, true))
+      local sequence = string.format("%sBombeeluRepeat", api.nvim_replace_termcodes("<Plug>", true, true, true))
       pcall(vimfn["repeat#set"], sequence, -1)
     end
 
@@ -24,7 +24,7 @@ function M.mk_repeatable(fn)
   end
 end
 
-vim.keymap.set("n", "<Plug>Repeat", function()
+vim.keymap.set("n", "<Plug>BombeeluRepeat", function()
   M.repeat_action()
 end, { noremap = false, silent = true })
 

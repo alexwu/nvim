@@ -5,7 +5,7 @@ require("Comment").setup({
   },
   opleader = {
     line = "<C-/>",
-    block = "gb",
+    block = "<C-b>",
   },
   -- NOTE: The example below is a proper integration and it is RECOMMENDED.
   ---@param ctx Ctx

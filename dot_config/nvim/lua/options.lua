@@ -44,6 +44,7 @@ vim.o.timeoutlen = 500
 vim.o.pumheight = 10
 vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.o.fillchars = "foldclose:,foldopen:"
+-- vim.opt.foldopen:remove({ "hor" })
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {

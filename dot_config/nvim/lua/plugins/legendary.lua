@@ -44,10 +44,10 @@ M.setup = function()
       display_results = "float",
     },
   })
-
-  key.map({ "<C-S-P>" }, function()
-    legendary.find()
-  end, { modes = { "n", "i", "x" } })
+  --
+  -- key.map({ "<C-S-P>" }, function()
+  --   legendary.find()
+  -- end, { modes = { "n", "i", "x" } })
 end
 
 return M

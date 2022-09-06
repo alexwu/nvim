@@ -4,6 +4,7 @@ return {
   },
   file_name = {
     ["dot_vimrc"] = "vimrc",
+    ["dot_ideavimrc"] = "vimrc",
     ["dot_zshrc"] = "zsh",
   },
   shebang = {

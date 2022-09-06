@@ -1,3 +1,4 @@
+local Palette = require("bombeelu.mini-palette")
 local neotest = require("neotest")
 
 local M = {}
@@ -19,9 +20,7 @@ function M.setup()
           )
         end,
       }),
-      -- require("neotest-vim-test")({
-      --   ignore_file_types = { "python", "vim", "lua", "typescript", "typescriptreact", "ruby", "go" },
-      -- }),
+      require("neotest-rust"),
     },
     icons = {
       passed = " ✔",
@@ -60,9 +59,9 @@ function M.setup()
     neotest.run.stop()
   end, {})
 
-  -- [n <cmd>lua require("neotest").jump.prev({ status = "failed" })<CR>
-
-  -- nnoremap <silent>]n <cmd>lua require("neotest").jump.next({ status = "failed" })<CR>
+  nvim.create_user_command("TestDebug", function()
+    neotest.run.run({ strategy = "dap" })
+  end, {})
 
   local commands = {
     {
@@ -70,6 +69,7 @@ function M.setup()
       callback = function()
         neotest.run.run()
       end,
+      repeatable = true,
     },
     {
       display = "Run all tests in current file",
@@ -82,12 +82,14 @@ function M.setup()
       callback = function()
         neotest.run.run(vim.fn.expand("%"))
       end,
+      repeatable = true,
     },
     {
       display = "Toggle test summary",
       callback = function()
         neotest.summary.toggle()
       end,
+      repeatable = true,
     },
     {
       display = "Show test output",
@@ -97,34 +99,18 @@ function M.setup()
     },
   }
 
-  nvim.create_user_command("TestDebug", function()
-    neotest.run.run({ strategy = "dap" })
-  end, {})
-
-  local function test_command_picker()
-    vim.ui.select(commands, {
-      prompt = "Select a command:",
-      format_item = function(item)
-        return item.display
-      end,
-      -- kind = "codeaction",
-    }, function(choice)
-      if choice then
-        choice.callback()
-      end
-    end)
-  end
-
   key.map("[t", function()
-    require("neotest").jump.prev({ status = "failed" })
-  end, { modes = "n" })
+    require("neotest").jump.prev()
+  end, { modes = "n", desc = "Move to previous test" })
 
   key.map("]t", function()
-    require("neotest").jump.next({ status = "failed" })
-  end, { modes = "n" })
+    require("neotest").jump.next()
+  end, { modes = "n", desc = "Move to next test" })
 
-  key.map("<C-t>", function()
-    test_command_picker()
+  key.map({ "<C-t>", "<Leader>t" }, function()
+    Palette(commands, {
+      prompt = "Select a command:",
+    }):run()
   end, { modes = "n" })
 end
 

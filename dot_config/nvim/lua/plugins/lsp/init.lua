@@ -41,7 +41,7 @@ lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
 -- lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
+lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
@@ -108,7 +108,7 @@ end, { silent = true, desc = "Show diagnostics on current line" })
 
 set(
   "n",
-  "]g",
+  "]d",
   repeatable(function()
     vim.diagnostic.goto_next({ float = false })
   end),
@@ -117,7 +117,7 @@ set(
 
 set(
   "n",
-  "[g",
+  "[d",
   repeatable(function()
     vim.diagnostic.goto_prev({ float = false })
   end),
@@ -128,14 +128,19 @@ set("n", "<Leader>a", function()
   vim.lsp.buf.code_action()
 end, { silent = true, desc = "Select a code action" })
 
-set("n", "ga", function()
-  vim.lsp.buf.code_action({
-    apply = true,
-    filter = function(action)
-      return action.preferred == true
-    end,
-  })
-end, { silent = true, desc = "Apply preferred code action" })
+set(
+  "n",
+  "ga",
+  repeatable(function()
+    vim.lsp.buf.code_action({
+      apply = true,
+      filter = function(action)
+        return action.preferred == true
+      end,
+    })
+  end),
+  { silent = true, desc = "Apply preferred code action" }
+)
 
 set("v", "<Leader>a", function()
   vim.lsp.buf.code_action()

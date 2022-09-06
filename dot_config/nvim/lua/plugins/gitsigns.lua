@@ -42,8 +42,8 @@ require("gitsigns").setup({
     end
 
     -- Navigation
-    map("n", "]c", "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true })
-    map("n", "[c", "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true })
+    map("n", "]c", "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", { expr = true, desc = "Next git hunk" })
+    map("n", "[c", "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", { expr = true, desc = "Previous git hunk" })
 
     -- Actions
     map({ "n", "v" }, "gsh", gs.stage_hunk)

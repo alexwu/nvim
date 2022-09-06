@@ -50,6 +50,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter-textobjects",
         "nvim-treesitter/nvim-treesitter-refactor",
         "RRethy/nvim-treesitter-textsubjects",
+        "RRethy/nvim-treesitter-endwise",
         "JoosepAlviste/nvim-ts-context-commentstring",
       },
       config = function()
@@ -63,7 +64,7 @@ return require("packer").startup({
       config = function()
         require("treesitter-context").setup({
           enable = true,
-          max_lines = 0,
+          max_lines = 3,
           trim_scope = "outer",
           patterns = {
             default = {
@@ -373,9 +374,9 @@ return require("packer").startup({
       config = function()
         require("project_nvim").setup({
           exclude_dirs = {
-            vim.fn.expand("~"),
+            vim.fs.normalize("~"),
             vim.fs.normalize("~/.config"),
-            vim.fn.expand("~/.local/share"),
+            vim.fs.normalize("~/.local/share"),
             vim.fs.normalize("~/.cargo"),
           },
           ignore_lsp = { "null-ls", "null_ls", "null-ls.nvim", "copilot" },
@@ -531,7 +532,7 @@ return require("packer").startup({
     --     return not vim.g.vscode
     --   end,
     -- })
-    --
+
     --       use({
     --         "nanotee/sqls.nvim",
     --         cond = function()
@@ -546,6 +547,10 @@ return require("packer").startup({
       config = function()
         require("dapui").setup()
         require("nvim-dap-virtual-text").setup()
+
+        vim.keymap.set("n", "gb", function()
+          require("dap").toggle_breakpoint()
+        end)
       end,
       cond = function()
         return not vim.g.vscode
@@ -635,9 +640,16 @@ return require("packer").startup({
     })
 
     use({
-      "norcalli/nvim-colorizer.lua",
+      "NvChad/nvim-colorizer.lua",
       config = function()
-        require("colorizer").setup()
+        require("colorizer").setup({
+          filetypes = { "*" },
+          user_default_options = {
+            names = false, -- "Name" codes like Blue or blue
+          },
+          -- all the sub-options of filetypes apply to buftypes
+          buftypes = {},
+        })
       end,
       cmd = { "ColorizerToggle" },
       cond = function()
@@ -727,6 +739,8 @@ return require("packer").startup({
       config = function()
         require("key-menu").set("n", "<Leader>")
         require("key-menu").set("n", "s")
+        require("key-menu").set("n", "[")
+        require("key-menu").set("n", "]")
         require("key-menu").set("n", "<Bslash>")
       end,
       cond = function()
@@ -902,15 +916,16 @@ return require("packer").startup({
     use({
       "jghauser/kitty-runner.nvim",
       config = function()
-        require("kitty-runner").setup()
+        -- require("kitty-runner").setup()
       end,
     })
 
     use({
       "IndianBoy42/tree-sitter-just",
       config = function()
-        -- require("tree-sitter-just").setup()
+        require("tree-sitter-just").setup()
       end,
+      disable = true,
     })
 
     use({
@@ -951,17 +966,10 @@ return require("packer").startup({
         "haydenmeade/neotest-jest",
         "olimorris/neotest-rspec",
         "nvim-neotest/neotest-vim-test",
+        "~/Code/personal/neotest-rust",
       },
       config = function()
         require("bombeelu.neotest").setup()
-      end,
-    })
-
-    use({
-      "rmagatti/goto-preview",
-      config = function()
-        require("goto-preview").setup({})
-        -- vim.keymap.set("n", "gd", require("goto-preview").goto_preview_definition)
       end,
     })
 
@@ -975,22 +983,11 @@ return require("packer").startup({
     })
 
     use({
-      "zbirenbaum/neodim",
-      event = "LspAttach",
-      requires = "neovim/nvim-lspconfig",
+      "narutoxy/dim.lua",
+      requires = { "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
       config = function()
-        require("neodim").setup({
-          -- alpha = 0.5,
-          -- blend_color = "#282a36",
-          -- update_in_insert = {
-          --   enable = true,
-          --   delay = 100,
-          -- },
-          -- hide = {
-          --   virtual_text = true,
-          --   signs = true,
-          --   underline = true,
-          -- },
+        require("dim").setup({
+          disable_lsp_decorations = true,
         })
       end,
     })
@@ -998,9 +995,24 @@ return require("packer").startup({
     use({
       "ggandor/leap.nvim",
       config = function()
-        -- set("n", "<Leader><Leader>", function()
-        --   require("leap").leap({ target_windows = { vim.fn.win_getid() } })
-        -- end)
+        require("leap").setup({
+          highlight_unlabled = true,
+          max_aot_targets = 2,
+        })
+
+        set("n", "<Tab>", function()
+          require("leap").leap({ target_windows = { vim.fn.win_getid() } })
+        end)
+      end,
+      disable = false,
+    })
+
+    use({
+      "lewis6991/satellite.nvim",
+      config = function()
+        if not vim.g.vscode then
+          require("satellite").setup()
+        end
       end,
     })
 

@@ -5,9 +5,9 @@ local custom = require("plugins.hop.custom")
 
 hop.setup({})
 
-set({ "n", "x", "o" }, { "S", "ss", "<Bslash>" }, function()
-  hop.hint_char1({ multi_windows = false })
-end, { desc = "Hop to a specified character" })
+-- set({ "n", "x", "o" }, { "<Tab>", "S", "ss", "<Bslash>" }, function()
+--   hop.hint_char2({ multi_windows = false })
+-- end, { desc = "Hop to a specified character" })
 
 set({ "n", "o" }, { "s", "<Bslash>w" }, function()
   custom.hint_wordmotion({ current_line_only = false })

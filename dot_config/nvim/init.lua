@@ -18,8 +18,10 @@ require("plugins")
 if vim.g.neovide or vim.fn.has("gui_vimr") == 1 or vim.g.vscode or vim.g.goneovim then
   require("snazzy").setup({ theme = "dark", transparent = false })
 else
-  require("snazzy").setup({ theme = "dark", transparent = vim.env.TERM ~= "xterm-kitty" })
+  vim.cmd("colorscheme snazzy")
+  -- require("snazzy").setup({ theme = "dark", transparent = vim.env.TERM ~= "xterm-kitty" })
 end
 
 require("bombeelu.pin").setup()
 require("bombeelu.visual-surround").setup()
+require("bombeelu.refactoring").setup()

@@ -8,7 +8,7 @@ function lua.setup(opts)
     library = {
       vimruntime = true,
       types = true,
-      plugins = true,
+      plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim", "neotest" },
     },
     runtime_path = false,
     lspconfig = {

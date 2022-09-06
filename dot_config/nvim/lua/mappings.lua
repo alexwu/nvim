@@ -1,6 +1,5 @@
 local utils = require("bombeelu.utils")
 local keys = require("bombeelu.keys")
-local set = utils.set
 local ex = utils.ex
 local lazy = utils.lazy
 local repeatable = require("bombeelu.repeat").mk_repeatable
@@ -48,8 +47,21 @@ set("n", "tq", lazy(vim.cmd.tabclose), { desc = "Close the current tab" })
 
 set("n", "Q", lazy(vim.cmd.quit))
 
-set("n", "<A-o>", "o<esc>")
-set("n", "<A-O>", "O<esc>")
+set(
+  "n",
+  { "<A-o>", "]<Space>" },
+  repeatable(function()
+    keys.feed({ "o", "<ESC>" })
+  end)
+)
+
+set(
+  "n",
+  { "<A-O>", "[<Space>" },
+  repeatable(function()
+    keys.feed({ "O", "<ESC>" })
+  end)
+)
 
 local function scroll_half_page(dir, opts)
   opts = vim.F.if_nil(opts, {})
@@ -75,4 +87,3 @@ end)
 set("n", "<C-u>", function()
   scroll_half_page("up")
 end)
-

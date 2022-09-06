@@ -78,7 +78,7 @@ tree.setup({
     float = {
       enable = true,
       open_win_config = {
-        height = math.max(vim.o.lines - 4, 20),
+        height = math.max(vim.o.lines - 6, 20),
         -- height = 0.9,
       },
     },
