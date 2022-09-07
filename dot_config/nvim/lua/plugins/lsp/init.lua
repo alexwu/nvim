@@ -4,7 +4,7 @@ local detect = require("plenary.filetype").detect
 local lazy = require("bombeelu.utils").lazy
 local lsp = require("bombeelu.lsp")
 local on_attach = require("plugins.lsp.defaults").on_attach
-local repeatable = require("bombeelu.repeat").mk_repeatable
+local rpt = require("bombeelu.repeat").mk_repeatable
 local set = require("bombeelu.utils").set
 
 local augroup = nvim.create_augroup
@@ -35,19 +35,19 @@ vim.diagnostic.config({
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
 
+-- lsp.go.setup({ on_attach = on_attach, capabilities = capabilities })
+-- lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.clangd.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.go.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
-lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
+-- lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
-lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
+-- lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
-lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
-lsp.typescript.setup({ on_attach = on_attach, capabilities = capabilities })
+lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
+-- lsp.typescript.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
 
@@ -109,7 +109,7 @@ end, { silent = true, desc = "Show diagnostics on current line" })
 set(
   "n",
   "]d",
-  repeatable(function()
+  rpt(function()
     vim.diagnostic.goto_next({ float = false })
   end),
   { silent = true, desc = "Go to next diagnostic" }
@@ -118,20 +118,20 @@ set(
 set(
   "n",
   "[d",
-  repeatable(function()
+  rpt(function()
     vim.diagnostic.goto_prev({ float = false })
   end),
   { silent = true, desc = "Go to previous diagnostic" }
 )
 
-set("n", "<Leader>a", function()
+set({ "n", "x" }, "<Leader>a", function()
   vim.lsp.buf.code_action()
 end, { silent = true, desc = "Select a code action" })
 
 set(
   "n",
   "ga",
-  repeatable(function()
+  rpt(function()
     vim.lsp.buf.code_action({
       apply = true,
       filter = function(action)
@@ -141,10 +141,6 @@ set(
   end),
   { silent = true, desc = "Apply preferred code action" }
 )
-
-set("v", "<Leader>a", function()
-  vim.lsp.buf.code_action()
-end, { silent = true, desc = "Select a code action for the selected visual range" })
 
 set("n", "K", hover, { silent = true })
 

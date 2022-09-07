@@ -43,3 +43,5 @@ require("diffview").setup({
     },
   },
 })
+
+vim.api.nvim_create_user_command("Diff", "DiffviewOpen origin/master", {})

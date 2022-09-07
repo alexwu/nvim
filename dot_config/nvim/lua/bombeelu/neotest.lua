@@ -65,6 +65,13 @@ function M.setup()
 
   local commands = {
     {
+      display = "Run last run test",
+      callback = function()
+        neotest.run.run_last()
+      end,
+      repeatable = true,
+    },
+    {
       display = "Run nearest test",
       callback = function()
         neotest.run.run()
@@ -80,9 +87,17 @@ function M.setup()
     {
       display = "Debug nearest test",
       callback = function()
-        neotest.run.run(vim.fn.expand("%"))
+        -- neotest.run.run({ strategy = "dap" })
+        neotest.run.run({ vim.fn.expand("%"), strategy = "dap" })
       end,
       repeatable = true,
+    },
+    {
+      display = "Stop nearest test",
+      callback = function()
+        neotest.run.stop()
+      end,
+      repeatable = false,
     },
     {
       display = "Toggle test summary",

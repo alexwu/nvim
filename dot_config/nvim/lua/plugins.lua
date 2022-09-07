@@ -139,7 +139,7 @@ return require("packer").startup({
       "knubie/vim-kitty-navigator",
       run = "cp ./*.py ~/.config/kitty/",
       setup = function()
-        -- vim.g.kitty_navigator_no_mappings = 0
+        vim.g.kitty_navigator_no_mappings = 0
       end,
       config = function()
         require("plugins.kitty")
@@ -341,9 +341,10 @@ return require("packer").startup({
       end,
     })
 
+    use({ "MunifTanjim/nui.nvim" })
+
     use({
       "stevearc/dressing.nvim",
-      -- "MunifTanjim/nui.nvim",
       config = function()
         require("plugins.dressing")
       end,
@@ -355,7 +356,9 @@ return require("packer").startup({
     use({
       "andrewferrier/textobj-diagnostic.nvim",
       config = function()
-        require("textobj-diagnostic").setup()
+        if not vim.g.vscode then
+          require("textobj-diagnostic").setup()
+        end
       end,
     })
 
@@ -505,13 +508,18 @@ return require("packer").startup({
 
     use({
       "jose-elias-alvarez/typescript.nvim",
+      ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
       cond = function()
         return not vim.g.vscode
+      end,
+      config = function()
+        require("bombeelu.lsp").typescript.setup()
       end,
     })
 
     use({
       "simrat39/rust-tools.nvim",
+      ft = "rust",
       requires = {
         "neovim/nvim-lspconfig",
         "hrsh7th/nvim-cmp",
@@ -519,6 +527,9 @@ return require("packer").startup({
         "nvim-lua/plenary.nvim",
         "nvim-telescope/telescope.nvim",
       },
+      config = function()
+        require("bombeelu.lsp").rust.setup()
+      end,
     })
 
     -- use({
@@ -542,19 +553,20 @@ return require("packer").startup({
 
     use({
       "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
-      "theHamsta/nvim-dap-virtual-text",
+      requires = {
+        "rcarriga/nvim-dap-ui",
+        "theHamsta/nvim-dap-virtual-text",
+        "mxsdev/nvim-dap-vscode-js",
+      },
       config = function()
-        require("dapui").setup()
-        require("nvim-dap-virtual-text").setup()
+        require("bombeelu.dap").setup()
+      end,
+    })
 
-        vim.keymap.set("n", "gb", function()
-          require("dap").toggle_breakpoint()
-        end)
-      end,
-      cond = function()
-        return not vim.g.vscode
-      end,
+    use({
+      "microsoft/vscode-js-debug",
+      opt = true,
+      run = "npm install --legacy-peer-deps && npm run compile",
     })
 
     -- use({
@@ -748,7 +760,17 @@ return require("packer").startup({
       end,
     })
 
-    use({ "folke/lua-dev.nvim" })
+    use({
+      "folke/lua-dev.nvim",
+      ft = "lua",
+      requires = {
+        "neovim/nvim-lspconfig",
+        "hrsh7th/nvim-cmp",
+      },
+      config = function()
+        require("bombeelu.lsp").lua.setup()
+      end,
+    })
 
     use({
       "echasnovski/mini.nvim",
@@ -883,6 +905,7 @@ return require("packer").startup({
       config = function()
         require("debugprint").setup()
       end,
+      disable = true,
     })
 
     use({
@@ -976,10 +999,11 @@ return require("packer").startup({
     use({
       "vigoux/notifier.nvim",
       config = function()
-        require("notifier").setup({
-          -- You configuration here
-        })
+        -- require("notifier").setup({
+        --   -- You configuration here
+        -- })
       end,
+      disable = true,
     })
 
     use({
@@ -1011,8 +1035,18 @@ return require("packer").startup({
       "lewis6991/satellite.nvim",
       config = function()
         if not vim.g.vscode then
-          require("satellite").setup()
+          require("satellite").setup({
+            current_only = true,
+          })
         end
+      end,
+    })
+
+    use({
+      "nvim-telescope/telescope-dap.nvim",
+      requires = { "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap" },
+      config = function()
+        require("telescope").load_extension("dap")
       end,
     })
 

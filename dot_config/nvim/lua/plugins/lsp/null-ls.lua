@@ -173,8 +173,8 @@ M.setup = function(opts)
     debug = false,
     sources = {
       -- null_ls.builtins.formatting.pg_format,
-      -- null_ls.builtins.formatting.black,
-      -- null_ls.builtins.formatting.clang_format,
+      null_ls.builtins.formatting.black,
+      null_ls.builtins.formatting.clang_format,
       null_ls.builtins.formatting.just,
       -- null_ls.builtins.formatting.deno_fmt.with({
       --   filetypes = { "javascriptreact", "typescriptreact" },
@@ -197,7 +197,7 @@ M.setup = function(opts)
         cwd = function(_params)
           return vim.fs.dirname(
             vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
-          ) or vim.fn.expand("~/.config/nvim/selene.toml") -- fallback value
+          ) or vim.fs.normalize("~/.config/nvim/selene.toml") -- fallback value
         end,
       }),
       null_ls.builtins.diagnostics.luacheck.with({
