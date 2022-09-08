@@ -10,7 +10,7 @@ function M.init()
   require("nvim-treesitter").define_modules({
     highlight_current_scope = {
       module_path = "bombeelu.treesitter",
-      enable = false,
+      enable = true,
       disable = {},
       is_supported = parser.has_parser,
     },
@@ -19,7 +19,7 @@ end
 
 
 -- TODO: Set this equal to the config value
-M.enable = false
+M.enable = true
 
 function M.toggle(bufnr)
   if M.enable then

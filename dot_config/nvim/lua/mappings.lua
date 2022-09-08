@@ -63,6 +63,22 @@ set(
   end)
 )
 
+set(
+  "n",
+  "[z",
+  repeatable(function()
+    keys.feed({ "[", "z" })
+  end, { desc = "Move to the start of the current open fold" })
+)
+
+set(
+  "n",
+  "]z",
+  repeatable(function()
+    keys.feed({ "]", "z" })
+  end, { desc = "Move to the end of the current open fold" })
+)
+
 local function scroll_half_page(dir, opts)
   opts = vim.F.if_nil(opts, {})
   local bufnr = vim.F.if_nil(opts.bufnr, nvim.get_current_buf())

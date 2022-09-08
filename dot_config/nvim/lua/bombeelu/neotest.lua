@@ -36,41 +36,41 @@ function M.setup()
       child_indent = "│",
       final_child_indent = " ",
     },
-    status = { virtual_text = true },
+    status = { virtual_text = false },
   })
 
   nvim.create_user_command("TestSummary", function()
     neotest.summary.toggle()
   end, {})
 
-  nvim.create_user_command("TestRun", function()
-    neotest.run.run()
-  end, {})
-
-  nvim.create_user_command("TestRunFile", function()
-    neotest.run.run(vim.fn.expand("%"))
-  end, {})
-
-  nvim.create_user_command("TestAttach", function()
-    neotest.run.attach()
-  end, {})
+  -- nvim.create_user_command("TestRun", function()
+  --   neotest.run.run()
+  -- end, {})
+  --
+  -- nvim.create_user_command("TestRunFile", function()
+  --   neotest.run.run(vim.fn.expand("%"))
+  -- end, {})
+  --
+  -- nvim.create_user_command("TestAttach", function()
+  --   neotest.run.attach()
+  -- end, {})
 
   nvim.create_user_command("TestStop", function()
     neotest.run.stop()
   end, {})
 
-  nvim.create_user_command("TestDebug", function()
-    neotest.run.run({ strategy = "dap" })
-  end, {})
+  -- nvim.create_user_command("TestDebug", function()
+  --   neotest.run.run({ strategy = "dap" })
+  -- end, {})
 
   local commands = {
-    {
-      display = "Run last run test",
-      callback = function()
-        neotest.run.run_last()
-      end,
-      repeatable = true,
-    },
+    -- {
+    --   display = "Run last run test",
+    --   callback = function()
+    --     neotest.run.run_last()
+    --   end,
+    --   repeatable = true,
+    -- },
     {
       display = "Run nearest test",
       callback = function()
