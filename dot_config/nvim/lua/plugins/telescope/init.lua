@@ -147,7 +147,7 @@ require("telescope").setup({
 
 -- require("telescope").load_extension("fzf")
 -- require("telescope").load_extension("commander")
-require("telescope").load_extension("related_files")
+-- require("telescope").load_extension("related_files")
 
 require("neoclip").setup({
   enable_persistent_history = true,
@@ -166,7 +166,7 @@ set(
 )
 set("n", "<Leader>d", lazy(builtin.diagnostics), { desc = "Select diagnostics " })
 set("n", "<Leader>g", lazy(custom_pickers.git_changes), { desc = "Select from changed files since default branch" })
-set("n", "<Leader>i", lazy(extensions.related_files.related_files), { desc = "Select related files" })
+-- set("n", "<Leader>i", lazy(extensions.related_files.related_files), { desc = "Select related files" })
 -- set("n", "<Leader>p", lazy(extensions.projects.projects), { noremap = true, silent = true, desc = "Select a project" })
 set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
 set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })

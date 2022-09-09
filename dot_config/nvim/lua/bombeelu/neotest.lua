@@ -20,7 +20,6 @@ function M.setup()
           )
         end,
       }),
-      require("neotest-rust"),
     },
     icons = {
       passed = " ✔",

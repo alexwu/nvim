@@ -1,16 +1,22 @@
-require("globals")
-require("bombeelu.nvim")
-require("bombeelu.autocmd")
-require("bombeelu.commands")
-require("options")
-require("mappings")
+local ok, plenary = pcall(require, "plenary")
+if ok then
+  require("globals")
+  require("bombeelu.nvim")
+  require("bombeelu.autocmd")
+  require("bombeelu.commands")
+  require("options")
+  require("mappings")
+end
 
 if vim.g.vscode then
   require("bombeelu.vscode.mappings")
 elseif vim.g.neovide then
   require("neovide")
 else
-  require("impatient")
+  local ok, _ = pcall(require, "impatient")
+  if ok then
+    require("impatient")
+  end
 end
 
 require("plugins")

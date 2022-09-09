@@ -42,7 +42,7 @@ return require("packer").startup({
       end,
     })
 
-    use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
+    use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -193,8 +193,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        "~/Projects/neovim/cmp-treesitter",
-        "folke/lua-dev.nvim",
+        -- "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -249,7 +248,6 @@ return require("packer").startup({
         "kosayoda/nvim-lightbulb",
         "nvim-telescope/telescope.nvim",
         "b0o/schemastore.nvim",
-        "~/Projects/neovim/nvim-code-action-menu",
         "simrat39/inlay-hints.nvim",
         "stevearc/dressing.nvim",
         "williamboman/mason.nvim",
@@ -331,8 +329,6 @@ return require("packer").startup({
         "kyazdani42/nvim-web-devicons",
         { "tami5/sqlite.lua", module = "sqlite" },
         "AckslD/nvim-neoclip.lua",
-        "~/Projects/neovim/telescope-commander.nvim",
-        "~/Projects/neovim/telescope-related-files",
       },
       config = function()
         if not vim.g.vscode then
@@ -442,17 +438,6 @@ return require("packer").startup({
     })
 
     use({
-      "lewis6991/spellsitter.nvim",
-      requires = "nvim-treesitter/nvim-treesitter",
-      config = function()
-        require("spellsitter").setup()
-      end,
-      cond = function()
-        return not vim.g.vscode
-      end,
-    })
-
-    use({
       "nvim-treesitter/playground",
       cmd = { "TSHighlightCapturesUnderCursor", "TSPlaygroundToggle", "TSNodeUnderCursor" },
     })
@@ -529,6 +514,9 @@ return require("packer").startup({
       },
       config = function()
         require("bombeelu.lsp").rust.setup()
+      end,
+      cond = function()
+        return not vim.g.vscode
       end,
     })
 
@@ -722,7 +710,7 @@ return require("packer").startup({
       "tpope/vim-projectionist",
       requires = { "tpope/vim-dispatch" },
       config = function()
-        require("plugins.projectionist")
+        -- require("plugins.projectionist")
       end,
       cond = function()
         return not vim.g.vscode
@@ -770,6 +758,9 @@ return require("packer").startup({
       config = function()
         require("bombeelu.lsp").lua.setup()
       end,
+      cond = function()
+        return vim.g.vscode
+      end,
     })
 
     use({
@@ -805,17 +796,17 @@ return require("packer").startup({
     --         disable = true,
     --       })
 
-    use({
-      "~/Projects/neovim/telescope-commander.nvim",
-      requires = {
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim",
-      },
-      cond = function()
-        return vim.g.vscode
-      end,
-    })
-
+    -- use({
+    --   "~/Projects/neovim/telescope-commander.nvim",
+    --   requires = {
+    --     "nvim-lua/plenary.nvim",
+    --     "nvim-telescope/telescope.nvim",
+    --   },
+    --   cond = function()
+    --     return vim.g.vscode
+    --   end,
+    -- })
+    --
     use({
       "mrjones2014/legendary.nvim",
       config = function()
@@ -826,6 +817,10 @@ return require("packer").startup({
     use({
       "~/Projects/neovim/ruby.nvim",
       requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
+      config = function()
+        require("bombeelu.lsp").sorbet.setup()
+      end,
+      disable = true,
     })
 
     use({
@@ -980,8 +975,6 @@ return require("packer").startup({
         "antoinemadec/FixCursorHold.nvim",
         "haydenmeade/neotest-jest",
         "olimorris/neotest-rspec",
-        "nvim-neotest/neotest-vim-test",
-        "~/Code/personal/neotest-rust",
       },
       config = function()
         require("bombeelu.neotest").setup()
