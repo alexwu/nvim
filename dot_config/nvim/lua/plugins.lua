@@ -226,17 +226,6 @@ return require("packer").startup({
 
     use({
       "neovim/nvim-lspconfig",
-      setup = function()
-        if not vim.lsp.semantic_tokens then
-          vim.lsp.semantic_tokens = require("plugins.lsp.semantic_tokens")
-        end
-
-        if not vim.lsp.buf.semantic_tokens_full then
-          vim.lsp.buf.semantic_tokens_full = require("plugins.lsp.buf").semantic_tokens_full
-        end
-
-        vim.g.code_action_menu_window_border = "rounded"
-      end,
       config = function()
         if not vim.g.vscode then
           require("plugins.lsp")
@@ -252,10 +241,29 @@ return require("packer").startup({
         "stevearc/dressing.nvim",
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
+        "theHamsta/nvim-semantic-tokens",
       },
       after = {
         "nvim-cmp",
       },
+      cond = function()
+        return not vim.g.vscode
+      end,
+    })
+
+    use({
+      "theHamsta/nvim-semantic-tokens",
+      config = function()
+        require("nvim-semantic-tokens").setup({
+          preset = "default",
+          -- highlighters is a list of modules following the interface of nvim-semantic-tokens.table-highlighter or
+          -- function with the signature: highlight_token(ctx, token, highlight) where
+          --        ctx (as defined in :h lsp-handler)
+          --        token  (as defined in :h vim.lsp.semantic_tokens.on_full())
+          --        highlight (a helper function that you can call (also multiple times) with the determined highlight group(s) as the only parameter)
+          highlighters = { require("nvim-semantic-tokens.table-highlighter") },
+        })
+      end,
       cond = function()
         return not vim.g.vscode
       end,

@@ -11,7 +11,7 @@ local augroup = nvim.create_augroup
 local autocmd = nvim.create_autocmd
 
 local signs = {
-  Error = "✘ ",
+  Error = " ✘",
   Warn = " ",
   Hint = " ",
   Info = " ",
