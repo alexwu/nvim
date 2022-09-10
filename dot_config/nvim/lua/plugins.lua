@@ -42,7 +42,8 @@ return require("packer").startup({
       end,
     })
 
-    use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
+    -- use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
+    use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -193,7 +194,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        -- "~/Projects/neovim/cmp-treesitter",
+        "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -256,11 +257,6 @@ return require("packer").startup({
       config = function()
         require("nvim-semantic-tokens").setup({
           preset = "default",
-          -- highlighters is a list of modules following the interface of nvim-semantic-tokens.table-highlighter or
-          -- function with the signature: highlight_token(ctx, token, highlight) where
-          --        ctx (as defined in :h lsp-handler)
-          --        token  (as defined in :h vim.lsp.semantic_tokens.on_full())
-          --        highlight (a helper function that you can call (also multiple times) with the determined highlight group(s) as the only parameter)
           highlighters = { require("nvim-semantic-tokens.table-highlighter") },
         })
       end,
@@ -302,6 +298,14 @@ return require("packer").startup({
       "zbirenbaum/copilot-cmp",
       requires = { "hrsh7th/nvim-cmp", "zbirenbaum/copilot.lua" },
       after = "copilot.lua",
+      config = function()
+        require("copilot_cmp").setup({
+          method = "getCompletionsCycling",
+          formatters = {
+            insert_text = require("copilot_cmp.format").remove_existing,
+          },
+        })
+      end,
       cond = function()
         return not vim.g.vscode
       end,
@@ -717,16 +721,13 @@ return require("packer").startup({
     use({
       "tpope/vim-projectionist",
       requires = { "tpope/vim-dispatch" },
-      config = function()
-        -- require("plugins.projectionist")
-      end,
       cond = function()
         return not vim.g.vscode
       end,
     })
     use({ "tpope/vim-fugitive" })
     use({ "tpope/vim-rails", ft = "ruby", disable = true })
-    use({ "chaoren/vim-wordmotion" })
+    use({ "chaoren/vim-wordmotion", disable = true })
     use({ "AndrewRadev/splitjoin.vim" })
 
     use({
@@ -828,7 +829,7 @@ return require("packer").startup({
       config = function()
         require("bombeelu.lsp").sorbet.setup()
       end,
-      disable = true,
+      -- disable = true,
     })
 
     use({
@@ -992,9 +993,7 @@ return require("packer").startup({
     use({
       "vigoux/notifier.nvim",
       config = function()
-        -- require("notifier").setup({
-        --   -- You configuration here
-        -- })
+        require("notifier").setup({})
       end,
       disable = true,
     })
@@ -1040,6 +1039,18 @@ return require("packer").startup({
       requires = { "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap" },
       config = function()
         require("telescope").load_extension("dap")
+      end,
+    })
+
+    use({
+      "aarondiel/spread.nvim",
+      after = "nvim-treesitter",
+      config = function()
+        local spread = require("spread")
+        local default_options = { silent = true, noremap = true }
+
+        vim.keymap.set("n", "<leader>ss", spread.out, default_options)
+        vim.keymap.set("n", "<leader>sc", spread.combine, default_options)
       end,
     })
 

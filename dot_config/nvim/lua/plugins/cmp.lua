@@ -5,6 +5,13 @@ local compare = cmp.config.compare
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
 
+lspkind.init({
+  symbol_map = {
+    Copilot = "",
+    cmp_tabnine = "[]",
+  },
+})
+
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
@@ -69,9 +76,11 @@ cmp.setup({
     { name = "npm", keyword_length = 4 },
   }),
   comparators = {
-    require("cmp_tabnine.compare"),
-    compare.locality,
     compare.exact,
+    require("cmp_tabnine.compare"),
+    require("copilot_cmp.comparators").prioritize,
+    require("copilot_cmp.comparators").score,
+    compare.locality,
     compare.recently_used,
     compare.offset,
     compare.scopes,
@@ -102,8 +111,8 @@ cmp.setup({
       behavior = cmp.ConfirmBehavior.Replace,
       select = false,
     }),
-    ["<C-d>"] = mapping.scroll_docs(-4),
-    ["<C-f>"] = mapping.scroll_docs(4),
+    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
     ["<Down>"] = mapping(select_next),
     ["<Up>"] = mapping(select_prev),
     ["<C-e>"] = mapping({
@@ -128,7 +137,7 @@ cmp.setup({
         mode = "symbol_text",
         menu = {
           buffer = "[Buffer]",
-          cmp_tabnine = "[]",
+          cmp_tabnine = "[TabNine]",
           copilot = "[]",
           crates = "[Crates]",
           luasnip = "[LuaSnip]",
