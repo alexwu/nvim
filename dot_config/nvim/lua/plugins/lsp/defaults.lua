@@ -1,5 +1,3 @@
-local set = require("bombeelu.utils").set
-
 local M = {}
 
 -- FIXME: Some of this will get called multiple times unnecessarily. This might need the project config stuff?
@@ -12,6 +10,11 @@ function M.on_attach(client, bufnr)
     require("document-color").buf_attach(bufnr)
   end
 
+  if client.server_capabilities.documentSymbolProvider then
+    local navic = require("nvim-navic")
+    navic.attach(client, bufnr)
+  end
+
   vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
   local semanticTokensProviderFull = vim.tbl_get(client, "server_capabilities", "semanticTokensProvider", "full")
   if not client.name == "eslint" and (semanticTokensProviderFull or client.name == "tsserver") then
@@ -22,26 +25,6 @@ function M.on_attach(client, bufnr)
         vim.lsp.buf.semantic_tokens_full()
       end,
     })
-
-    -- vim.api.nvim_create_autocmd({ "CursorHold", "ModeChanged", "WinScrolled" }, {
-    --   group = "LspDiagnosticsConfig",
-    --   buffer = bufnr,
-    --   callback = function()
-    --     vim.lsp.semantic_tokens.refresh(vim.api.nvim_get_current_buf())
-    --   end,
-    -- })
-    --
-    -- vim.api.nvim_create_autocmd({ "WinEnter" }, {
-    --   group = "LspDiagnosticsConfig",
-    --   buffer = bufnr,
-    --   callback = function()
-    --     vim.api.nvim_buf_attach(
-    --       bufnr,
-    --       false,
-    --       { on_lines = function(_, _, changedtick, first_line, last_changed_line, last_updated_line) end }
-    --     )
-    --   end,
-    -- })
   end
 end
 

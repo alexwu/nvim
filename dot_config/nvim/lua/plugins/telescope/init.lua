@@ -1,4 +1,3 @@
-local extensions = require("telescope").extensions
 local actions = require("telescope.actions")
 local builtin = require("telescope.builtin")
 local custom_pickers = require("plugins.telescope.pickers")
@@ -14,21 +13,45 @@ local default_layout_config = {
   end,
 }
 
+local defaults = require("telescope.themes").get_dropdown({
+  set_env = { ["COLORTERM"] = "truecolor" },
+  prompt_prefix = "❯ ",
+  layout_config = {
+    width = function(_, max_columns, _)
+      return math.max(120, vim.fn.round(vim.o.columns * 0.5))
+    end,
+
+    height = function(_, _, max_lines)
+      return math.min(max_lines, 40)
+    end,
+  },
+  sorting_strategy = "ascending",
+  dynamic_preview_title = true,
+  winblend = 20,
+  mappings = {
+    i = {
+      ["<esc>"] = actions.close,
+      ["<C-j>"] = actions.move_selection_next,
+      ["<C-k>"] = actions.move_selection_previous,
+      ["<C-n>"] = actions.move_selection_next,
+      ["<C-p>"] = actions.move_selection_previous,
+      ["<C-u>"] = false,
+    },
+    n = {
+      ["q"] = actions.close,
+      ["<C-j>"] = actions.move_selection_next,
+      ["<C-k>"] = actions.move_selection_previous,
+      ["<C-n>"] = actions.move_selection_next,
+      ["<C-p>"] = actions.move_selection_previous,
+    },
+  },
+})
+
 require("telescope").setup({
-  defaults = require("telescope.themes").get_dropdown({
+  defaults = {
     set_env = { ["COLORTERM"] = "truecolor" },
     prompt_prefix = "❯ ",
-    layout_config = {
-      width = function(_, max_columns, _)
-        return math.max(120, vim.fn.round(vim.o.columns * 0.5))
-      end,
-
-      height = function(_, _, max_lines)
-        return math.min(max_lines, 40)
-      end,
-    },
-    sorting_strategy = "ascending",
-    dynamic_preview_title = true,
+    -- sorting_strategy = "ascending",
     winblend = 20,
     mappings = {
       i = {
@@ -47,7 +70,7 @@ require("telescope").setup({
         ["<C-p>"] = actions.move_selection_previous,
       },
     },
-  }),
+  },
   pickers = {
     find_files = {
       find_command = {
@@ -142,6 +165,9 @@ require("telescope").setup({
       load_session = true,
     },
     commander = {},
+    recent_files = {
+      only_cwd = true,
+    },
   },
 })
 
@@ -153,7 +179,10 @@ require("neoclip").setup({
   enable_persistent_history = true,
 })
 
+set("n", "TT", lazy(builtin.builtin, { include_extensions = true }), { desc = "Default telescope picker" })
+
 set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
+set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
 -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
 
@@ -173,6 +202,7 @@ set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
 set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
 set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
 set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
+set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
 
 local group = augroup("bombeelu.telescope", { clear = true })
 

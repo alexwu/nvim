@@ -1,7 +1,5 @@
 local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
 
-require("bombeelu.treesitter").init()
-
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
     "bash",
@@ -108,6 +106,7 @@ require("nvim-treesitter.configs").setup({
   matchup = { enable = true },
   highlight_current_node = {
     enable = true,
+    excluded_filetypes = { "help" },
   },
 })
 
@@ -117,3 +116,5 @@ require("nvim-treesitter.parsers").ft_to_lang = function(ft)
   end
   return ft_to_lang(ft)
 end
+
+require("bombeelu.treesitter").init()

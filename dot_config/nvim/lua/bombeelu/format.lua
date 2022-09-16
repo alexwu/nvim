@@ -5,6 +5,10 @@ local defaults = require("formatter.defaults")
 local detect = require("plenary.filetype").detect
 local util = require("formatter.util")
 
+local function filename()
+  return util.escape_path(util.get_current_buffer_file_path())
+end
+
 local function bedazzle()
   return {
     exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/release/bedazzle"),
@@ -25,7 +29,7 @@ local function prettier()
     name = "Prettier",
     args = {
       "--stdin-filepath",
-      util.escape_path(util.get_current_buffer_file_path()),
+      filename(),
     },
     stdin = true,
     try_node_modules = true,
@@ -41,8 +45,14 @@ end
 
 local function rufo()
   return {
-    exe = "rufo",
-    args = { "--filename", vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)) },
+    exe = "cat",
+    name = "Rufo",
+    args = {
+      "-",
+      "rufo",
+      "--filename",
+      util.escape_path(util.get_current_buffer_file_path()),
+    },
     stdin = true,
   }
 end
@@ -79,6 +89,7 @@ require("formatter").setup({
     javascript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     go = { require("formatter.filetypes.go").gofmt },
+    eruby = { rufo },
     graphql = { prettier },
     json = { dprint, prettier },
     jsonc = { dprint, prettier },

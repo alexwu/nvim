@@ -1,6 +1,11 @@
 local gps = require("nvim-gps")
+local navic = require("nvim-navic")
 
 require("nvim-gps").setup()
+
+local function gps_fallback()
+  return not navic.is_available() and gps.is_available()
+end
 
 local colors = {
   background = "#282a36",
@@ -71,18 +76,18 @@ require("lualine").setup({
         separator = { left = "" },
         right_padding = 2,
       },
-      -- {
-      --   "windows",
-      --   mode = 4,
-      --   windowss_color = {
-      --     active = { bg = colors.purple, fg = colors.black, gui = "bold" },
-      --   },
-      --   on_click = function(count, button, modifiers)
-      --     vim.pretty_print(count)
-      --     vim.pretty_print(button)
-      --     vim.pretty_print(modifiers)
-      --   end,
-      -- },
+      {
+        "windows",
+        mode = 4,
+        windows_color = {
+          active = { bg = colors.purple, fg = colors.black, gui = "bold" },
+        },
+        on_click = function(count, button, modifiers)
+          vim.pretty_print(count)
+          vim.pretty_print(button)
+          vim.pretty_print(modifiers)
+        end,
+      },
     },
     lualine_b = {
       { "branch", color = { fg = "#3a3d4d", bg = "#f1f1f0" }, separator = { right = "" } },
@@ -104,11 +109,10 @@ require("lualine").setup({
         update_in_insert = false,
         always_visible = false,
       },
-      -- { gps.get_location, cond = gps.is_available },
     },
-    lualine_x = { "filetype" },
+    lualine_x = {},
     lualine_y = {},
-    lualine_z = { { "location", separator = { right = "" }, left_padding = 2 } },
+    lualine_z = { { "location", separator = { right = "", left = "" } } },
   },
   inactive_sections = {
     lualine_a = {},
@@ -118,41 +122,42 @@ require("lualine").setup({
     lualine_y = {},
     lualine_z = {},
   },
-  -- winbar = {
-  --   lualine_a = {},
-  --   lualine_b = {},
-  --   lualine_c = {
-  --     {
-  --       "filename",
-  --       path = 0,
-  --       color = {
-  --         fg = "#3a3d4d",
-  --         bg = colors.foreground,
-  --       },
-  --       separator = { right = "" },
-  --     },
-  --     { gps.get_location, cond = gps.is_available },
-  --   },
-  --   lualine_x = {},
-  --   lualine_y = {},
-  --   lualine_z = {},
-  -- },
-  -- inactive_winbar = {
-  --   lualine_a = {},
-  --   lualine_b = {},
-  --   lualine_c = {
-  --     {
-  --       "filename",
-  --       path = 0,
-  --       color = {
-  --         fg = colors.lightgray,
-  --         bg = colors.darkgray,
-  --       },
-  --       separator = { right = "" },
-  --     },
-  --   },
-  --   lualine_x = {},
-  --   lualine_y = {},
-  --   lualine_z = {},
-  -- },
+  winbar = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {
+      {
+        "filename",
+        path = 0,
+        color = {
+          fg = "#3a3d4d",
+          bg = colors.foreground,
+        },
+        separator = { right = "", left = "" },
+      },
+      { navic.get_location, cond = navic.is_available },
+      { gps.get_location, cond = gps_fallback },
+    },
+    lualine_x = { "filetype" },
+    lualine_y = {},
+    lualine_z = {},
+  },
+  inactive_winbar = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {
+      {
+        "filename",
+        path = 0,
+        color = {
+          fg = colors.lightgray,
+          bg = colors.darkgray,
+        },
+        separator = { right = "" },
+      },
+    },
+    lualine_x = {},
+    lualine_y = {},
+    lualine_z = {},
+  },
 })

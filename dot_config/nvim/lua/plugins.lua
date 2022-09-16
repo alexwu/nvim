@@ -35,7 +35,7 @@ return require("packer").startup({
     use({
       "antoinemadec/FixCursorHold.nvim",
       config = function()
-        vim.g.curshold_updatime = 250
+        vim.g.cursorhold_updatetime = 100
       end,
       cond = function()
         return not vim.g.vscode
@@ -349,6 +349,32 @@ return require("packer").startup({
       end,
     })
 
+    use({
+      "smartpde/telescope-recent-files",
+      requires = "nvim-telescope/telescope.nvim",
+      config = function()
+        require("telescope").load_extension("recent_files")
+      end,
+    })
+
+    use({
+      "axkirillov/easypick.nvim",
+      requires = "nvim-telescope/telescope.nvim",
+      config = function()
+        local easypick = require("easypick")
+
+        easypick.setup({
+          pickers = {
+            {
+              name = "conflicts",
+              command = "git diff --name-only --diff-filter=U --relative",
+              previewer = easypick.previewers.file_diff(),
+            },
+          },
+        })
+      end,
+    })
+
     use({ "MunifTanjim/nui.nvim" })
 
     use({
@@ -374,9 +400,9 @@ return require("packer").startup({
       "smjonas/inc-rename.nvim",
       config = function()
         require("inc_rename").setup()
-        vim.keymap.set("n", "<leader>rn", function()
-          require("inc_rename").rename({ default = vim.fn.expand("<cword>") })
-        end, { expr = true })
+        -- vim.keymap.set("n", "<leader>rn", function()
+        --   require("inc_rename").rename({ default = vim.fn.expand("<cword>") })
+        -- end, { expr = true })
       end,
     })
 
@@ -443,9 +469,48 @@ return require("packer").startup({
       requires = {
         "kyazdani42/nvim-web-devicons",
         { "SmiteshP/nvim-gps", requires = "nvim-treesitter/nvim-treesitter" },
+        "SmiteshP/nvim-navic",
       },
       config = function()
         require("statusline").setup()
+      end,
+    })
+
+    use({
+      "SmiteshP/nvim-navic",
+      requires = { "neovim/nvim-lspconfig" },
+      config = function()
+        require("nvim-navic").setup({
+          icons = {
+            File = " ",
+            Module = " ",
+            Namespace = " ",
+            Package = " ",
+            Class = " ",
+            Method = " ",
+            Property = " ",
+            Field = " ",
+            Constructor = " ",
+            Enum = " ",
+            Interface = " ",
+            Function = " ",
+            Variable = " ",
+            Constant = " ",
+            String = " ",
+            Number = " ",
+            Boolean = " ",
+            Array = " ",
+            Object = " ",
+            Key = " ",
+            Null = " ",
+            EnumMember = " ",
+            Struct = " ",
+            Event = " ",
+            Operator = " ",
+            TypeParameter = " ",
+          },
+          highlight = true,
+        })
       end,
     })
 
@@ -727,8 +792,8 @@ return require("packer").startup({
     })
     use({ "tpope/vim-fugitive" })
     use({ "tpope/vim-rails", ft = "ruby", disable = true })
-    use({ "chaoren/vim-wordmotion", disable = true })
-    use({ "AndrewRadev/splitjoin.vim" })
+    use({ "chaoren/vim-wordmotion", disable = false })
+    use({ "AndrewRadev/splitjoin.vim", disable = true })
 
     use({
       "beauwilliams/focus.nvim",
@@ -837,7 +902,7 @@ return require("packer").startup({
       config = function()
         if not vim.g.vscode then
           require("inlay-hints").setup({
-            renderer = "inlay-hints/render/dynamic",
+            renderer = "inlay-hints/render/eol",
             hints = {
               parameter = {
                 show = false,
@@ -923,15 +988,15 @@ return require("packer").startup({
       end,
     })
 
-    use({
-      "b0o/incline.nvim",
-      config = function()
-        if not vim.g.vscode then
-          require("incline").setup()
-        end
-      end,
-    })
-
+    -- use({
+    --   "b0o/incline.nvim",
+    --   config = function()
+    --     if not vim.g.vscode then
+    --       require("incline").setup()
+    --     end
+    --   end,
+    -- })
+    --
     use({
       "jghauser/kitty-runner.nvim",
       config = function()
@@ -1049,8 +1114,15 @@ return require("packer").startup({
         local spread = require("spread")
         local default_options = { silent = true, noremap = true }
 
-        vim.keymap.set("n", "<leader>ss", spread.out, default_options)
-        vim.keymap.set("n", "<leader>sc", spread.combine, default_options)
+        vim.keymap.set("n", "gS", spread.out, default_options)
+        vim.keymap.set("n", "gJ", spread.combine, default_options)
+      end,
+    })
+
+    use({
+      "tversteeg/registers.nvim",
+      setup = function()
+        vim.g.registers_window_border = "rounded"
       end,
     })
 

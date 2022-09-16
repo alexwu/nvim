@@ -18,7 +18,7 @@ require("dial.config").augends:register_group({
     }),
     augend.constant.new({
       elements = { "it", "fit", "xit" },
-      word = false,
+      word = true,
       cyclic = true,
     }),
   },
