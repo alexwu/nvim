@@ -43,7 +43,7 @@ return require("packer").startup({
     })
 
     -- use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
-    use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
+    use({ "~/Code/nvim-snazzy", requires = "rktjmp/lush.nvim" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -194,7 +194,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        "~/Projects/neovim/cmp-treesitter",
+        -- "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -399,10 +399,13 @@ return require("packer").startup({
     use({
       "smjonas/inc-rename.nvim",
       config = function()
-        require("inc_rename").setup()
-        -- vim.keymap.set("n", "<leader>rn", function()
-        --   require("inc_rename").rename({ default = vim.fn.expand("<cword>") })
-        -- end, { expr = true })
+        require("inc_rename").setup({
+          input_buffer_type = "dressing",
+        })
+
+        vim.keymap.set("n", "<leader>rn", function()
+          return ":IncRename " .. vim.fn.expand("<cword>")
+        end, { expr = true })
       end,
     })
 
@@ -894,7 +897,7 @@ return require("packer").startup({
       config = function()
         require("bombeelu.lsp").sorbet.setup()
       end,
-      -- disable = true,
+      disable = true,
     })
 
     use({
@@ -1022,8 +1025,8 @@ return require("packer").startup({
         vim.api.nvim_create_user_command("FTermClose", require("FTerm").close, { bang = true })
         vim.api.nvim_create_user_command("FTermExit", require("FTerm").exit, { bang = true })
         vim.api.nvim_create_user_command("FTermToggle", require("FTerm").toggle, { bang = true })
-        vim.keymap.set("n", [[<C-\>]], require("FTerm").toggle)
-        vim.keymap.set("t", [[<C-\>]], '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+        -- vim.keymap.set("n", [[<C-\>]], require("FTerm").toggle)
+        -- vim.keymap.set("t", [[<C-\>]], '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
       end,
     })
 

@@ -180,7 +180,9 @@ M.setup = function(opts)
       --   filetypes = { "javascriptreact", "typescriptreact" },
       --   extra_args = { "--options-line-width", 100 },
       -- }),
-      null_ls.builtins.formatting.dprint,
+      null_ls.builtins.formatting.dprint.with({
+        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "toml", "json" },
+      }),
       null_ls.builtins.formatting.prettier.with({
         prefer_local = "node_modules/.bin",
       }),

@@ -35,19 +35,14 @@ vim.diagnostic.config({
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
 
--- lsp.go.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.ruby.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.clangd.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
 -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.rust.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
--- lsp.typescript.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
 

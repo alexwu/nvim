@@ -17,7 +17,7 @@ function M.on_attach(client, bufnr)
 
   vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
   local semanticTokensProviderFull = vim.tbl_get(client, "server_capabilities", "semanticTokensProvider", "full")
-  if not client.name == "eslint" and (semanticTokensProviderFull or client.name == "tsserver") then
+  if not client.name == "eslint" and semanticTokensProviderFull then
     vim.api.nvim_create_autocmd({ "BufEnter" }, {
       group = "LspDiagnosticsConfig",
       buffer = bufnr,
