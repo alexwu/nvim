@@ -79,6 +79,7 @@ return require("packer").startup({
               "case",
             },
           },
+          zindex = 41,
         })
       end,
     })
