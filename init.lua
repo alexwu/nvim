@@ -1,5 +1,5 @@
-local ok, plenary = pcall(require, "plenary")
-if ok then
+local has_plenary, _ = pcall(require, "plenary")
+if has_plenary then
   require("globals")
   require("bombeelu.nvim")
   require("bombeelu.autocmd")
@@ -13,8 +13,8 @@ if vim.g.vscode then
 elseif vim.g.neovide then
   require("neovide")
 else
-  local ok, _ = pcall(require, "impatient")
-  if ok then
+  local has_impatient, _ = pcall(require, "impatient")
+  if has_impatient then
     require("impatient")
   end
 end
