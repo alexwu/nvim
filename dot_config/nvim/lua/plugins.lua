@@ -43,7 +43,7 @@ return require("packer").startup({
     })
 
     -- use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
-    use({ "~/Code/nvim-snazzy", requires = "rktjmp/lush.nvim" })
+    use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -195,7 +195,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        -- "~/Projects/neovim/cmp-treesitter",
+        "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -638,13 +638,13 @@ return require("packer").startup({
       run = "npm install --legacy-peer-deps && npm run compile",
     })
 
-    -- use({
-    --   "gennaro-tedesco/nvim-jqx",
-    --   ft = { "json" },
-    --   cond = function()
-    --     return not vim.g.vscode
-    --   end,
-    -- })
+    use({
+      "gennaro-tedesco/nvim-jqx",
+      ft = { "json" },
+      cond = function()
+        return not vim.g.vscode
+      end,
+    })
 
     use({
       "kevinhwang91/nvim-bqf",
@@ -898,7 +898,7 @@ return require("packer").startup({
       config = function()
         require("bombeelu.lsp").sorbet.setup()
       end,
-      disable = true,
+      disable = false,
     })
 
     use({
@@ -992,15 +992,6 @@ return require("packer").startup({
       end,
     })
 
-    -- use({
-    --   "b0o/incline.nvim",
-    --   config = function()
-    --     if not vim.g.vscode then
-    --       require("incline").setup()
-    --     end
-    --   end,
-    -- })
-    --
     use({
       "jghauser/kitty-runner.nvim",
       config = function()
