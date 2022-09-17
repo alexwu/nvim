@@ -885,12 +885,6 @@ return require("packer").startup({
     --   end,
     -- })
     --
-    use({
-      "mrjones2014/legendary.nvim",
-      config = function()
-        require("plugins.legendary").setup()
-      end,
-    })
 
     use({
       "~/Projects/neovim/ruby.nvim",
