@@ -47,20 +47,20 @@ require("gitsigns").setup({
 
     -- Actions
     map({ "n", "v" }, "gsh", gs.stage_hunk)
+    map({ "n", "v" }, "gsrh", gs.reset_hunk)
+    map("n", "gsuh", gs.undo_stage_hunk)
+
     map("n", "gsb", gs.stage_buffer)
-    map({ "n", "v" }, "<leader>rh", gs.reset_hunk)
-    map("n", "grb", gs.reset_buffer)
-    map("n", "guh", gs.undo_stage_hunk)
-    map("n", "gph", gs.preview_hunk)
+    map("n", "gsrb", gs.reset_buffer)
+
+    map("n", "gsph", gs.preview_hunk)
     map("n", "M", function()
       gs.blame_line({ full = true, ignore_whitespace = true })
     end)
-    map("n", "gtb", gs.toggle_current_line_blame)
-    map("n", "ghd", gs.diffthis)
+    map("n", "gsdh", gs.diffthis)
     map("n", "ghD", function()
       gs.diffthis("~")
     end)
-    map("n", "gtd", gs.toggle_deleted)
 
     map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
   end,
