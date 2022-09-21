@@ -211,6 +211,9 @@ M.setup = function(opts)
       -- null_ls.builtins.code_actions.gitsigns,
     },
     on_attach = on_attach,
+    should_attach = function(bufnr)
+      return not vim.bo[bufnr].buftype == "nofile"
+    end,
   })
 end
 
