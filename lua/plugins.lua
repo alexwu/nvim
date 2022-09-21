@@ -32,16 +32,6 @@ return require("packer").startup({
 
     use({ "tpope/vim-repeat" })
 
-    use({
-      "antoinemadec/FixCursorHold.nvim",
-      config = function()
-        vim.g.cursorhold_updatetime = 100
-      end,
-      cond = function()
-        return not vim.g.vscode
-      end,
-    })
-
     -- use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
     use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
 
@@ -1035,7 +1025,6 @@ return require("packer").startup({
       requires = {
         "nvim-lua/plenary.nvim",
         "nvim-treesitter/nvim-treesitter",
-        "antoinemadec/FixCursorHold.nvim",
         "haydenmeade/neotest-jest",
         "olimorris/neotest-rspec",
       },
