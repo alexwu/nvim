@@ -1045,11 +1045,11 @@ return require("packer").startup({
       "ggandor/leap.nvim",
       config = function()
         require("leap").setup({
-          highlight_unlabled = true,
-          max_aot_targets = 2,
+          highlight_unlabeled = true,
+          -- max_aot_targets = 5,
         })
 
-        set("n", "<Tab>", function()
+        set({ "n", "o" }, "<Tab>", function()
           require("leap").leap({ target_windows = { vim.fn.win_getid() } })
         end)
       end,

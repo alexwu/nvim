@@ -3,13 +3,13 @@ local hop = require("hop")
 local ts = require("plugins.hop.ts")
 local custom = require("plugins.hop.custom")
 
-hop.setup({})
+hop.setup()
 
 -- set({ "n", "x", "o" }, { "<Tab>", "S", "ss", "<Bslash>" }, function()
 --   hop.hint_char2({ multi_windows = false })
 -- end, { desc = "Hop to a specified character" })
 
-set({ "n", "o" }, { "s", "<Bslash>w" }, function()
+set({ "n" }, { "<Bslash>w" }, function()
   custom.hint_wordmotion({ current_line_only = false })
 end, { desc = "Hop forward to a word" })
 
@@ -33,11 +33,11 @@ set("n", { "<Bslash>r", "sr" }, function()
   custom.hint_usages({ multi_windows = false })
 end, { desc = "Hop to usage of word under cursor" })
 
-set({ "n", "o" }, "sf", function()
+set({ "n" }, "sf", function()
   hop.hint_char1({ direction = require("hop.hint").HintDirection.AFTER_CURSOR, current_line_only = true })
 end, { desc = "Hop forward on current line" })
 
-set({ "n", "o" }, "sF", function()
+set({ "n" }, "sF", function()
   hop.hint_char1({ direction = require("hop.hint").HintDirection.BEFORE_CURSOR, current_line_only = true })
 end, { desc = "Hop backward on current line" })
 
