@@ -117,15 +117,15 @@ return require("packer").startup({
       end,
     })
 
-    -- use({
-    --   "sheerun/vim-polyglot",
-    --   setup = function()
-    --     vim.g.polyglot_disabled = { "sensible", "ftdetect", "lua" }
-    --   end,
-    --   cond = function()
-    --     return not vim.g.vscode
-    --   end,
-    -- })
+    use({
+      "sheerun/vim-polyglot",
+      setup = function()
+        vim.g.polyglot_disabled = { "sensible", "ftdetect", "lua", "rust", "typescript", "typescriptreact" }
+      end,
+      cond = function()
+        return not vim.g.vscode
+      end,
+    })
 
     use({
       "knubie/vim-kitty-navigator",
@@ -800,19 +800,9 @@ return require("packer").startup({
     })
 
     use({
-      "linty-org/key-menu.nvim",
-      setup = function()
-        vim.o.timeoutlen = 500
-      end,
+      "folke/which-key.nvim",
       config = function()
-        require("key-menu").set("n", "<Leader>")
-        require("key-menu").set("n", "s")
-        require("key-menu").set("n", "[")
-        require("key-menu").set("n", "]")
-        require("key-menu").set("n", "<Bslash>")
-      end,
-      cond = function()
-        return vim.g.vscode
+        require("which-key").setup({})
       end,
     })
 
