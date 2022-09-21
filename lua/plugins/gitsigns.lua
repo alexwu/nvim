@@ -50,7 +50,7 @@ require("gitsigns").setup({
         gs.next_hunk()
       end)
       return "<Ignore>"
-    end, { expr = true })
+    end, { expr = true, desc = "Next Git hunk" })
 
     map("n", "[c", function()
       if vim.wo.diff then
@@ -60,25 +60,25 @@ require("gitsigns").setup({
         gs.prev_hunk()
       end)
       return "<Ignore>"
-    end, { expr = true })
+    end, { expr = true, desc = "Previous Git hunk" })
 
     -- Actions
-    map({ "n", "v" }, "gsh", gs.stage_hunk)
-    map({ "n", "v" }, "gsrh", gs.reset_hunk)
-    map("n", "gsuh", gs.undo_stage_hunk)
+    map({ "n", "v" }, "gsh", gs.stage_hunk, { desc = "Stage Git hunk" })
+    map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
+    map("n", "gsuh", gs.undo_stage_hunk, { desc = "Undo stage Git hunk" })
 
-    map("n", "gsb", gs.stage_buffer)
-    map("n", "gsrb", gs.reset_buffer)
+    map("n", "gsb", gs.stage_buffer, { desc = "Stage Git buffer" })
+    map("n", "gsrb", gs.reset_buffer, { desc = "Reset Git buffer" })
 
-    map("n", "gsph", gs.preview_hunk)
+    map("n", "gsph", gs.preview_hunk, { desc = "Preview Git hunk" })
     map("n", "M", function()
       gs.blame_line({ full = true, ignore_whitespace = true })
-    end)
-    map("n", "gsdh", gs.diffthis)
+    end, { desc = "Show Git blame" })
+    map("n", "gsdh", gs.diffthis, { desc = "Git diff" })
     map("n", "ghD", function()
       gs.diffthis("~")
     end)
 
-    map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
+    map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Inner Git hunk" })
   end,
 })
