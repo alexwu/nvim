@@ -1,10 +1,10 @@
+local tree = require("nvim-tree")
 local lib = require("nvim-tree.lib")
 local view = require("nvim-tree.view")
-local set = vim.keymap.set
-local tree = require("nvim-tree")
-local tree_width = require("utils").tree_width
 local open_file = require("nvim-tree.actions.node.open-file")
 local change_dir = require("nvim-tree.actions.root.change-dir")
+
+local tree_width = require("utils").tree_width
 
 local vinegar = nil
 
@@ -70,7 +70,7 @@ tree.setup({
   disable_netrw = true,
   hijack_netrw = true,
   hijack_cursor = true,
-  hijack_unnamed_buffer_when_opening = false,
+  hijack_unnamed_buffer_when_opening = true,
   update_cwd = true,
   respect_buf_cwd = true,
   ignore_ft_on_setup = { "startify", "dashboard", "netrw", "help" },
@@ -79,11 +79,11 @@ tree.setup({
       enable = true,
       open_win_config = {
         height = math.max(vim.o.lines - 6, 20),
+        width = tree_width(0.3),
         -- height = 0.9,
       },
     },
-    adaptive_size = true,
-    width = tree_width(0.3),
+    adaptive_size = false,
     preserve_window_proportions = false,
     hide_root_folder = true,
     mappings = {
@@ -109,7 +109,7 @@ tree.setup({
     ignore_list = { "help" },
   },
   hijack_directories = {
-    enable = false,
+    enable = true,
   },
   diagnostics = {
     enable = true,

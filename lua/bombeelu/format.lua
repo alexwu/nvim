@@ -11,7 +11,8 @@ end
 
 local function bedazzle()
   return {
-    exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/release/bedazzle"),
+    -- exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/release/bedazzle"),
+    exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle-cli"),
     name = "Bedazzle",
     args = { "--stdin" },
     stdin = true,
@@ -45,10 +46,11 @@ end
 
 local function rufo()
   return {
-    exe = "cat",
+    exe = "echo",
     name = "Rufo",
     args = {
       "-",
+      "|",
       "rufo",
       "--filename",
       util.escape_path(util.get_current_buffer_file_path()),
@@ -141,6 +143,7 @@ local function format_range()
 end
 
 set({ "n" }, { "<F8>", "<Leader>y", "gq" }, lazy(format), { silent = true, desc = "Format" })
+set({ "i" }, { "<F8>" }, lazy(format), { silent = true, desc = "Format" })
 set({ "v" }, { "<F8>", "<Leader>y" }, lazy(format_range), { silent = true, desc = "Format range" })
 
 vim.cmd([[

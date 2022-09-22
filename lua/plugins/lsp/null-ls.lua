@@ -163,7 +163,7 @@ local gh_comments = {
   }),
 }
 
--- null_ls.register(gh_comments)
+null_ls.register(gh_comments)
 
 M.setup = function(opts)
   opts = opts or {}
@@ -191,7 +191,7 @@ M.setup = function(opts)
         cwd = function(_params)
           return vim.fs.dirname(
             vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
-          ) or vim.fn.expand("~/.config/nvim/selene.toml") -- fallback value
+          ) or vim.fn.expand("~/.config/nvim/selene.toml")
         end,
       }),
       require("plugins.lsp.null-ls.code_actions.selene").with({
@@ -211,7 +211,7 @@ M.setup = function(opts)
     },
     on_attach = on_attach,
     should_attach = function(bufnr)
-      return not vim.bo[bufnr].buftype == "nofile"
+      return vim.bo[bufnr].buftype ~= "nofile"
     end,
   })
 end
