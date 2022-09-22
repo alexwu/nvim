@@ -169,8 +169,7 @@ M.setup = function(opts)
   opts = opts or {}
 
   null_ls.setup({
-    -- log_level = "debug",
-    debug = false,
+    debug = true,
     sources = {
       -- null_ls.builtins.formatting.pg_format,
       null_ls.builtins.formatting.black,

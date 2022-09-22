@@ -6,6 +6,7 @@ return {
     ["dot_vimrc"] = "vimrc",
     ["dot_ideavimrc"] = "vimrc",
     ["dot_zshrc"] = "zsh",
+    Justfile = "just",
   },
   shebang = {
     ["/usr/bin/node"] = "javascript",

@@ -33,7 +33,7 @@ return require("packer").startup({
     use({ "tpope/vim-repeat" })
 
     -- use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
-    use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
+    use({ "~/Code/nvim-snazzy", requires = "rktjmp/lush.nvim" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -72,6 +72,7 @@ return require("packer").startup({
           zindex = 41,
         })
       end,
+      disable = false,
     })
 
     use({
@@ -139,6 +140,7 @@ return require("packer").startup({
       cond = function()
         return vim.env.TERM == "xterm-kitty" and not vim.g.vscode
       end,
+      disable = false,
     })
 
     use({
@@ -170,7 +172,7 @@ return require("packer").startup({
       end,
     })
 
-    use({ "onsails/lspkind-nvim", opt = false })
+    use({ "onsails/lspkind-nvim" })
 
     use({
       "hrsh7th/nvim-cmp",
@@ -185,7 +187,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        "~/Projects/neovim/cmp-treesitter",
+        -- "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -269,6 +271,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -364,6 +367,7 @@ return require("packer").startup({
           },
         })
       end,
+      disable = true,
     })
 
     use({ "MunifTanjim/nui.nvim" })
@@ -475,34 +479,6 @@ return require("packer").startup({
       requires = { "neovim/nvim-lspconfig" },
       config = function()
         require("nvim-navic").setup({
-          icons = {
-            File = " ",
-            Module = " ",
-            Namespace = " ",
-            Package = " ",
-            Class = " ",
-            Method = " ",
-            Property = " ",
-            Field = " ",
-            Constructor = " ",
-            Enum = " ",
-            Interface = " ",
-            Function = " ",
-            Variable = " ",
-            Constant = " ",
-            String = " ",
-            Number = " ",
-            Boolean = " ",
-            Array = " ",
-            Object = " ",
-            Key = " ",
-            Null = " ",
-            EnumMember = " ",
-            Struct = " ",
-            Event = " ",
-            Operator = " ",
-            TypeParameter = " ",
-          },
           highlight = true,
         })
       end,
@@ -540,7 +516,6 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
-      disable = false,
     })
 
     use({
@@ -556,7 +531,7 @@ return require("packer").startup({
 
     use({
       "jose-elias-alvarez/null-ls.nvim",
-      requires = { "lewis6991/gitsigns.nvim", "williamboman/mason.nvim" },
+      requires = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
       config = function()
         require("plugins.lsp.null-ls").setup()
       end,
@@ -708,6 +683,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -746,6 +722,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = false,
     })
 
     use({
@@ -775,6 +752,7 @@ return require("packer").startup({
         return not vim.g.vscode
       end,
       event = "InsertEnter",
+      disable = false,
     })
 
     use({
@@ -784,7 +762,6 @@ return require("packer").startup({
         return not vim.g.vscode
       end,
     })
-    use({ "tpope/vim-fugitive" })
     use({ "tpope/vim-rails", ft = "ruby", disable = true })
     use({ "chaoren/vim-wordmotion", disable = false })
     use({ "AndrewRadev/splitjoin.vim", disable = true })
@@ -818,14 +795,6 @@ return require("packer").startup({
       end,
       cond = function()
         return vim.g.vscode
-      end,
-    })
-
-    use({
-      "echasnovski/mini.nvim",
-      branch = "stable",
-      require = function()
-        require("mini.bufremove").setup({})
       end,
     })
 
@@ -872,7 +841,7 @@ return require("packer").startup({
       config = function()
         require("bombeelu.lsp").sorbet.setup()
       end,
-      disable = false,
+      disable = true,
     })
 
     use({
@@ -967,13 +936,6 @@ return require("packer").startup({
     })
 
     use({
-      "jghauser/kitty-runner.nvim",
-      config = function()
-        -- require("kitty-runner").setup()
-      end,
-    })
-
-    use({
       "IndianBoy42/tree-sitter-just",
       config = function()
         require("tree-sitter-just").setup()
@@ -1021,14 +983,7 @@ return require("packer").startup({
       config = function()
         require("bombeelu.neotest").setup()
       end,
-    })
-
-    use({
-      "vigoux/notifier.nvim",
-      config = function()
-        require("notifier").setup({})
-      end,
-      disable = true,
+      disable = false,
     })
 
     use({
@@ -1039,21 +994,20 @@ return require("packer").startup({
           disable_lsp_decorations = true,
         })
       end,
+      disable = false,
     })
 
     use({
       "ggandor/leap.nvim",
       config = function()
         require("leap").setup({
-          highlight_unlabeled = true,
-          -- max_aot_targets = 5,
+          highlight_unlabled = true,
         })
 
         set({ "n", "o" }, "<Tab>", function()
           require("leap").leap({ target_windows = { vim.fn.win_getid() } })
         end)
       end,
-      disable = false,
     })
 
     use({
@@ -1065,6 +1019,7 @@ return require("packer").startup({
           })
         end
       end,
+      disable = true,
     })
 
     use({
@@ -1084,13 +1039,6 @@ return require("packer").startup({
 
         vim.keymap.set("n", "gS", spread.out, default_options)
         vim.keymap.set("n", "gJ", spread.combine, default_options)
-      end,
-    })
-
-    use({
-      "tversteeg/registers.nvim",
-      setup = function()
-        vim.g.registers_window_border = "rounded"
       end,
     })
 

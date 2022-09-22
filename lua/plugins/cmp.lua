@@ -77,17 +77,17 @@ cmp.setup({
   }),
   comparators = {
     compare.exact,
+    compare.locality,
     require("cmp_tabnine.compare"),
     require("copilot_cmp.comparators").prioritize,
     require("copilot_cmp.comparators").score,
-    compare.locality,
     compare.recently_used,
     compare.offset,
     compare.scopes,
     compare.score,
     compare.kind,
-    compare.sort_text,
     compare.length,
+    -- compare.sort_text,
   },
   snippet = {
     expand = function(args)
@@ -138,7 +138,7 @@ cmp.setup({
         menu = {
           buffer = "[Buffer]",
           cmp_tabnine = "[TabNine]",
-          copilot = "[]",
+          copilot = "[copilot]",
           crates = "[Crates]",
           luasnip = "[LuaSnip]",
           npm = "[npm]",
