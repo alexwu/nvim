@@ -6,6 +6,8 @@ local repeatable = require("bombeelu.repeat").mk_repeatable
 
 vim.g.mapleader = " "
 
+set("n", "S", "<Nop>")
+
 key.map(
   { "j", "<Down>" },
   'v:count || mode(1)[0:1] == "no" ? "j" : "gj"',

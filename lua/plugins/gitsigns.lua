@@ -47,7 +47,7 @@ require("gitsigns").setup({
         return "]c"
       end
       vim.schedule(function()
-        gs.next_hunk({ navigation_message = false, preview = true })
+        gs.next_hunk({ navigation_message = false, preview = false })
       end)
       return "<Ignore>"
     end, { expr = true, desc = "Next Git hunk" })
@@ -57,7 +57,7 @@ require("gitsigns").setup({
         return "[c"
       end
       vim.schedule(function()
-        gs.prev_hunk({ navigation_message = false, preview = true })
+        gs.prev_hunk({ navigation_message = false, preview = false })
       end)
       return "<Ignore>"
     end, { expr = true, desc = "Previous Git hunk" })

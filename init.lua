@@ -31,3 +31,4 @@ end
 require("bombeelu.pin").setup()
 require("bombeelu.visual-surround").setup()
 require("bombeelu.refactoring").setup()
+require("bombeelu.just").setup()

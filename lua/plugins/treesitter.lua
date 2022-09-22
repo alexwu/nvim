@@ -117,4 +117,13 @@ require("nvim-treesitter.parsers").ft_to_lang = function(ft)
   return ft_to_lang(ft)
 end
 
+require("nvim-treesitter.parsers").get_parser_configs().just = {
+  install_info = {
+    url = "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
+    files = { "src/parser.c", "src/scanner.cc" },
+    branch = "main",
+  },
+  maintainers = { "@IndianBoy42" },
+}
+
 require("bombeelu.treesitter").init()
