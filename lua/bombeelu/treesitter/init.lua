@@ -109,7 +109,7 @@ function M.attach(bufnr)
   local group_name = string.format("NvimTreesitterCurrentNode_%d", bufnr)
   vim.api.nvim_create_augroup(group_name, { clear = true })
 
-  vim.api.nvim_create_autocmd({ "CursorHold" }, {
+  vim.api.nvim_create_autocmd({ "CursorMoved" }, {
     group = group_name,
     callback = function()
       require("bombeelu.treesitter").highlight_current_node(bufnr)
