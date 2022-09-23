@@ -18,6 +18,27 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 return require("packer").startup({
   function()
+    local local_use = function(first, second, opts)
+      opts = opts or {}
+
+      local plug_path, home
+      if second == nil then
+        plug_path = first
+        home = "jamesbombeelu"
+      else
+        plug_path = second
+        home = first
+      end
+
+      if vim.fn.isdirectory(vim.fn.expand("~/Code/" .. plug_path)) == 1 then
+        opts[1] = "~/Code/" .. plug_path
+      else
+        opts[1] = string.format("%s/%s", home, plug_path)
+      end
+
+      use(opts)
+    end
+
     -- Minimal setup
     use_rocks({ "penlight", "luafilesystem" })
     use({ "wbthomason/packer.nvim" })
@@ -87,7 +108,7 @@ return require("packer").startup({
 
     use({
       "phaazon/hop.nvim",
-      requires = { "nvim-telescope/telescope.nvim", "nvim-treesitter/nvim-treesitter" },
+      requires = { "nvim-telescope/telescope.nvim", "nvim-treesitter/nvim-treesitter", "kylechui/nvim-surround" },
       config = function()
         require("plugins.hop")
       end,
@@ -943,7 +964,7 @@ return require("packer").startup({
         require("lsp_lines").setup()
         vim.diagnostic.config({ virtual_lines = false })
 
-        vim.keymap.set("n", "gl", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
+        vim.keymap.set("n", "gL", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
       end,
     })
 
@@ -1031,8 +1052,8 @@ return require("packer").startup({
           alpha = 0.5,
           blend_color = "#282a36",
           update_in_insert = {
-            enable = true,
-            delay = 100,
+            enable = false,
+            delay = 400,
           },
           hide = {
             virtual_text = true,
@@ -1047,15 +1068,13 @@ return require("packer").startup({
       "ggandor/leap.nvim",
       config = function()
         require("leap").setup({
-          highlight_unlabeled = true,
-          -- max_aot_targets = 5,
+          highlight_unlabled = true,
         })
 
         set({ "n", "o" }, "<Tab>", function()
           require("leap").leap({ target_windows = { vim.fn.win_getid() } })
         end)
       end,
-      disable = false,
     })
 
     use({
@@ -1086,13 +1105,6 @@ return require("packer").startup({
 
         vim.keymap.set("n", "gS", spread.out, default_options)
         vim.keymap.set("n", "gJ", spread.combine, default_options)
-      end,
-    })
-
-    use({
-      "tversteeg/registers.nvim",
-      setup = function()
-        vim.g.registers_window_border = "rounded"
       end,
     })
 
