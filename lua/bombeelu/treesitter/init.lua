@@ -17,7 +17,7 @@ function M.init()
   require("nvim-treesitter").define_modules({
     highlight_current_node = {
       module_path = "bombeelu.treesitter",
-      enable = true,
+      enable = false,
       disable = {},
       is_supported = function(lang)
         return parser.has_parser(lang) and lang ~= "help"
@@ -28,7 +28,7 @@ end
 
 -- TODO: Set this equal to the config value
 M.config = {
-  enable = true,
+  enable = false,
   excluded_filetypes = { "help" },
 }
 

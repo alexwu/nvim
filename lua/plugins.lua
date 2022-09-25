@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 return require("packer").startup({
   function()
-    local local_use = function(first, second, opts)
+    local use_local = function(first, second, opts)
       opts = opts or {}
 
       local plug_path, home
@@ -53,7 +53,7 @@ return require("packer").startup({
 
     use({ "tpope/vim-repeat" })
 
-    local_use("alexwu", "nvim-snazzy", { requires = "rktjmp/lush.nvim", branch = "lush" })
+    use_local("alexwu", "nvim-snazzy", { requires = "rktjmp/lush.nvim", branch = "lush" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
