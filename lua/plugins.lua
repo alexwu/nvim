@@ -53,8 +53,7 @@ return require("packer").startup({
 
     use({ "tpope/vim-repeat" })
 
-    -- use({ "alexwu/nvim-snazzy", requires = "rktjmp/lush.nvim", branch = "lush" })
-    use({ "~/Projects/neovim/nvim-snazzy", requires = "rktjmp/lush.nvim" })
+    local_use("alexwu", "nvim-snazzy", { requires = "rktjmp/lush.nvim", branch = "lush" })
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -206,7 +205,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        "~/Projects/neovim/cmp-treesitter",
+        -- "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -369,24 +368,6 @@ return require("packer").startup({
       end,
     })
 
-    use({
-      "axkirillov/easypick.nvim",
-      requires = "nvim-telescope/telescope.nvim",
-      config = function()
-        local easypick = require("easypick")
-
-        easypick.setup({
-          pickers = {
-            {
-              name = "conflicts",
-              command = "git diff --name-only --diff-filter=U --relative",
-              previewer = easypick.previewers.file_diff(),
-            },
-          },
-        })
-      end,
-    })
-
     use({ "MunifTanjim/nui.nvim" })
 
     use({
@@ -496,34 +477,6 @@ return require("packer").startup({
       requires = { "neovim/nvim-lspconfig" },
       config = function()
         require("nvim-navic").setup({
-          icons = {
-            File = " ",
-            Module = " ",
-            Namespace = " ",
-            Package = " ",
-            Class = " ",
-            Method = " ",
-            Property = " ",
-            Field = " ",
-            Constructor = " ",
-            Enum = " ",
-            Interface = " ",
-            Function = " ",
-            Variable = " ",
-            Constant = " ",
-            String = " ",
-            Number = " ",
-            Boolean = " ",
-            Array = " ",
-            Object = " ",
-            Key = " ",
-            Null = " ",
-            EnumMember = " ",
-            Struct = " ",
-            Event = " ",
-            Operator = " ",
-            TypeParameter = " ",
-          },
           highlight = true,
         })
       end,
@@ -561,7 +514,6 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
-      disable = false,
     })
 
     use({
@@ -842,14 +794,6 @@ return require("packer").startup({
       end,
     })
 
-    use({
-      "echasnovski/mini.nvim",
-      branch = "stable",
-      require = function()
-        require("mini.bufremove").setup({})
-      end,
-    })
-
     --       use({
     --         "~/Projects/neovim/spectacle.nvim",
     --         requires = {
@@ -893,7 +837,7 @@ return require("packer").startup({
       config = function()
         require("bombeelu.lsp").sorbet.setup()
       end,
-      disable = false,
+      disable = true,
     })
 
     use({
@@ -984,13 +928,6 @@ return require("packer").startup({
       end,
       cond = function()
         return not vim.g.vscode
-      end,
-    })
-
-    use({
-      "jghauser/kitty-runner.nvim",
-      config = function()
-        -- require("kitty-runner").setup()
       end,
     })
 

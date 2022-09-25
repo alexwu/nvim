@@ -33,8 +33,6 @@ nvim.create_autocmd({ "BufEnter" }, {
   pattern = "*",
   group = "bombeelu.autocmd",
   callback = function()
-    vim.opt.formatoptions:remove({"c", "o", "r"})
-    -- vim.opt.formatoptions:remove("o")
-    -- vim.opt.formatoptions:remove("r")
+    vim.opt.formatoptions:remove({ "c", "o", "r" })
   end,
 })
