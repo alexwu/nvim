@@ -46,18 +46,18 @@ lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
 
-local function hover()
-  local filetype = detect(vim.api.nvim_buf_get_name(0))
-  if vim.tbl_contains({ "vim", "help" }, filetype) then
-    vim.cmd("h " .. vim.fn.expand("<cword>"))
-  elseif vim.tbl_contains({ "man" }, filetype) then
-    vim.cmd("Man " .. vim.fn.expand("<cword>"))
-  elseif vim.fn.expand("%:t") == "Cargo.toml" then
-    require("crates").show_popup()
-  else
-    vim.lsp.buf.hover()
-  end
-end
+-- local function hover()
+--   local filetype = detect(vim.api.nvim_buf_get_name(0))
+--   if vim.tbl_contains({ "vim", "help" }, filetype) then
+--     vim.cmd("h " .. vim.fn.expand("<cword>"))
+--   elseif vim.tbl_contains({ "man" }, filetype) then
+--     vim.cmd("Man " .. vim.fn.expand("<cword>"))
+--   elseif vim.fn.expand("%:t") == "Cargo.toml" then
+--     require("crates").show_popup()
+--   else
+--     vim.lsp.buf.hover()
+--   end
+-- end
 
 vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
 
@@ -75,11 +75,11 @@ local function smart_diagnostic_hover()
   })
 end
 
-vim.api.nvim_create_autocmd("CursorHold", {
-  group = "LspDiagnosticsConfig",
-  callback = smart_diagnostic_hover,
-})
-
+-- vim.api.nvim_create_autocmd("CursorHold", {
+--   group = "LspDiagnosticsConfig",
+--   callback = smart_diagnostic_hover,
+-- })
+--
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
   group = "LspDiagnosticsConfig",
   callback = function()
@@ -105,7 +105,10 @@ set(
   "n",
   "]d",
   rpt(function()
-    vim.diagnostic.goto_next({ float = false })
+    vim.diagnostic.goto_next({ float = {
+      border = "rounded",
+      focusable = false,
+    } })
   end),
   { silent = true, desc = "Go to next diagnostic" }
 )
@@ -114,7 +117,12 @@ set(
   "n",
   "[d",
   rpt(function()
-    vim.diagnostic.goto_prev({ float = false })
+    vim.diagnostic.goto_prev({
+      float = {
+        border = "rounded",
+        focusable = false,
+      },
+    })
   end),
   { silent = true, desc = "Go to previous diagnostic" }
 )
@@ -123,21 +131,21 @@ set({ "n", "x" }, "<Leader>a", function()
   vim.lsp.buf.code_action()
 end, { silent = true, desc = "Select a code action" })
 
-set(
-  "n",
-  "ga",
-  rpt(function()
-    vim.lsp.buf.code_action({
-      apply = true,
-      filter = function(action)
-        return action.preferred == true
-      end,
-    })
-  end),
-  { silent = true, desc = "Apply preferred code action" }
-)
-
-set("n", "K", hover, { silent = true })
+-- set(
+--   "n",
+--   "ga",
+--   rpt(function()
+--     vim.lsp.buf.code_action({
+--       apply = true,
+--       filter = function(action)
+--         return action.preferred == true
+--       end,
+--     })
+--   end),
+--   { silent = true, desc = "Apply preferred code action" }
+-- )
+--
+-- set("n", "K", hover, { silent = true })
 
 augroup("LspCustom", { clear = true })
 
@@ -149,9 +157,9 @@ autocmd("FileType", {
   end,
 })
 
-autocmd("DiagnosticChanged", {
-  group = "LspCustom",
-  callback = function()
-    vim.diagnostic.setloclist({ open = false })
-  end,
-})
+-- autocmd("DiagnosticChanged", {
+--   group = "LspCustom",
+--   callback = function()
+--     vim.diagnostic.setloclist({ open = false })
+--   end,
+-- })

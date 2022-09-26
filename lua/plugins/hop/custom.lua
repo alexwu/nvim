@@ -164,7 +164,7 @@ function M.hint_wordmotion(opts)
   else
     generator = jump_target.jump_targets_by_scanning_lines
   end
-
+  vim.pretty_print(generator(regex_by_word_start()))
   hint_with(generator(regex_by_word_start()), opts)
 end
 

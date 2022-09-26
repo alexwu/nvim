@@ -12,7 +12,8 @@ end
 local function bedazzle()
   return {
     -- exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/release/bedazzle"),
-    exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle-cli"),
+    exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/release/bedazzle-cli"),
+    -- exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle-cli"),
     name = "Bedazzle",
     args = { "--stdin" },
     stdin = true,

@@ -18,22 +18,13 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 return require("packer").startup({
   function()
-    local use_local = function(first, second, opts)
+    local use_local = function(author, plugin, opts)
       opts = opts or {}
 
-      local plug_path, home
-      if second == nil then
-        plug_path = first
-        home = "jamesbombeelu"
+      if vim.fn.isdirectory(vim.fs.normalize("~/Code/" .. plugin)) == 1 then
+        opts[1] = "~/Code/" .. plugin
       else
-        plug_path = second
-        home = first
-      end
-
-      if vim.fn.isdirectory(vim.fn.expand("~/Code/" .. plug_path)) == 1 then
-        opts[1] = "~/Code/" .. plug_path
-      else
-        opts[1] = string.format("%s/%s", home, plug_path)
+        opts[1] = string.format("%s/%s", author, plugin)
       end
 
       use(opts)
@@ -92,6 +83,7 @@ return require("packer").startup({
           zindex = 41,
         })
       end,
+      disable = false,
     })
 
     use({
@@ -190,7 +182,7 @@ return require("packer").startup({
       end,
     })
 
-    use({ "onsails/lspkind-nvim", opt = false })
+    use({ "onsails/lspkind-nvim" })
 
     use({
       "hrsh7th/nvim-cmp",
@@ -529,7 +521,7 @@ return require("packer").startup({
 
     use({
       "jose-elias-alvarez/null-ls.nvim",
-      requires = { "lewis6991/gitsigns.nvim", "williamboman/mason.nvim" },
+      requires = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
       config = function()
         require("plugins.lsp.null-ls").setup()
       end,
@@ -681,6 +673,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -715,10 +708,21 @@ return require("packer").startup({
         require("git-conflict").setup({
           disable_diagnostics = true,
         })
+
+        vim.api.nvim_create_autocmd("User", {
+          pattern = "GitConflictDetected",
+          callback = function()
+            vim.notify("Conflict detected in " .. vim.fn.expand("<afile>"))
+            vim.cmd([[GitConflictListQf]])
+            -- engage.conflict_buster()
+            -- create_buffer_local_mappings()
+          end,
+        })
       end,
       cond = function()
         return not vim.g.vscode
       end,
+      disable = false,
     })
 
     use({
@@ -748,6 +752,7 @@ return require("packer").startup({
         return not vim.g.vscode
       end,
       event = "InsertEnter",
+      disable = false,
     })
 
     use({
@@ -757,7 +762,6 @@ return require("packer").startup({
         return not vim.g.vscode
       end,
     })
-    use({ "tpope/vim-fugitive" })
     use({ "tpope/vim-rails", ft = "ruby", disable = true })
     use({ "chaoren/vim-wordmotion", disable = false })
     use({ "AndrewRadev/splitjoin.vim", disable = true })
@@ -765,10 +769,9 @@ return require("packer").startup({
     use({
       "beauwilliams/focus.nvim",
       config = function()
-        require("plugins.focus")
-      end,
-      cond = function()
-        return not vim.g.vscode
+        if not vim.g.vscode then
+          require("plugins.focus")
+        end
       end,
     })
 
@@ -833,11 +836,11 @@ return require("packer").startup({
 
     use({
       "~/Projects/neovim/ruby.nvim",
+      -- "alexwu/ruby.nvim",
       requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
       config = function()
         require("bombeelu.lsp").sorbet.setup()
       end,
-      disable = true,
     })
 
     use({
@@ -1042,6 +1045,33 @@ return require("packer").startup({
 
         vim.keymap.set("n", "gS", spread.out, default_options)
         vim.keymap.set("n", "gJ", spread.combine, default_options)
+      end,
+    })
+
+    use({
+      "lewis6991/hover.nvim",
+      config = function()
+        require("hover").setup({
+          init = function()
+            -- Require providers
+            require("hover.providers.lsp")
+            require("hover.providers.gh")
+            -- require('hover.providers.jira')
+            -- require('hover.providers.man')
+            -- require('hover.providers.dictionary')
+          end,
+          preview_opts = {
+            border = "rounded",
+          },
+          -- Whether the contents of a currently open hover window should be moved
+          -- to a :h preview-window when pressing the hover keymap.
+          preview_window = true,
+          title = false,
+        })
+
+        -- Setup keymaps
+        vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+        vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
       end,
     })
 

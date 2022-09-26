@@ -163,7 +163,7 @@ local gh_comments = {
   }),
 }
 
-null_ls.register(gh_comments)
+-- null_ls.register(gh_comments)
 
 M.setup = function(opts)
   opts = opts or {}
@@ -210,9 +210,6 @@ M.setup = function(opts)
       -- null_ls.builtins.code_actions.gitsigns,
     },
     on_attach = on_attach,
-    should_attach = function(bufnr)
-      return vim.bo[bufnr].buftype ~= "nofile"
-    end,
   })
 end
 

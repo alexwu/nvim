@@ -187,16 +187,15 @@ set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buff
 -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
 
 set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Select files" })
-set(
-  "n",
-  "<Leader>e",
-  lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
-  { desc = "Select oldfiles" }
-)
-set("n", "<Leader>d", lazy(builtin.diagnostics), { desc = "Select diagnostics " })
+-- set(
+--   "n",
+--   "<Leader>e",
+--   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
+--   { desc = "Select oldfiles" }
+-- )
+set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
+set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
 set("n", "<Leader>g", lazy(custom_pickers.git_changes), { desc = "Select from changed files since default branch" })
--- set("n", "<Leader>i", lazy(extensions.related_files.related_files), { desc = "Select related files" })
--- set("n", "<Leader>p", lazy(extensions.projects.projects), { noremap = true, silent = true, desc = "Select a project" })
 set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
 set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
 set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })

@@ -26,7 +26,6 @@ function M.init()
   })
 end
 
--- TODO: Set this equal to the config value
 M.config = {
   enable = false,
   excluded_filetypes = { "help" },
