@@ -1,4 +1,5 @@
 vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+vim.fn.setenv("NEOVIM_PLUGINS_LOCAL", "~/Code/neovim/plugins/")
 
 local needs_packer = require("utils").needs_packer
 local install_packer = require("utils").install_packer
@@ -20,9 +21,10 @@ return require("packer").startup({
   function()
     local use_local = function(author, plugin, opts)
       opts = opts or {}
+      local local_plugin_dir = vim.fs.normalize(vim.fn.getenv("NEOVIM_PLUGINS_LOCAL"))
 
-      if vim.fn.isdirectory(vim.fs.normalize("~/Code/" .. plugin)) == 1 then
-        opts[1] = "~/Code/" .. plugin
+      if vim.fn.isdirectory(local_plugin_dir .. plugin) == 1 then
+        opts[1] = local_plugin_dir .. plugin
       else
         opts[1] = string.format("%s/%s", author, plugin)
       end
@@ -198,7 +200,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        "~/Projects/neovim/cmp-treesitter",
+        "~/Code/neovim/plugins/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -782,7 +784,7 @@ return require("packer").startup({
         set("n", "w", "<Plug>WordMotion_w", { silent = true })
       end,
     })
-    use({ "AndrewRadev/splitjoin.vim", disable = true })
+    use({ "AndrewRadev/splitjoin.vim" })
 
     use({
       "beauwilliams/focus.nvim",
@@ -852,9 +854,7 @@ return require("packer").startup({
     -- })
     --
 
-    use({
-      "~/Projects/neovim/ruby.nvim",
-      -- "alexwu/ruby.nvim",
+    use_local("alexwu", "ruby.nvim", {
       requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
       config = function()
         if not vim.g.vscode then
@@ -1066,6 +1066,7 @@ return require("packer").startup({
         vim.keymap.set("n", "gS", spread.out, default_options)
         vim.keymap.set("n", "gJ", spread.combine, default_options)
       end,
+      disable = true,
     })
 
     use({
@@ -1101,6 +1102,8 @@ return require("packer").startup({
       -- optional for icon support
       requires = { "kyazdani42/nvim-web-devicons" },
     })
+
+    use({ "junegunn/vim-easy-align" })
 
     if packer_bootstrap then
       require("packer").sync()
