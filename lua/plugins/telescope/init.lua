@@ -193,6 +193,8 @@ set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }),
 --   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
 --   { desc = "Select oldfiles" }
 -- )
+
+-- Map a shortcut to open the picker.
 set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
 set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
 set("n", "<Leader>g", lazy(custom_pickers.git_changes), { desc = "Select from changed files since default branch" })

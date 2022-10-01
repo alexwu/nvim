@@ -24,7 +24,9 @@ end
 
 vim.diagnostic.config({
   virtual_text = false,
-  underline = {},
+  underline = {
+    severity = "error",
+  },
   signs = true,
   float = {
     show_header = false,
@@ -35,7 +37,6 @@ vim.diagnostic.config({
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
 
-lsp.clangd.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
 -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
@@ -46,18 +47,45 @@ lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
 lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
 
--- local function hover()
---   local filetype = detect(vim.api.nvim_buf_get_name(0))
---   if vim.tbl_contains({ "vim", "help" }, filetype) then
---     vim.cmd("h " .. vim.fn.expand("<cword>"))
---   elseif vim.tbl_contains({ "man" }, filetype) then
---     vim.cmd("Man " .. vim.fn.expand("<cword>"))
---   elseif vim.fn.expand("%:t") == "Cargo.toml" then
---     require("crates").show_popup()
---   else
---     vim.lsp.buf.hover()
---   end
+--- Sends an async request to all active clients attached to the current
+--- buffer.
+---
+---@param method (string) LSP method name
+---@param params (table|nil) Parameters to send to the server
+---@param handler (function|nil) See |lsp-handler|. Follows |lsp-handler-resolution|
+--
+---@returns 2-tuple:
+---  - Map of client-id:request-id pairs for all successful requests.
+---  - Function which can be used to cancel all the requests. You could instead
+---    iterate all clients and call their `cancel_request()` methods.
+---
+---@see |vim.lsp.buf_request()|
+-- local function request(method, params, handler)
+--   validate({
+--     method = { method, "s" },
+--     handler = { handler, "f", true },
+--   })
+--   return vim.lsp.buf_request(0, method, params, handler)
 -- end
+
+--- Hover info from ALL attached buffers
+function super_hover()
+  local params = vim.lsp.util.make_position_params()
+  -- request("textDocument/hover", params)
+end
+
+local function hover()
+  local filetype = detect(vim.api.nvim_buf_get_name(0))
+  if vim.tbl_contains({ "vim", "help" }, filetype) then
+    vim.cmd("h " .. vim.fn.expand("<cword>"))
+  elseif vim.tbl_contains({ "man" }, filetype) then
+    vim.cmd("Man " .. vim.fn.expand("<cword>"))
+  elseif vim.fn.expand("%:t") == "Cargo.toml" then
+    require("crates").show_popup()
+  else
+    vim.lsp.buf.hover()
+  end
+end
 
 vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
 
@@ -131,21 +159,7 @@ set({ "n", "x" }, "<Leader>a", function()
   vim.lsp.buf.code_action()
 end, { silent = true, desc = "Select a code action" })
 
--- set(
---   "n",
---   "ga",
---   rpt(function()
---     vim.lsp.buf.code_action({
---       apply = true,
---       filter = function(action)
---         return action.preferred == true
---       end,
---     })
---   end),
---   { silent = true, desc = "Apply preferred code action" }
--- )
---
--- set("n", "K", hover, { silent = true })
+set("n", "K", hover, { silent = true })
 
 augroup("LspCustom", { clear = true })
 

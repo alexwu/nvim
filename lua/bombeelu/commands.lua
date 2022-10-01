@@ -49,3 +49,6 @@ nvim.create_user_command("Reload", function(opts)
   local fargs = opts.fargs
   RELOAD(fargs[1])
 end, { nargs = 1 })
+
+nvim.create_user_command("Qa", "qa", {})
+nvim.create_user_command("Wq", "wq", {})

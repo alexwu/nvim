@@ -137,6 +137,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -197,7 +198,7 @@ return require("packer").startup({
         "nvim-treesitter/nvim-treesitter",
         "onsails/lspkind-nvim",
         "saadparwaiz1/cmp_luasnip",
-        -- "~/Projects/neovim/cmp-treesitter",
+        "~/Projects/neovim/cmp-treesitter",
         "tzachar/cmp-tabnine",
       },
       config = function()
@@ -266,6 +267,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -357,6 +359,8 @@ return require("packer").startup({
       requires = "nvim-telescope/telescope.nvim",
       config = function()
         require("telescope").load_extension("recent_files")
+
+        set("n", "<Leader>e", require("telescope").extensions.recent_files.pick, { noremap = true, silent = true })
       end,
     })
 
@@ -467,6 +471,9 @@ return require("packer").startup({
     use({
       "SmiteshP/nvim-navic",
       requires = { "neovim/nvim-lspconfig" },
+      setup = function()
+        vim.g.navic_silence = true
+      end,
       config = function()
         require("nvim-navic").setup({
           highlight = true,
@@ -556,6 +563,13 @@ return require("packer").startup({
       end,
     })
 
+    use({
+      "p00f/clangd_extensions.nvim",
+      ft = { "c", "cpp" },
+      config = function()
+        require("bombeelu.lsp").clangd.setup()
+      end,
+    })
     -- use({
     --   "ray-x/go.nvim",
     --   requires = "ray-x/guihua.lua",
@@ -673,7 +687,6 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
-      disable = true,
     })
 
     use({
@@ -722,7 +735,6 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
-      disable = false,
     })
 
     use({
@@ -763,7 +775,13 @@ return require("packer").startup({
       end,
     })
     use({ "tpope/vim-rails", ft = "ruby", disable = true })
-    use({ "chaoren/vim-wordmotion", disable = false })
+
+    use({
+      "chaoren/vim-wordmotion",
+      config = function()
+        set("n", "w", "<Plug>WordMotion_w", { silent = true })
+      end,
+    })
     use({ "AndrewRadev/splitjoin.vim", disable = true })
 
     use({
@@ -839,7 +857,9 @@ return require("packer").startup({
       -- "alexwu/ruby.nvim",
       requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
       config = function()
-        require("bombeelu.lsp").sorbet.setup()
+        if not vim.g.vscode then
+          require("bombeelu.lsp").sorbet.setup()
+        end
       end,
     })
 
@@ -997,7 +1017,7 @@ return require("packer").startup({
           },
           hide = {
             virtual_text = true,
-            signs = true,
+            signs = false,
             underline = true,
           },
         })
@@ -1070,9 +1090,16 @@ return require("packer").startup({
         })
 
         -- Setup keymaps
-        vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
-        vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+        -- vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+        -- vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
       end,
+      disable = true,
+    })
+
+    use({
+      "ibhagwan/fzf-lua",
+      -- optional for icon support
+      requires = { "kyazdani42/nvim-web-devicons" },
     })
 
     if packer_bootstrap then

@@ -67,7 +67,15 @@ end
 
 cmp.setup({
   sources = cmp.config.sources({
-    { name = "nvim_lsp", max_item_count = 10 },
+    {
+      name = "nvim_lsp",
+      max_item_count = 10,
+      entry_filter = function(entry, ctx)
+        -- vim.pretty_print(entry:get_insert_text())
+        -- vim.pretty_print(ctx)
+        return true
+      end,
+    },
     { name = "treesitter", max_item_count = 10 },
     { name = "copilot" },
     { name = "luasnip", max_item_count = 3 },
@@ -76,18 +84,17 @@ cmp.setup({
     { name = "npm", keyword_length = 4 },
   }),
   comparators = {
+    compare.offset,
     compare.exact,
+    compare.score,
     compare.locality,
     require("cmp_tabnine.compare"),
     require("copilot_cmp.comparators").prioritize,
     require("copilot_cmp.comparators").score,
     compare.recently_used,
-    compare.offset,
     compare.scopes,
-    compare.score,
     compare.kind,
     compare.length,
-    -- compare.sort_text,
   },
   snippet = {
     expand = function(args)

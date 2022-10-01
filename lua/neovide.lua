@@ -10,7 +10,7 @@ vim.g.neovide_remember_window_size = true
 --
 -- set({ "n", "x" }, "<D-c>", [["*y]], { desc = "Copy from system clipboard" })
 
-vim.cmd[[
+vim.cmd([[
 nnoremap <special> <D-n> :confirm enew<CR>
 vmap <special> <D-n> <Esc><D-n>gv
 imap <special> <D-n> <C-O><D-n>
@@ -76,4 +76,4 @@ vmap <special> <D-g> <Esc><D-g>
 imap <special> <D-g> <C-O><D-g>
 cmap <special> <D-g> <C-C><D-g>
 omap <special> <D-g> <Esc><D-g>
-]]
+]])

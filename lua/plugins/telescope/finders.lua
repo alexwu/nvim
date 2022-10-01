@@ -20,31 +20,31 @@ local command = {}
 local entry_maker = function(entry) end
 
 M.command_files = function(opts)
-	opts = opts or {}
-	local cwd = vim.fn.expand("%:h")
+  opts = opts or {}
+  local cwd = vim.fn.expand("%:h")
 
-	opts.commands = {
-		type = "",
-	}
+  opts.commands = {
+    type = "",
+  }
 
-	local finder = function(prompt)
-		local results_path = Path:new(cwd):make_relative(".")
-		local finder_results = scan.scan_dir(results_path, {
-			hidden = false,
-		})
-		return finder_results
-	end
+  local finder = function(prompt)
+    local results_path = Path:new(cwd):make_relative(".")
+    local finder_results = scan.scan_dir(results_path, {
+      hidden = false,
+    })
+    return finder_results
+  end
 
-	return finders.new_table({
-		results = finder("fuuu"),
-		entry_maker = function(entry)
-			return {
-				value = entry,
-				display = entry,
-				ordinal = entry,
-			}
-		end,
-	})
+  return finders.new_table({
+    results = finder("fuuu"),
+    entry_maker = function(entry)
+      return {
+        value = entry,
+        display = entry,
+        ordinal = entry,
+      }
+    end,
+  })
 end
 
 return M

@@ -12,16 +12,14 @@ function check_gemfile(gem)
     return false
   end
 
-  Job
-    :new({
-      command = "bundle",
-      args = { "info", gem },
-      cwd = vim.fs.dirname(root[1]),
-      on_exit = function(j, code, signal)
-        vim.pretty_print(j:result())
-      end,
-    })
-    :sync()
+  Job:new({
+    command = "bundle",
+    args = { "info", gem },
+    cwd = vim.fs.dirname(root[1]),
+    on_exit = function(j, code, signal)
+      vim.pretty_print(j:result())
+    end,
+  }):sync()
 end
 
 -- check_gemfile("rails")

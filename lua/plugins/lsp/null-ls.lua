@@ -171,14 +171,9 @@ M.setup = function(opts)
   null_ls.setup({
     debug = true,
     sources = {
-      -- null_ls.builtins.formatting.pg_format,
       null_ls.builtins.formatting.black,
       null_ls.builtins.formatting.clang_format,
       null_ls.builtins.formatting.just,
-      -- null_ls.builtins.formatting.deno_fmt.with({
-      --   filetypes = { "javascriptreact", "typescriptreact" },
-      --   extra_args = { "--options-line-width", 100 },
-      -- }),
       null_ls.builtins.formatting.dprint.with({
         filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "toml", "json" },
       }),
@@ -191,7 +186,7 @@ M.setup = function(opts)
         cwd = function(_params)
           return vim.fs.dirname(
             vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
-          ) or vim.fn.expand("~/.config/nvim/selene.toml")
+          ) or vim.fs.normalize("~/.config/nvim/selene.toml")
         end,
       }),
       require("plugins.lsp.null-ls.code_actions.selene").with({

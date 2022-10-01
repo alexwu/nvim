@@ -1,6 +1,5 @@
 local Project = require("bombeelu.projects")
 
-
 local Lua = Project:extend()
 
 function Lua:new(opts)

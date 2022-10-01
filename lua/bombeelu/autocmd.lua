@@ -36,3 +36,22 @@ nvim.create_autocmd({ "BufEnter" }, {
     vim.opt.formatoptions:remove({ "c", "o", "r" })
   end,
 })
+
+-- TODO: Try and be smart about this -- I don't like how jarring it is
+-- nvim.create_autocmd({ "WinLeave" }, {
+--   pattern = "*",
+--   group = "bombeelu.autocmd",
+--   callback = function(o)
+--     vim.wo[0].foldcolumn = "0"
+--   end,
+-- })
+--
+-- nvim.create_autocmd({ "WinEnter" }, {
+--   pattern = "*",
+--   group = "bombeelu.autocmd",
+--   callback = function(o)
+--     if vim.wo[0].foldcolumn == "0" then
+--       vim.wo[0].foldcolumn = "1"
+--     end
+--   end,
+-- })

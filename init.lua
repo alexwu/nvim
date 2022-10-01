@@ -29,7 +29,9 @@ else
   -- require("snazzy").setup({ theme = "dark", transparent = vim.env.TERM ~= "xterm-kitty" })
 end
 
-require("bombeelu.pin").setup()
-require("bombeelu.visual-surround").setup()
-require("bombeelu.refactoring").setup()
-require("bombeelu.just").setup()
+if not vim.g.vscode then
+  require("bombeelu.pin").setup()
+  require("bombeelu.visual-surround").setup()
+  require("bombeelu.refactoring").setup()
+  require("bombeelu.just").setup()
+end

@@ -29,7 +29,6 @@ require("diffview").setup({
       ["k"] = cb("prev_entry"),
       ["<up>"] = cb("prev_entry"),
       ["<cr>"] = cb("select_entry"),
-      ["o"] = cb("select_entry"),
       ["R"] = cb("refresh_files"),
       ["<tab>"] = cb("select_next_entry"),
       ["<s-tab>"] = cb("select_prev_entry"),
@@ -37,6 +36,7 @@ require("diffview").setup({
       ["<leader>b"] = cb("toggle_files"),
       ["q"] = cb("close"),
       ["gf"] = cb("goto_file_edit"),
+      ["o"] = cb("goto_file_edit"),
     },
     file_history_panel = {
       ["gf"] = cb("goto_file_edit"),

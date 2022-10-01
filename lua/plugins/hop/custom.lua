@@ -172,4 +172,7 @@ M.hint_usages = function(opts)
   hint_with(ts_usages, override_opts(opts))
 end
 
+-- TODO: function M.hint_pairs(opts) end
+-- TODO: function M.hint_strings_boolean_float_etc...(opts) end
+
 return M
