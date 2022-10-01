@@ -1,2 +1,2 @@
-default:
-    echo 'Hello, world!'
+fmt:
+  stylua .
