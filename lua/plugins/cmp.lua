@@ -84,10 +84,10 @@ cmp.setup({
     { name = "npm", keyword_length = 4 },
   }),
   comparators = {
-    compare.offset,
-    compare.exact,
-    compare.score,
     compare.locality,
+    compare.exact,
+    compare.offset,
+    compare.score,
     require("cmp_tabnine.compare"),
     require("copilot_cmp.comparators").prioritize,
     require("copilot_cmp.comparators").score,
@@ -105,14 +105,6 @@ cmp.setup({
     completion = cmp.config.window.bordered({ border = "rounded" }),
     documentation = cmp.config.window.bordered({ border = "rounded", winhighlight = "FloatBorder:FloatBorder" }),
   },
-  enabled = function()
-    local context = require("cmp.config.context")
-    if vim.api.nvim_get_mode().mode == "c" then
-      return true
-    else
-      return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
-    end
-  end,
   mapping = mapping.preset.insert({
     ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
