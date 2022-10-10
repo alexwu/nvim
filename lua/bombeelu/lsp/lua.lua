@@ -1,6 +1,5 @@
 local defaults = require("plugins.lsp.defaults")
 local lspconfig = require("lspconfig")
-local ih = require("inlay-hints")
 
 local lua = {}
 

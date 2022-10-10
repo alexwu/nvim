@@ -1,5 +1,3 @@
-local ih = require("inlay-hints")
-local ft = require("plenary.filetype")
 local defaults = require("plugins.lsp.defaults")
 
 local M = {}
@@ -15,7 +13,7 @@ function M.setup(opts)
         auto = false,
       },
       on_initialized = function()
-        ih.set_all()
+        -- ih.set_all()
       end,
     },
     server = {
