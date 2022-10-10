@@ -1,2 +1,4 @@
+lint:
+  selene .
 fmt:
   stylua .
