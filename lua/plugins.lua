@@ -85,7 +85,6 @@ return require("packer").startup({
           zindex = 41,
         })
       end,
-      disable = false,
     })
 
     use({
@@ -783,6 +782,7 @@ return require("packer").startup({
       config = function()
         set("n", "w", "<Plug>WordMotion_w", { silent = true })
       end,
+      disable = true,
     })
     use({ "AndrewRadev/splitjoin.vim" })
 
@@ -985,13 +985,6 @@ return require("packer").startup({
     })
 
     use({
-      "luukvbaal/stabilize.nvim",
-      config = function()
-        require("stabilize").setup()
-      end,
-    })
-
-    use({
       "nvim-neotest/neotest",
       requires = {
         "nvim-lua/plenary.nvim",
@@ -1038,6 +1031,18 @@ return require("packer").startup({
     })
 
     use({
+      "ggandor/flit.nvim",
+      config = function()
+        require("flit").setup({
+          keys = { f = "f", F = "F", t = "t", T = "T" },
+          labeled_modes = "v",
+          multiline = true,
+          opts = {},
+        })
+      end,
+    })
+
+    use({
       "lewis6991/satellite.nvim",
       config = function()
         if not vim.g.vscode then
@@ -1074,19 +1079,15 @@ return require("packer").startup({
       config = function()
         require("hover").setup({
           init = function()
-            -- Require providers
             require("hover.providers.lsp")
             require("hover.providers.gh")
-            -- require('hover.providers.jira')
             -- require('hover.providers.man')
             -- require('hover.providers.dictionary')
           end,
           preview_opts = {
             border = "rounded",
           },
-          -- Whether the contents of a currently open hover window should be moved
-          -- to a :h preview-window when pressing the hover keymap.
-          preview_window = true,
+          preview_window = false,
           title = false,
         })
 
@@ -1099,11 +1100,36 @@ return require("packer").startup({
 
     use({
       "ibhagwan/fzf-lua",
-      -- optional for icon support
       requires = { "kyazdani42/nvim-web-devicons" },
     })
 
     use({ "junegunn/vim-easy-align" })
+
+    use({
+      "folke/noice.nvim",
+      event = "VimEnter",
+      config = function()
+        require("noice").setup({
+          popupmenu = {
+            enabled = false,
+          },
+          routes = {
+            {
+              filter = {
+                event = "msg_show",
+                kind = "",
+                find = "written",
+              },
+              opts = { skip = true },
+            },
+          },
+        })
+      end,
+      requires = {
+        "MunifTanjim/nui.nvim",
+        "rcarriga/nvim-notify",
+      },
+    })
 
     if packer_bootstrap then
       require("packer").sync()
