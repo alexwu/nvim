@@ -72,6 +72,9 @@ require("gitsigns").setup({
 
     map("n", "gsph", gs.preview_hunk, { desc = "Preview Git hunk" })
     map("n", "M", function()
+      gs.preview_hunk()
+    end, { desc = "Preview git hunk" })
+    map("n", "gM", function()
       gs.blame_line({ full = true, ignore_whitespace = true })
     end, { desc = "Show Git blame" })
     map("n", "gsdh", gs.diffthis, { desc = "Git diff" })

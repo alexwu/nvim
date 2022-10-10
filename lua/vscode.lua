@@ -12,7 +12,7 @@ return require("packer").startup(function(use)
 
   use({
     "phaazon/hop.nvim",
-    requires = { "indianboy42/hop-extensions", "nvim-telescope/telescope.nvim" },
+    requires = { "nvim-telescope/telescope.nvim" },
     config = function()
       require("plugins.hop")
     end,
