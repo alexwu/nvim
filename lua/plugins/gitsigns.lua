@@ -63,21 +63,20 @@ require("gitsigns").setup({
     end, { expr = true, desc = "Previous Git hunk" })
 
     -- Actions
-    map({ "n", "v" }, "gsh", gs.stage_hunk, { desc = "Stage Git hunk" })
+    map({ "n", "v" }, "gssh", gs.stage_hunk, { desc = "Stage Git hunk" })
     map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
     map("n", "gsuh", gs.undo_stage_hunk, { desc = "Undo stage Git hunk" })
 
-    map("n", "gsb", gs.stage_buffer, { desc = "Stage Git buffer" })
+    map("n", "gssb", gs.stage_buffer, { desc = "Stage Git buffer" })
     map("n", "gsrb", gs.reset_buffer, { desc = "Reset Git buffer" })
 
-    map("n", "gsph", gs.preview_hunk, { desc = "Preview Git hunk" })
     map("n", "M", function()
       gs.preview_hunk()
     end, { desc = "Preview git hunk" })
     map("n", "gM", function()
       gs.blame_line({ full = true, ignore_whitespace = true })
     end, { desc = "Show Git blame" })
-    map("n", "gsdh", gs.diffthis, { desc = "Git diff" })
+    -- map("n", "gsdh", gs.diffthis, { desc = "Git diff" })
     map("n", "ghD", function()
       gs.diffthis("~")
     end)

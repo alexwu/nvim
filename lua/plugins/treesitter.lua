@@ -18,7 +18,7 @@ require("nvim-treesitter.configs").setup({
     "jsonc",
     "kotlin",
     "llvm",
-    "lua",
+    -- "lua",
     "python",
     "regex",
     "ruby",
@@ -34,7 +34,11 @@ require("nvim-treesitter.configs").setup({
     "vue",
     "yaml",
   },
-  highlight = { enable = not vim.g.vscode, additional_vim_regex_highlighting = false },
+  highlight = {
+    enable = not vim.g.vscode,
+    additional_vim_regex_highlighting = false,
+    disable = { "lua" },
+  },
   indent = { enable = not vim.g.vscode },
   incremental_selection = {
     enable = true,
@@ -96,7 +100,6 @@ require("nvim-treesitter.configs").setup({
     highlight_current_scope = { enable = false },
     highlight_definitions = {
       enable = false,
-      -- Set to false if you have an `updatetime` of ~100.
       clear_on_cursor_move = false,
     },
   },
@@ -117,13 +120,13 @@ require("nvim-treesitter.parsers").ft_to_lang = function(ft)
   return ft_to_lang(ft)
 end
 
-require("nvim-treesitter.parsers").get_parser_configs().just = {
-  install_info = {
-    url = "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
-    files = { "src/parser.c", "src/scanner.cc" },
-    branch = "main",
-  },
-  maintainers = { "@IndianBoy42" },
-}
+-- require("nvim-treesitter.parsers").get_parser_configs().just = {
+--   install_info = {
+--     url = "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
+--     files = { "src/parser.c", "src/scanner.cc" },
+--     branch = "main",
+--   },
+--   maintainers = { "@IndianBoy42" },
+-- }
 
 require("bombeelu.treesitter").init()

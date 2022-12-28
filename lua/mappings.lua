@@ -6,7 +6,7 @@ local repeatable = require("bombeelu.repeat").mk_repeatable
 
 vim.g.mapleader = " "
 
-set("n", "S", "<Nop>")
+-- set("n", "S", "<Nop>")
 
 key.map(
   { "j", "<Down>" },
@@ -22,12 +22,22 @@ key.map(
 key.map({ "<" }, "<gv", { modes = "x" })
 key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
 
-key.map("gs", [[:%s/\<<C-R><C-W>\>\C//g<left><left>]], { modes = { "n" } })
+-- key.map("gs", [[:%s/\<<C-R><C-W>\>\C//g<left><left>]], { modes = { "n" } })
+--
+set({ "n" }, "<C-j>", function()
+  keys.feed({ "<C-w>", "<C-j>" })
+  -- vim.cmd.SatelliteRefresh()
+end)
 
--- set({ "n" }, "<C-j>", "<C-w><C-j>")
+set({ "n" }, "<C-h>", function()
+  keys.feed({ "<C-w>", "<C-h>" })
+  -- vim.cmd.SatelliteRefresh()
+  -- vim.pretty_print("done")
+end)
+
 -- set({ "n" }, "<C-h>", "<C-w><C-h>")
--- set({ "n" }, "<C-k>", "<C-w><C-k>")
--- set({ "n" }, "<C-l>", "<C-w><C-l>")
+set({ "n" }, "<C-k>", "<C-w><C-k>")
+set({ "n" }, "<C-l>", "<C-w><C-l>")
 
 set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
 set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })

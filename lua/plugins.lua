@@ -1,5 +1,5 @@
 vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
-vim.fn.setenv("NEOVIM_PLUGINS_LOCAL", "~/Code/neovim/plugins/")
+vim.fn.setenv("NEOVIM_PLUGINS_LOCAL", vim.fs.normalize("~/Code/neovim/plugins/"))
 
 local needs_packer = require("utils").needs_packer
 local install_packer = require("utils").install_packer
@@ -109,7 +109,12 @@ return require("packer").startup({
     use({
       "kylechui/nvim-surround",
       config = function()
-        require("nvim-surround").setup({})
+        require("nvim-surround").setup({
+          keymaps = {
+            visual = "Z",
+            visual_line = "gZ",
+          },
+        })
       end,
     })
 
@@ -145,7 +150,7 @@ return require("packer").startup({
       "knubie/vim-kitty-navigator",
       run = "cp ./*.py ~/.config/kitty/",
       setup = function()
-        vim.g.kitty_navigator_no_mappings = 0
+        vim.g.kitty_navigator_no_mappings = 1
       end,
       config = function()
         require("plugins.kitty")
@@ -247,7 +252,6 @@ return require("packer").startup({
         "stevearc/dressing.nvim",
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
-        "theHamsta/nvim-semantic-tokens",
       },
       after = {
         "nvim-cmp",
@@ -255,20 +259,6 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
-    })
-
-    use({
-      "theHamsta/nvim-semantic-tokens",
-      config = function()
-        require("nvim-semantic-tokens").setup({
-          preset = "default",
-          highlighters = { require("nvim-semantic-tokens.table-highlighter") },
-        })
-      end,
-      cond = function()
-        return not vim.g.vscode
-      end,
-      disable = true,
     })
 
     use({
@@ -283,6 +273,14 @@ return require("packer").startup({
       end,
       cond = function()
         return not vim.g.vscode
+      end,
+    })
+
+    use({
+      "mrjones2014/legendary.nvim",
+      requires = "kkharji/sqlite.lua",
+      config = function()
+        require("bombeelu.legendary").setup()
       end,
     })
 
@@ -465,7 +463,7 @@ return require("packer").startup({
         "SmiteshP/nvim-navic",
       },
       config = function()
-        require("statusline").setup()
+        -- require("statusline").setup()
       end,
     })
 
@@ -514,6 +512,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -803,7 +802,7 @@ return require("packer").startup({
     })
 
     use({
-      "folke/lua-dev.nvim",
+      "folke/neodev.nvim",
       ft = "lua",
       requires = {
         "neovim/nvim-lspconfig",
@@ -900,21 +899,27 @@ return require("packer").startup({
           })
         end
       end,
+      disable = true,
     })
 
     use({
-      "j-hui/fidget.nvim",
+      "lvimuser/lsp-inlayhints.nvim",
+      branch = "anticonceal",
       config = function()
-        require("fidget").setup({
-          sources = {
-            ["null-ls"] = {
-              ignore = true,
-            },
-          },
+        require("lsp-inlayhints").setup()
+        vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
+        vim.api.nvim_create_autocmd("LspAttach", {
+          group = "LspAttach_inlayhints",
+          callback = function(args)
+            if not (args.data and args.data.client_id) then
+              return
+            end
+
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            require("lsp-inlayhints").on_attach(client, bufnr)
+          end,
         })
-      end,
-      cond = function()
-        return not vim.g.vscode
       end,
     })
 
@@ -952,6 +957,7 @@ return require("packer").startup({
       cond = function()
         return not vim.g.vscode
       end,
+      disable = true,
     })
 
     use({
@@ -1020,26 +1026,13 @@ return require("packer").startup({
     use({
       "ggandor/leap.nvim",
       config = function()
-        require("leap").setup({
-          highlight_unlabled = true,
-        })
-
-        set({ "n", "o" }, "<Tab>", function()
-          require("leap").leap({ target_windows = { vim.fn.win_getid() } })
-        end)
+        require("bombeelu.leap").setup()
       end,
-    })
-
-    use({
-      "ggandor/flit.nvim",
-      config = function()
-        require("flit").setup({
-          keys = { f = "f", F = "F", t = "t", T = "T" },
-          labeled_modes = "v",
-          multiline = true,
-          opts = {},
-        })
-      end,
+      requires = {
+        "ggandor/leap-spooky.nvim",
+        "ggandor/flit.nvim",
+        "nvim-telescope/telescope.nvim",
+      },
     })
 
     use({
@@ -1075,32 +1068,9 @@ return require("packer").startup({
     })
 
     use({
-      "lewis6991/hover.nvim",
-      config = function()
-        require("hover").setup({
-          init = function()
-            require("hover.providers.lsp")
-            require("hover.providers.gh")
-            -- require('hover.providers.man')
-            -- require('hover.providers.dictionary')
-          end,
-          preview_opts = {
-            border = "rounded",
-          },
-          preview_window = false,
-          title = false,
-        })
-
-        -- Setup keymaps
-        -- vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
-        -- vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
-      end,
-      disable = true,
-    })
-
-    use({
       "ibhagwan/fzf-lua",
       requires = { "kyazdani42/nvim-web-devicons" },
+      disable = true,
     })
 
     use({ "junegunn/vim-easy-align" })
@@ -1122,13 +1092,70 @@ return require("packer").startup({
               },
               opts = { skip = true },
             },
+            {
+              filter = {
+                event = "msg_show",
+                kind = "search_count",
+              },
+              opts = { skip = true },
+            },
+          },
+          notify = { enabled = true },
+          lsp = {
+            progress = {
+              enabled = true,
+              -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
+              -- See the section on formatting for more details on how to customize.
+              --- @type NoiceFormat|string
+              format = "lsp_progress",
+              --- @type NoiceFormat|string
+              format_done = "lsp_progress_done",
+              throttle = 1000 / 30, -- frequency to update lsp progress message
+              view = "mini",
+            },
+            hover = {
+              enabled = false,
+              view = nil, -- when nil, use defaults from documentation
+              ---@type NoiceViewOptions
+              opts = {}, -- merged with defaults from documentation
+            },
+            signature = {
+              enabled = false,
+              auto_open = true, -- Automatically show signature help when typing a trigger character from the LSP
+              view = nil, -- when nil, use defaults from documentation
+              ---@type NoiceViewOptions
+              opts = {}, -- merged with defaults from documentation
+            },
+            -- defaults for hover and signature help
+            documentation = {
+              view = "hover",
+              ---@type NoiceViewOptions
+              opts = {
+                lang = "markdown",
+                replace = true,
+                render = "plain",
+                format = { "{message}" },
+                win_options = { concealcursor = "n", conceallevel = 3 },
+              },
+            },
           },
         })
+
+        require("telescope").load_extension("noice")
       end,
       requires = {
         "MunifTanjim/nui.nvim",
         "rcarriga/nvim-notify",
       },
+      disable = false,
+    })
+
+    use({
+      "folke/neoconf.nvim",
+      module = "neoconf",
+      config = function()
+        -- require("neoconf").setup()
+      end,
     })
 
     if packer_bootstrap then

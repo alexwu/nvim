@@ -2,9 +2,9 @@ local M = {}
 
 -- FIXME: Some of this will get called multiple times unnecessarily. This might need the project config stuff?
 function M.on_attach(client, bufnr)
-  if not client.name == "null-ls" and client.server_capabilities.inlayHintProvider then
-    require("inlay-hints").on_attach(client, bufnr)
-  end
+  -- if not client.name == "null-ls" and client.server_capabilities.inlayHintProvider then
+  --   require("inlay-hints").on_attach(client, bufnr)
+  -- end
 
   if not client.name == "null-ls" and client.server_capabilities.colorProvider then
     require("document-color").buf_attach(bufnr)
@@ -29,7 +29,7 @@ function M.on_attach(client, bufnr)
 end
 
 local make_capabilities = function()
-  local cap = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local cap = require("cmp_nvim_lsp").default_capabilities()
 
   cap.textDocument.foldingRange = {
     dynamicRegistration = false,

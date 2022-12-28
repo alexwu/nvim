@@ -4,7 +4,8 @@ local Rule = require("nvim-autopairs.rule")
 npairs.setup({
   map_bs = false,
   check_ts = true,
-  ignored_next_char = '[%w%."]',
+  -- ignored_next_char = '[%w%."]',
+  ignored_next_char = '[%w%."{(]',
   map_c_w = false,
   fast_wrap = {},
   enable_afterquote = true,

@@ -170,10 +170,3 @@ autocmd("FileType", {
     set("n", "q", lazy(vim.cmd.quit), { buffer = true })
   end,
 })
-
--- autocmd("DiagnosticChanged", {
---   group = "LspCustom",
---   callback = function()
---     vim.diagnostic.setloclist({ open = false })
---   end,
--- })

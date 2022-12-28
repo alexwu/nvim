@@ -4,7 +4,6 @@ vim.o.autoindent = true
 vim.o.ch = 2
 vim.o.confirm = true
 vim.o.ignorecase = true
-vim.o.lazyredraw = true
 vim.o.backspace = "indent,eol,start"
 vim.o.cmdheight = 1
 vim.o.cursorline = true
@@ -44,6 +43,8 @@ vim.o.timeoutlen = 500
 vim.o.pumheight = 10
 vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.o.fillchars = "foldclose:,foldopen:"
+vim.g.ts_highlight_lua = false
+-- vim.o.splitkeep="screen"
 -- vim.opt.foldopen:remove({ "hor" })
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })

@@ -4,21 +4,40 @@ local M = {}
 
 function M.setup()
   leap.setup({
-    max_aot_targets = 0,
+    highlight_unlabled = true,
   })
 
-  set("n", "<BSlash>", "<Plug>(leap-forward)", { desc = "Leap to a character" })
+  leap.add_default_mappings()
 
-  -- { "n", "S", "<Plug>(leap-backward)" },
-  -- { "x", "s", "<Plug>(leap-forward)" },
-  -- { "x", "S", "<Plug>(leap-backward)" },
-  -- { "o", "z", "<Plug>(leap-forward)" },
-  -- { "o", "Z", "<Plug>(leap-backward)" },
-  -- { "o", "x", "<Plug>(leap-forward-x)" },
-  -- { "o", "X", "<Plug>(leap-backward-x)" },
-  -- { "n", "gs", "<Plug>(leap-cross-window)" },
-  -- { "x", "gs", "<Plug>(leap-cross-window)" },
-  -- { "o", "gs", "<Plug>(leap-cross-window)" },
+  -- set({ "n", "o" }, "<Tab>", function()
+  --   require("leap").leap({ target_windows = { vim.fn.win_getid() } })
+  -- end)
+  vim.keymap.del({ "x", "o" }, "x")
+  vim.keymap.del({ "x", "o" }, "X")
+  vim.keymap.del("", "gs")
+
+  require("flit").setup({
+    keys = { f = "f", F = "F", t = "t", T = "T" },
+    labeled_modes = "v",
+    multiline = true,
+    opts = {},
+  })
+
+  require("leap-spooky").setup({
+    affixes = {
+      -- These will generate mappings for all native text objects, like:
+      -- (ir|ar|iR|aR|im|am|iM|aM){obj}.
+      -- Special line objects will also be added, by repeating the affixes.
+      -- E.g. `yrr<leap>` and `ymm<leap>` will yank a line in the current
+      -- window.
+      -- You can also use 'rest' & 'move' as mnemonics.
+      remote = { window = "r", cross_window = "R" },
+      magnetic = { window = "m", cross_window = "M" },
+    },
+    -- If this option is set to true, the yanked text will automatically be pasted
+    -- at the cursor position if the unnamed register is in use.
+    paste_on_remote_yank = false,
+  })
 end
 
 return M

@@ -1,5 +1,4 @@
 local cmp = require("cmp")
-local types = require("cmp.types")
 local mapping = cmp.mapping
 local compare = cmp.config.compare
 local lspkind = require("lspkind")
@@ -69,11 +68,11 @@ cmp.setup({
   sources = cmp.config.sources({
     {
       name = "nvim_lsp",
-      max_item_count = 10,
+      max_item_count = 20,
       entry_filter = function(entry, ctx)
         -- vim.pretty_print(entry:get_insert_text())
         -- vim.pretty_print(ctx)
-        return true
+        return entry:get_insert_text() ~= vim.trim("(file is not `# typed: true` or higher)")
       end,
     },
     { name = "treesitter", max_item_count = 10 },
