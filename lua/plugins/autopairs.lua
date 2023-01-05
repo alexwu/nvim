@@ -1,58 +1,67 @@
-local npairs = require("nvim-autopairs")
-local Rule = require("nvim-autopairs.rule")
+return {
+  "windwp/nvim-autopairs",
+  dependencies = { "hrsh7th/nvim-cmp" },
+  cond = function()
+    return not vim.g.vscode
+  end,
+  config = function()
+    local npairs = require("nvim-autopairs")
+    local Rule = require("nvim-autopairs.rule")
 
-npairs.setup({
-  map_bs = false,
-  check_ts = true,
-  -- ignored_next_char = '[%w%."]',
-  ignored_next_char = '[%w%."{(]',
-  map_c_w = false,
-  fast_wrap = {},
-  enable_afterquote = true,
-})
+    npairs.setup({
+      map_bs = false,
+      check_ts = true,
+      -- ignored_next_char = '[%w%."]',
+      ignored_next_char = '[%w%."{(]',
+      map_c_w = false,
+      fast_wrap = {},
+      enable_afterquote = true,
+    })
 
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-local cmp = require("cmp")
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+    local cmp = require("cmp")
+    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
-local get_closing_for_line = function(line)
-  local i = -1
-  local clo = ""
+    local get_closing_for_line = function(line)
+      local i = -1
+      local clo = ""
 
-  while true do
-    i, _ = string.find(line, "[%(%)%{%}%[%]]", i + 1)
-    if i == nil then
-      break
+      while true do
+        i, _ = string.find(line, "[%(%)%{%}%[%]]", i + 1)
+        if i == nil then
+          break
+        end
+        local ch = string.sub(line, i, i)
+        local st = string.sub(clo, 1, 1)
+
+        if ch == "{" then
+          clo = "}" .. clo
+        elseif ch == "}" then
+          if st ~= "}" then
+            return ""
+          end
+          clo = string.sub(clo, 2)
+        elseif ch == "(" then
+          clo = ")" .. clo
+        elseif ch == ")" then
+          if st ~= ")" then
+            return ""
+          end
+          clo = string.sub(clo, 2)
+        elseif ch == "[" then
+          clo = "]" .. clo
+        elseif ch == "]" then
+          if st ~= "]" then
+            return ""
+          end
+          clo = string.sub(clo, 2)
+        end
+      end
+
+      return clo
     end
-    local ch = string.sub(line, i, i)
-    local st = string.sub(clo, 1, 1)
-
-    if ch == "{" then
-      clo = "}" .. clo
-    elseif ch == "}" then
-      if st ~= "}" then
-        return ""
-      end
-      clo = string.sub(clo, 2)
-    elseif ch == "(" then
-      clo = ")" .. clo
-    elseif ch == ")" then
-      if st ~= ")" then
-        return ""
-      end
-      clo = string.sub(clo, 2)
-    elseif ch == "[" then
-      clo = "]" .. clo
-    elseif ch == "]" then
-      if st ~= "]" then
-        return ""
-      end
-      clo = string.sub(clo, 2)
-    end
-  end
-
-  return clo
-end
+  end,
+}
 
 -- npairs.remove_rule("(")
 -- npairs.remove_rule("{")

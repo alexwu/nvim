@@ -47,173 +47,195 @@ local defaults = require("telescope.themes").get_dropdown({
   },
 })
 
-require("telescope").setup({
-  defaults = {
-    set_env = { ["COLORTERM"] = "truecolor" },
-    prompt_prefix = "❯ ",
-    -- sorting_strategy = "ascending",
-    winblend = 20,
-    mappings = {
-      i = {
-        ["<esc>"] = actions.close,
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
-        ["<C-n>"] = actions.move_selection_next,
-        ["<C-p>"] = actions.move_selection_previous,
-        ["<C-u>"] = false,
-      },
-      n = {
-        ["q"] = actions.close,
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
-        ["<C-n>"] = actions.move_selection_next,
-        ["<C-p>"] = actions.move_selection_previous,
-      },
+return {
+  "nvim-telescope/telescope.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "kyazdani42/nvim-web-devicons",
+    { "tami5/sqlite.lua", module = "sqlite" },
+    "AckslD/nvim-neoclip.lua",
+    {
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
     },
   },
-  pickers = {
-    find_files = {
-      find_command = {
-        "fd",
-        "--type",
-        "f",
-        "--strip-cwd-prefix",
-        "--exclude",
-        ".git",
-        "--hidden",
-        "--exclude",
-        ".DS_Store",
-        "--exclude",
-        ".keep",
-      },
-      follow = true,
-      hidden = true,
-      no_ignore = false,
-    },
-    fd = {
-      find_command = {
-        "fd",
-        "--type",
-        "f",
-        "--strip-cwd-prefix",
-        "--exclude",
-        ".git",
-        "--hidden",
-        "--exclude",
-        ".DS_Store",
-        "--exclude",
-        ".keep",
-      },
-      follow = true,
-      hidden = true,
-      no_ignore = false,
-    },
-    buffers = {
-      initial_mode = "insert",
-      layout_config = default_layout_config,
-      layout_strategy = "center",
-      ignore_current_buffer = true,
-      cwd_only = false,
-      sort_lastused = true,
-      path_display = function(opts, path)
-        local tail = require("telescope.utils").path_tail(path)
-        return string.format("%s (%s)", tail, path)
-      end,
-      mappings = {
-        n = {
-          ["<leader><space>"] = actions.close,
+  cond = function()
+    return not vim.g.vscode
+  end,
+  config = function()
+    require("telescope").setup({
+      defaults = {
+        set_env = { ["COLORTERM"] = "truecolor" },
+        prompt_prefix = "❯ ",
+        -- sorting_strategy = "ascending",
+        winblend = 20,
+        mappings = {
+          i = {
+            ["<esc>"] = actions.close,
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+            ["<C-n>"] = actions.move_selection_next,
+            ["<C-p>"] = actions.move_selection_previous,
+            ["<C-u>"] = false,
+          },
+          n = {
+            ["q"] = actions.close,
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+            ["<C-n>"] = actions.move_selection_next,
+            ["<C-p>"] = actions.move_selection_previous,
+          },
         },
       },
-    },
-    oldfiles = {
-      cwd_only = true,
-    },
-    jumplist = {
-      show_line = false,
-      trim_text = true,
-      layout_config = default_layout_config,
-      layout_strategy = "center",
-      path_display = function(opts, path)
-        local tail = require("telescope.utils").path_tail(path)
-        return string.format("%s (%s)", tail, path)
-      end,
-    },
-    lsp_definitions = {
-      initial_mode = "insert",
-      layout_config = default_layout_config,
-      layout_strategy = "center",
-    },
-    lsp_references = {
-      initial_mode = "insert",
-      layout_config = default_layout_config,
-      layout_strategy = "center",
-    },
-  },
-  extensions = {
-    fzf = {
-      fuzzy = true,
-      override_generic_sorter = true,
-      override_file_sorter = true,
-      case_mode = "smart_case",
-    },
-    project = {
-      base_dirs = {
-        "~/Code",
-        "~/Projects",
+      pickers = {
+        find_files = {
+          find_command = {
+            "fd",
+            "--type",
+            "f",
+            "--strip-cwd-prefix",
+            "--exclude",
+            ".git",
+            "--hidden",
+            "--exclude",
+            ".DS_Store",
+            "--exclude",
+            ".keep",
+          },
+          follow = true,
+          hidden = true,
+          no_ignore = false,
+        },
+        fd = {
+          find_command = {
+            "fd",
+            "--type",
+            "f",
+            "--strip-cwd-prefix",
+            "--exclude",
+            ".git",
+            "--hidden",
+            "--exclude",
+            ".DS_Store",
+            "--exclude",
+            ".keep",
+          },
+          follow = true,
+          hidden = true,
+          no_ignore = false,
+        },
+        buffers = {
+          initial_mode = "insert",
+          layout_config = default_layout_config,
+          layout_strategy = "center",
+          ignore_current_buffer = true,
+          cwd_only = false,
+          sort_lastused = true,
+          path_display = function(opts, path)
+            local tail = require("telescope.utils").path_tail(path)
+            return string.format("%s (%s)", tail, path)
+          end,
+          mappings = {
+            n = {
+              ["<leader><space>"] = actions.close,
+            },
+          },
+        },
+        oldfiles = {
+          cwd_only = true,
+        },
+        jumplist = {
+          show_line = false,
+          trim_text = true,
+          layout_config = default_layout_config,
+          layout_strategy = "center",
+          path_display = function(opts, path)
+            local tail = require("telescope.utils").path_tail(path)
+            return string.format("%s (%s)", tail, path)
+          end,
+        },
+        lsp_definitions = {
+          initial_mode = "insert",
+          layout_config = default_layout_config,
+          layout_strategy = "center",
+        },
+        lsp_references = {
+          initial_mode = "insert",
+          layout_config = default_layout_config,
+          layout_strategy = "center",
+        },
       },
-      hidden_files = true,
-      load_session = true,
-    },
-    commander = {},
-    recent_files = {
-      only_cwd = true,
-    },
-  },
-})
+      extensions = {
+        fzf = {
+          fuzzy = true,
+          override_generic_sorter = true,
+          override_file_sorter = true,
+          case_mode = "smart_case",
+        },
+        project = {
+          base_dirs = {
+            "~/Code",
+            "~/Projects",
+          },
+          hidden_files = true,
+          load_session = true,
+        },
+        commander = {},
+        recent_files = {
+          only_cwd = true,
+        },
+      },
+    })
 
--- require("telescope").load_extension("fzf")
--- require("telescope").load_extension("commander")
--- require("telescope").load_extension("related_files")
+    require("telescope").load_extension("fzf")
+    -- require("telescope").load_extension("fzf")
+    -- require("telescope").load_extension("commander")
+    -- require("telescope").load_extension("related_files")
 
-require("neoclip").setup({
-  enable_persistent_history = true,
-})
+    require("neoclip").setup({
+      enable_persistent_history = true,
+    })
 
-set("n", "TT", lazy(builtin.builtin, { include_extensions = true }), { desc = "Default telescope picker" })
+    set("n", "TT", lazy(builtin.builtin, { include_extensions = true }), { desc = "Default telescope picker" })
 
-set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
-set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
+    set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
+    set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
--- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
+    -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
 
-set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Select files" })
--- set(
---   "n",
---   "<Leader>e",
---   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
---   { desc = "Select oldfiles" }
--- )
+    set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Select files" })
+    -- set(
+    --   "n",
+    --   "<Leader>e",
+    --   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
+    --   { desc = "Select oldfiles" }
+    -- )
 
--- Map a shortcut to open the picker.
-set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
-set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
-set("n", "<Leader>g", lazy(custom_pickers.git_changes), { desc = "Select from changed files since default branch" })
-set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
-set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
-set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
-set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
-set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
-set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
+    -- Map a shortcut to open the picker.
+    set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
+    set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
+    set("n", "<Leader>g", lazy(custom_pickers.git_changes), { desc = "Select from changed files since default branch" })
+    set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
+    set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
+    set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
+    set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
+    set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
+    set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
 
-local group = augroup("bombeelu.telescope", { clear = true })
+    local group = augroup("bombeelu.telescope", { clear = true })
 
-autocmd("FileType", { group = "bombeelu.telescope", pattern = "TelescopePrompt", command = "setlocal nocursorline" })
-nvim.create_autocmd({ "VimEnter", "DirChanged" }, {
-  pattern = "*",
-  group = group,
-  callback = function()
-    vim.g.default_branch = custom_pickers.get_default_branch({ force = true })
+    autocmd(
+      "FileType",
+      { group = "bombeelu.telescope", pattern = "TelescopePrompt", command = "setlocal nocursorline" }
+    )
+    nvim.create_autocmd({ "VimEnter", "DirChanged" }, {
+      pattern = "*",
+      group = group,
+      callback = function()
+        vim.g.default_branch = custom_pickers.get_default_branch({ force = true })
+      end,
+    })
+
+    vim.cmd([[autocmd User TelescopePreviewerLoaded setlocal wrap]])
   end,
-})
-
-vim.cmd([[autocmd User TelescopePreviewerLoaded setlocal wrap]])
+}
