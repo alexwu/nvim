@@ -6,7 +6,10 @@ end
 
 return {
   "vim-test/vim-test",
-  dependencies = { "akinsho/toggleterm.nvim" },
+  dependencies = { 
+    "akinsho/toggleterm.nvim", 
+    "numToStr/FTerm.nvim"
+  },
   cond = function()
     return not vim.g.vscode
   end,

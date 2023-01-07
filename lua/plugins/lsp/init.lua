@@ -11,6 +11,13 @@ return {
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
     "barrett-ruth/import-cost.nvim",
+    {
+      "folke/neoconf.nvim",
+      module = "neoconf",
+      config = function()
+        require("neoconf").setup()
+      end,
+    },
   },
   cond = function()
     return not vim.g.vscode
