@@ -26,36 +26,48 @@ key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
 --
 set({ "n" }, "<C-j>", function()
   keys.feed({ "<C-w>", "<C-j>" })
-  -- vim.cmd.SatelliteRefresh()
 end)
 
 set({ "n" }, "<C-h>", function()
   keys.feed({ "<C-w>", "<C-h>" })
-  -- vim.cmd.SatelliteRefresh()
-  -- vim.pretty_print("done")
 end)
 
--- set({ "n" }, "<C-h>", "<C-w><C-h>")
 set({ "n" }, "<C-k>", "<C-w><C-k>")
 set({ "n" }, "<C-l>", "<C-w><C-l>")
 
-set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
-set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
-set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })
-set({ "x" }, "<C-l>", "5l", { desc = "Move right 5 columns" })
+key.map("<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+key.map("<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 
-set({ "i" }, "<C-j>", "<Down>", { desc = "Move down a  line" })
-set({ "i" }, "<C-k>", "<Up>", { desc = "Move up a line" })
-set({ "i" }, "<C-h>", "<Left>", { desc = "Move left a column" })
-set({ "i" }, "<C-l>", "<Right>", { desc = "Move right a column" })
+-- Move Lines
+vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move down" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<cr>==gi", { desc = "Move down" })
+vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move up" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<cr>==gi", { desc = "Move up" })
+
+-- set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
+-- set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
+-- set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })
+-- set({ "x" }, "<C-l>", "5l", { desc = "Move right 5 columns" })
 
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })
 set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
 
-set("n", "tt", lazy(vim.cmd.tabnew), { desc = "Create a new tab" })
-set("n", "tq", lazy(vim.cmd.tabclose), { desc = "Close the current tab" })
+vim.keymap.set({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+
+-- new file
+vim.keymap.set("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+
+vim.keymap.set("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open Location List" })
+vim.keymap.set("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open Quickfix List" })
+
+-- highlights under cursor
+if vim.fn.has("nvim-0.9.0") == 1 then
+  vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
+end
 
 set("n", "Q", lazy(vim.cmd.quit))
 

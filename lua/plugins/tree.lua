@@ -1,6 +1,7 @@
 return {
   "kyazdani42/nvim-tree.lua",
-  dependencies = { "kyazdani42/nvim-web-devicons" },
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  enabled = false,
   config = function()
     local tree = require("nvim-tree")
     local lib = require("nvim-tree.lib")
@@ -75,7 +76,7 @@ return {
       disable_netrw = true,
       hijack_netrw = true,
       hijack_cursor = true,
-      hijack_unnamed_buffer_when_opening = true,
+      hijack_unnamed_buffer_when_opening = false,
       update_cwd = true,
       respect_buf_cwd = true,
       ignore_ft_on_setup = { "startify", "dashboard", "netrw", "help" },
@@ -157,11 +158,11 @@ return {
       vinegar = true
       toggle_replace()
     end)
-
-    key.map("<C-n>", function()
-      vinegar = false
-      api.tree.toggle(true, false)
-    end)
+    --
+    -- key.map("<C-n>", function()
+    --   vinegar = false
+    --   api.tree.toggle(true, false)
+    -- end)
   end,
 }
 -- set("n", "<C-n>", "<Cmd>NvimTreeFindFile<CR>")

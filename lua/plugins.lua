@@ -22,6 +22,7 @@ return {
       require("bombeelu.autocmd")
       require("bombeelu.commands")
       require("mappings")
+
       if not vim.g.vscode then
         -- require("bombeelu.pin").setup()
         require("bombeelu.visual-surround").setup()
@@ -158,31 +159,6 @@ return {
     end,
   },
 
-  --     use({ "lewis6991/impatient.nvim" })
-  --
-  --
-  --     use({
-  --       "rcarriga/nvim-notify",
-  --       dependencies = { "nvim-telescope/telescope.nvim" },
-  --       config = function()
-  --         if not vim.g.vscode then
-  --           require("plugins.notify")
-  --         end
-  --       end,
-  --     })
-  --
-  --     use({
-  --       "sheerun/vim-polyglot",
-  --       setup = function()
-  --         vim.g.polyglot_disabled = { "sensible", "ftdetect", "lua", "rust", "typescript", "typescriptreact" }
-  --       end,
-  --       cond = function()
-  --         return not vim.g.vscode
-  --       end,
-  --       disable = true,
-  --     })
-  --
-  --
   {
     "zbirenbaum/copilot.lua",
     dependencies = { "hrsh7th/nvim-cmp" },
@@ -213,31 +189,248 @@ return {
       return not vim.g.vscode
     end,
   },
+  -- { "AndrewRadev/splitjoin.vim" },
+  {
+    "aarondiel/spread.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      local spread = require("spread")
+      local default_options = { silent = true, noremap = true }
+
+      vim.keymap.set("n", "gS", spread.out, default_options)
+      vim.keymap.set("n", "gJ", spread.combine, default_options)
+    end,
+  },
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "haydenmeade/neotest-jest",
+      "olimorris/neotest-rspec",
+    },
+    config = function()
+      require("bombeelu.neotest").setup()
+    end,
+  },
+  {
+    "zbirenbaum/neodim",
+    event = "LspAttach",
+    config = function()
+      require("neodim").setup({
+        alpha = 0.5,
+        blend_color = "#282a36",
+        update_in_insert = {
+          enable = false,
+          delay = 400,
+        },
+        hide = {
+          virtual_text = true,
+          signs = false,
+          underline = true,
+        },
+      })
+    end,
+  },
+  {
+    "alexwu/ruby.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
+    dev = true,
+    config = function()
+      require("bombeelu.lsp").sorbet.setup()
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "ckolkey/ts-node-action",
+    dependencies = { "nvim-treesitter" },
+    config = function()
+      require("ts-node-action").setup({})
+      -- vim.keymap.set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
+    end,
+  },
+  {
+    "jose-elias-alvarez/typescript.nvim",
+    ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
+    cond = function()
+      return not vim.g.vscode
+    end,
+    config = function()
+      require("bombeelu.lsp").typescript.setup()
+    end,
+  },
+  {
+    "saecki/crates.nvim",
+    event = { "BufRead Cargo.toml" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("crates").setup()
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "stevearc/dressing.nvim",
+    config = function()
+      require("plugins.dressing")
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup({})
+    end,
+  },
+  {
+    "sindrets/diffview.nvim",
+    config = function()
+      require("plugins.diffview")
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "smjonas/inc-rename.nvim",
+    config = function()
+      require("inc_rename").setup({
+        input_buffer_type = "dressing",
+      })
+
+      vim.keymap.set("n", "<leader>rn", function()
+        return ":IncRename " .. vim.fn.expand("<cword>")
+      end, { expr = true })
+    end,
+  },
+  {
+    "simrat39/rust-tools.nvim",
+    ft = "rust",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "hrsh7th/nvim-cmp",
+      "nvim-lua/popup.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("bombeelu.lsp").rust.setup()
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+
+    "andymass/vim-matchup",
+    setup = function()
+      vim.g.matchup_matchparen_deferred = 1
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "ziontee113/syntax-tree-surfer",
+    config = function()
+      require("bombeelu.syntax-tree-surfer").setup()
+    end,
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "akinsho/git-conflict.nvim",
+    config = function()
+      require("git-conflict").setup({
+        disable_diagnostics = true,
+      })
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "GitConflictDetected",
+        callback = function()
+          vim.notify("Conflict detected in " .. vim.fn.expand("<afile>"))
+          vim.cmd([[GitConflictListQf]])
+          -- engage.conflict_buster()
+          -- create_buffer_local_mappings()
+        end,
+      })
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "nvim-treesitter/playground",
+    cmd = { "TSHighlightCapturesUnderCursor", "TSPlaygroundToggle", "TSNodeUnderCursor" },
+  },
+  {
+    "p00f/clangd_extensions.nvim",
+    ft = { "c", "cpp" },
+    config = function()
+      require("bombeelu.lsp").clangd.setup()
+    end,
+  },
+  {
+    "ray-x/go.nvim",
+    dependencies = { "ray-x/guihua.lua" },
+    ft = "go",
+    config = function()
+      require("bombeelu.lsp.go").setup()
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "lewis6991/spaceless.nvim",
+    config = function()
+      require("spaceless").setup()
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+    event = "InsertEnter",
+  },
+  {
+    "lvimuser/lsp-inlayhints.nvim",
+    -- branch = "anticonceal",
+    config = function()
+      require("lsp-inlayhints").setup()
+      vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = "LspAttach_inlayhints",
+        callback = function(args)
+          if not (args.data and args.data.client_id) then
+            return
+          end
+
+          local bufnr = args.buf
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          require("lsp-inlayhints").on_attach(client, bufnr)
+        end,
+      })
+    end,
+  },
 }
---
---     use({
---       "saecki/crates.nvim",
---       event = { "BufRead Cargo.toml" },
---       dependencies = { "nvim-lua/plenary.nvim" },
---       config = function()
---         require("crates").setup()
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
+-- {
+--   "shortcuts/no-neck-pain.nvim",
+--   config = function()
+--     require("no-neck-pain").setup({
+--       enableOnVimEnter = true,
+--       width = 200,
 --     })
---
---     use({ "MunifTanjim/nui.nvim" })
---
---     use({
---       "stevearc/dressing.nvim",
---       config = function()
---         require("plugins.dressing")
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
+--   end,
+-- },
 --
 --     use({
 --       "andrewferrier/textobj-diagnostic.nvim",
@@ -247,115 +440,6 @@ return {
 --         end
 --       end,
 --     })
---
---     use({
---       "smjonas/inc-rename.nvim",
---       config = function()
---         require("inc_rename").setup({
---           input_buffer_type = "dressing",
---         })
---
---         vim.keymap.set("n", "<leader>rn", function()
---           return ":IncRename " .. vim.fn.expand("<cword>")
---         end, { expr = true })
---       end,
---     })
---
---     use({
---       "SmiteshP/nvim-navic",
---       dependencies = { "neovim/nvim-lspconfig" },
---       setup = function()
---         vim.g.navic_silence = true
---       end,
---       config = function()
---         require("nvim-navic").setup({
---           highlight = true,
---         })
---       end,
---     })
---
---     use({
---       "nvim-treesitter/playground",
---       cmd = { "TSHighlightCapturesUnderCursor", "TSPlaygroundToggle", "TSNodeUnderCursor" },
---     })
---
---     use({
---       "windwp/nvim-autopairs",
---       config = function()
---         require("plugins.autopairs")
---       end,
---       dependencies = { "hrsh7th/nvim-cmp" },
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     use({
---       "windwp/nvim-ts-autotag",
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     use({
---       "andymass/vim-matchup",
---       setup = function()
---         vim.g.matchup_matchparen_deferred = 1
---         vim.g.matchup_matchparen_offscreen = { method = "popup" }
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---       disable = true,
---     })
---
---     use({
---       "jose-elias-alvarez/typescript.nvim",
---       ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
---       cond = function()
---         return not vim.g.vscode
---       end,
---       config = function()
---         require("bombeelu.lsp").typescript.setup()
---       end,
---     })
---
---     use({
---       "simrat39/rust-tools.nvim",
---       ft = "rust",
---       dependencies = {
---         "neovim/nvim-lspconfig",
---         "hrsh7th/nvim-cmp",
---         "nvim-lua/popup.nvim",
---         "nvim-lua/plenary.nvim",
---         "nvim-telescope/telescope.nvim",
---       },
---       config = function()
---         require("bombeelu.lsp").rust.setup()
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     use({
---       "p00f/clangd_extensions.nvim",
---       ft = { "c", "cpp" },
---       config = function()
---         require("bombeelu.lsp").clangd.setup()
---       end,
---     })
---     -- use({
---     --   "ray-x/go.nvim",
---     --   dependencies = "ray-x/guihua.lua",
---     --   ft = "go",
---     --   config = function()
---     --     require("bombeelu.lsp.go").setup()
---     --   end,
---     --   cond = function()
---     --     return not vim.g.vscode
---     --   end,
---     -- })
 --
 --     --       use({
 --     --         "nanotee/sqls.nvim",
@@ -416,44 +500,7 @@ return {
 --       end,
 --     })
 --
---     use({
---       "kyazdani42/nvim-tree.lua",
---       dependencies = { "kyazdani42/nvim-web-devicons" },
---       config = function()
---         require("plugins.tree")
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
 --
---
---     use({
---       "da-moon/telescope-toggleterm.nvim",
---       event = "TermOpen",
---       dependencies = {
---         "akinsho/toggleterm.nvim",
---         "nvim-telescope/telescope.nvim",
---         "nvim-lua/popup.nvim",
---         "nvim-lua/plenary.nvim",
---       },
---       config = function()
---         require("telescope").load_extension("toggleterm")
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     use({
---       "folke/todo-comments.nvim",
---       config = function()
---         require("plugins.todo-comments")
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
 --
 --     use({
 --       "NvChad/nvim-colorizer.lua",
@@ -473,44 +520,8 @@ return {
 --       end,
 --     })
 --
---     use({
---       "lewis6991/gitsigns.nvim",
---       dependencies = { "nvim-lua/plenary.nvim" },
---       config = function()
---         require("plugins.gitsigns")
---       end,
---     })
 --
 --     use({
---       "akinsho/git-conflict.nvim",
---       config = function()
---         require("git-conflict").setup({
---           disable_diagnostics = true,
---         })
---
---         vim.api.nvim_create_autocmd("User", {
---           pattern = "GitConflictDetected",
---           callback = function()
---             vim.notify("Conflict detected in " .. vim.fn.expand("<afile>"))
---             vim.cmd([[GitConflictListQf]])
---             -- engage.conflict_buster()
---             -- create_buffer_local_mappings()
---           end,
---         })
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     use({
---       "sindrets/diffview.nvim",
---       config = function()
---         require("plugins.diffview")
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
 --     })
 --
 --     use({
@@ -521,17 +532,6 @@ return {
 --       end,
 --     })
 --
---     use({
---       "lewis6991/spaceless.nvim",
---       config = function()
---         require("spaceless").setup()
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---       event = "InsertEnter",
---       disable = false,
---     })
 --
 --     use({
 --       "tpope/vim-projectionist",
@@ -549,7 +549,6 @@ return {
 --       end,
 --       disable = true,
 --     })
---     use({ "AndrewRadev/splitjoin.vim" })
 --
 --     use({
 --       "beauwilliams/focus.nvim",
@@ -560,12 +559,6 @@ return {
 --       end,
 --     })
 --
---     use({
---       "folke/which-key.nvim",
---       config = function()
---         require("which-key").setup({})
---       end,
---     })
 --
 --     use({
 --       "folke/neodev.nvim",
@@ -619,14 +612,6 @@ return {
 --     -- })
 --     --
 --
---     use_local("alexwu", "ruby.nvim", {
---       dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
---       config = function()
---         if not vim.g.vscode then
---           require("bombeelu.lsp").sorbet.setup()
---         end
---       end,
---     })
 --
 --     use({
 --       "simrat39/inlay-hints.nvim",
@@ -668,26 +653,6 @@ return {
 --       disable = true,
 --     })
 --
---     use({
---       "lvimuser/lsp-inlayhints.nvim",
---       branch = "anticonceal",
---       config = function()
---         require("lsp-inlayhints").setup()
---         vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
---         vim.api.nvim_create_autocmd("LspAttach", {
---           group = "LspAttach_inlayhints",
---           callback = function(args)
---             if not (args.data and args.data.client_id) then
---               return
---             end
---
---             local bufnr = args.buf
---             local client = vim.lsp.get_client_by_id(args.data.client_id)
---             require("lsp-inlayhints").on_attach(client, bufnr)
---           end,
---         })
---       end,
---     })
 --
 --     use({
 --       "mrshmllow/document-color.nvim",
@@ -736,57 +701,6 @@ return {
 --
 
 --
---     use({
---       "ziontee113/syntax-tree-surfer",
---       config = function()
---         require("bombeelu.syntax-tree-surfer").setup()
---       end,
---     })
---
---     use({
---       "nvim-neotest/neotest",
---       dependencies = {
---         "nvim-lua/plenary.nvim",
---         "nvim-treesitter/nvim-treesitter",
---         "haydenmeade/neotest-jest",
---         "olimorris/neotest-rspec",
---       },
---       config = function()
---         require("bombeelu.neotest").setup()
---       end,
---     })
---
---     use({
---       "zbirenbaum/neodim",
---       event = "LspAttach",
---       config = function()
---         require("neodim").setup({
---           alpha = 0.5,
---           blend_color = "#282a36",
---           update_in_insert = {
---             enable = false,
---             delay = 400,
---           },
---           hide = {
---             virtual_text = true,
---             signs = false,
---             underline = true,
---           },
---         })
---       end,
---     })
---
---     use({
---       "ggandor/leap.nvim",
---       config = function()
---         require("bombeelu.leap").setup()
---       end,
---       dependencies = {
---         "ggandor/leap-spooky.nvim",
---         "ggandor/flit.nvim",
---         "nvim-telescope/telescope.nvim",
---       },
---     })
 --
 --     use({
 --       "lewis6991/satellite.nvim",
@@ -807,18 +721,6 @@ return {
 --       end,
 --     })
 --
---     use({
---       "aarondiel/spread.nvim",
---       after = "nvim-treesitter",
---       config = function()
---         local spread = require("spread")
---         local default_options = { silent = true, noremap = true }
---
---         vim.keymap.set("n", "gS", spread.out, default_options)
---         vim.keymap.set("n", "gJ", spread.combine, default_options)
---       end,
---       disable = true,
---     })
 --
 --     use({
 --       "ibhagwan/fzf-lua",
@@ -903,22 +805,3 @@ return {
 --       disable = false,
 --     })
 --
---
---     if packer_bootstrap then
---       require("packer").sync()
---     end
---   end,
---   config = {
---     opt_default = false,
---     log = "debug",
---     max_jobs = 9,
---     display = {
---       open_fn = function()
---         return require("packer.util").float({ border = "rounded" })
---       end,
---     },
---     luarocks = {
---       python_cmd = "python3",
---     },
---   },
--- })

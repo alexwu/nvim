@@ -23,10 +23,6 @@ return {
     return not vim.g.vscode
   end,
   config = function()
-    if vim.g.vscode then
-      return
-    end
-
     local capabilities = require("plugins.lsp.defaults").capabilities
     local detect = require("plenary.filetype").detect
 
@@ -70,12 +66,13 @@ return {
     lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
     -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
+    -- lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
 
     --- Sends an async request to all active clients attached to the current
     --- buffer.

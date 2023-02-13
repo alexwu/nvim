@@ -51,8 +51,8 @@ return {
   "nvim-telescope/telescope.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "kyazdani42/nvim-web-devicons",
-    { "tami5/sqlite.lua", module = "sqlite" },
+    "nvim-tree/nvim-web-devicons",
+    "kkharji/sqlite.lua",
     "AckslD/nvim-neoclip.lua",
     {
       "nvim-telescope/telescope-fzf-native.nvim",
@@ -203,13 +203,19 @@ return {
 
     -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
 
-    set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Select files" })
-    -- set(
-    --   "n",
-    --   "<Leader>e",
-    --   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
-    --   { desc = "Select oldfiles" }
-    -- )
+    set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Find files" })
+    set(
+      "n",
+      "<Leader>F",
+      lazy(builtin.find_files, { prompt_title = "Find Files", no_ignore = true }),
+      { desc = "Find files (no_ignore)" }
+    )
+    set(
+      "n",
+      "<Leader>e",
+      lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
+      { desc = "Select oldfiles" }
+    )
 
     -- Map a shortcut to open the picker.
     set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })

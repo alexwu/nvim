@@ -22,6 +22,7 @@ function M.setup(opts)
           includeInlayPropertyDeclarationTypeHints = true,
           includeInlayFunctionLikeReturnTypeHints = true,
           includeInlayEnumMemberValueHints = true,
+          importModuleSpecifierPreference = "non-relative",
         },
       },
     },
