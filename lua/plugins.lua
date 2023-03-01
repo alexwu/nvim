@@ -27,7 +27,7 @@ return {
         -- require("bombeelu.pin").setup()
         require("bombeelu.visual-surround").setup()
         -- require("bombeelu.refactoring").setup()
-        -- require("bombeelu.just").setup()
+        require("bombeelu.just").setup()
       end
     end,
     lazy = false,
@@ -155,36 +155,6 @@ return {
     end,
   },
 
-  {
-    "zbirenbaum/copilot.lua",
-    dependencies = { "hrsh7th/nvim-cmp" },
-    event = "InsertEnter",
-    config = function()
-      vim.schedule(function()
-        require("copilot").setup()
-      end)
-    end,
-    cond = function()
-      return not vim.g.vscode
-    end,
-  },
-
-  {
-    "zbirenbaum/copilot-cmp",
-    dependencies = { "hrsh7th/nvim-cmp", "zbirenbaum/copilot.lua" },
-    after = "copilot.lua",
-    config = function()
-      require("copilot_cmp").setup({
-        method = "getCompletionsCycling",
-        formatters = {
-          insert_text = require("copilot_cmp.format").remove_existing,
-        },
-      })
-    end,
-    cond = function()
-      return not vim.g.vscode
-    end,
-  },
   -- { "AndrewRadev/splitjoin.vim" },
   {
     "aarondiel/spread.nvim",
@@ -210,25 +180,6 @@ return {
     end,
   },
   {
-    "zbirenbaum/neodim",
-    event = "LspAttach",
-    config = function()
-      require("neodim").setup({
-        alpha = 0.5,
-        blend_color = "#282a36",
-        update_in_insert = {
-          enable = false,
-          delay = 400,
-        },
-        hide = {
-          virtual_text = true,
-          signs = false,
-          underline = true,
-        },
-      })
-    end,
-  },
-  {
     "alexwu/ruby.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
     dev = true,
@@ -245,16 +196,6 @@ return {
     config = function()
       require("ts-node-action").setup({})
       -- vim.keymap.set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
-    end,
-  },
-  {
-    "jose-elias-alvarez/typescript.nvim",
-    ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
-    cond = function()
-      return not vim.g.vscode
-    end,
-    config = function()
-      require("bombeelu.lsp").typescript.setup()
     end,
   },
   {
@@ -295,9 +236,7 @@ return {
   {
     "smjonas/inc-rename.nvim",
     config = function()
-      require("inc_rename").setup({
-        -- input_buffer_type = "dressing",
-      })
+      require("inc_rename").setup({})
 
       vim.keymap.set("n", "<leader>rn", function()
         return ":IncRename " .. vim.fn.expand("<cword>")
@@ -370,13 +309,6 @@ return {
     cmd = { "TSHighlightCapturesUnderCursor", "TSPlaygroundToggle", "TSNodeUnderCursor" },
   },
   {
-    "p00f/clangd_extensions.nvim",
-    ft = { "c", "cpp" },
-    config = function()
-      require("bombeelu.lsp").clangd.setup()
-    end,
-  },
-  {
     "ray-x/go.nvim",
     dependencies = { "ray-x/guihua.lua" },
     ft = "go",
@@ -398,27 +330,8 @@ return {
     event = "InsertEnter",
   },
   {
-    "lvimuser/lsp-inlayhints.nvim",
-    config = function()
-      require("lsp-inlayhints").setup()
-
-      vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = "LspAttach_inlayhints",
-        callback = function(args)
-          if not (args.data and args.data.client_id) then
-            return
-          end
-
-          local bufnr = args.buf
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          require("lsp-inlayhints").on_attach(client, bufnr)
-        end,
-      })
-    end,
-  },
-  {
     "otavioschwanck/ruby-toolkit.nvim",
+    ft = { "ruby" },
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-treesitter/nvim-treesitter-textobjects" },
     keys = {
       {

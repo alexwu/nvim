@@ -13,6 +13,36 @@ return {
     "saadparwaiz1/cmp_luasnip",
     { dir = "~/Code/neovim/plugins/cmp-treesitter" },
     { "tzachar/cmp-tabnine", build = "./install.sh" },
+    {
+      "zbirenbaum/copilot.lua",
+      dependencies = { "hrsh7th/nvim-cmp" },
+      event = "InsertEnter",
+      config = function()
+        vim.schedule(function()
+          require("copilot").setup()
+        end)
+      end,
+      cond = function()
+        return not vim.g.vscode
+      end,
+    },
+
+    {
+      "zbirenbaum/copilot-cmp",
+      dependencies = { "hrsh7th/nvim-cmp", "zbirenbaum/copilot.lua" },
+      after = "copilot.lua",
+      config = function()
+        require("copilot_cmp").setup({
+          method = "getCompletionsCycling",
+          formatters = {
+            insert_text = require("copilot_cmp.format").remove_existing,
+          },
+        })
+      end,
+      cond = function()
+        return not vim.g.vscode
+      end,
+    },
   },
 
   config = function()

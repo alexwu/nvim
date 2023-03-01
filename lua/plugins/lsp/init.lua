@@ -6,16 +6,71 @@ return {
     "kosayoda/nvim-lightbulb",
     "nvim-telescope/telescope.nvim",
     "b0o/schemastore.nvim",
-    "simrat39/inlay-hints.nvim",
     "stevearc/dressing.nvim",
+    "barrett-ruth/import-cost.nvim",
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
-    "barrett-ruth/import-cost.nvim",
+    {
+      "lvimuser/lsp-inlayhints.nvim",
+      config = function()
+        require("lsp-inlayhints").setup()
+
+        vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
+        vim.api.nvim_create_autocmd("LspAttach", {
+          group = "LspAttach_inlayhints",
+          callback = function(args)
+            if not (args.data and args.data.client_id) then
+              return
+            end
+
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            require("lsp-inlayhints").on_attach(client, bufnr)
+          end,
+        })
+      end,
+    },
+    {
+      "jose-elias-alvarez/typescript.nvim",
+      ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
+      cond = function()
+        return not vim.g.vscode
+      end,
+      config = function()
+        require("bombeelu.lsp").typescript.setup()
+      end,
+    },
+    {
+      "p00f/clangd_extensions.nvim",
+      ft = { "c", "cpp" },
+      config = function()
+        require("bombeelu.lsp").clangd.setup()
+      end,
+    },
     {
       "folke/neoconf.nvim",
       module = "neoconf",
       config = function()
         require("neoconf").setup()
+      end,
+    },
+    {
+      "zbirenbaum/neodim",
+      event = "LspAttach",
+      config = function()
+        require("neodim").setup({
+          alpha = 0.5,
+          blend_color = "#282a36",
+          update_in_insert = {
+            enable = false,
+            delay = 400,
+          },
+          hide = {
+            virtual_text = true,
+            signs = false,
+            underline = true,
+          },
+        })
       end,
     },
   },

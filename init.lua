@@ -25,11 +25,6 @@ if vim.g.vscode then
   require("bombeelu.vscode.mappings")
 elseif vim.g.neovide then
   require("neovide")
-else
-  -- local has_impatient, _ = pcall(require, "impatient")
-  -- if has_impatient then
-  --   require("impatient")
-  -- end
 end
 
 require("plugins")
