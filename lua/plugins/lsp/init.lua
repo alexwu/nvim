@@ -1,6 +1,14 @@
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
+    {
+      -- NOTE: This needs to be at the top
+      "folke/neoconf.nvim",
+      module = "neoconf",
+      config = function()
+        require("neoconf").setup()
+      end,
+    },
     "hrsh7th/nvim-cmp",
     "hrsh7th/cmp-nvim-lsp",
     "kosayoda/nvim-lightbulb",
@@ -45,13 +53,6 @@ return {
       ft = { "c", "cpp" },
       config = function()
         require("bombeelu.lsp").clangd.setup()
-      end,
-    },
-    {
-      "folke/neoconf.nvim",
-      module = "neoconf",
-      config = function()
-        require("neoconf").setup()
       end,
     },
     {
