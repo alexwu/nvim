@@ -196,8 +196,6 @@ return {
       enable_persistent_history = true,
     })
 
-    set("n", "TT", lazy(builtin.builtin, { include_extensions = true }), { desc = "Default telescope picker" })
-
     set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
     set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 

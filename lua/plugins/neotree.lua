@@ -156,6 +156,7 @@ return {
       },
       nesting_rules = {},
       filesystem = {
+        bind_to_cwd = false, -- true creates a 2-way binding between vim's cwd and neo-tree's root
         filtered_items = {
           visible = true, -- when true, they will just be displayed differently than normal items
           hide_dotfiles = true,

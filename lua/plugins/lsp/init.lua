@@ -19,6 +19,9 @@ return {
       end,
     },
   },
+  init = function()
+    vim.g.navic_silence = true
+  end,
   cond = function()
     return not vim.g.vscode
   end,
@@ -72,7 +75,7 @@ return {
     lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
+    -- lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
 
     --- Sends an async request to all active clients attached to the current
     --- buffer.

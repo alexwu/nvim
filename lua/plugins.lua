@@ -101,22 +101,18 @@ return {
             throttle = 1000 / 30, -- frequency to update lsp progress message
             view = "mini",
           },
+          hover = { enabled = true },
+          signature = { enabled = true },
           documentation = {
+            enabled = true,
             view = "hover",
-            ---@type NoiceViewOptions
-            opts = {
-              lang = "markdown",
-              replace = true,
-              render = "plain",
-              format = { "{message}" },
-              win_options = { concealcursor = "n", conceallevel = 3 },
-            },
           },
         },
         presets = {
           command_palette = true,
           long_message_to_split = true,
           inc_rename = true,
+          lsp_doc_border = true,
         },
       })
 
@@ -300,7 +296,7 @@ return {
     "smjonas/inc-rename.nvim",
     config = function()
       require("inc_rename").setup({
-        input_buffer_type = "dressing",
+        -- input_buffer_type = "dressing",
       })
 
       vim.keymap.set("n", "<leader>rn", function()
@@ -403,9 +399,9 @@ return {
   },
   {
     "lvimuser/lsp-inlayhints.nvim",
-    -- branch = "anticonceal",
     config = function()
       require("lsp-inlayhints").setup()
+
       vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
       vim.api.nvim_create_autocmd("LspAttach", {
         group = "LspAttach_inlayhints",
@@ -421,6 +417,45 @@ return {
       })
     end,
   },
+  {
+    "otavioschwanck/ruby-toolkit.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-treesitter/nvim-treesitter-textobjects" },
+    keys = {
+      {
+        "<leader>mv",
+        "<cmd>lua require('ruby-toolkit').extract_variable()<CR>",
+        desc = "Extract Variable",
+        mode = { "v" },
+      },
+      {
+        "<leader>mf",
+        "<cmd>lua require('ruby-toolkit').extract_to_function()<CR>",
+        desc = "Extract To Function",
+        mode = { "v" },
+      },
+      {
+        "<leader>mf",
+        "<cmd>lua require('ruby-toolkit').create_function_from_text()<CR>",
+        desc = "Create Function from item on cursor",
+      },
+    },
+  },
+
+  {
+    "echasnovski/mini.nvim",
+    version = false,
+    config = function()
+      require("mini.bracketed").setup()
+    end,
+  },
+
+  -- {
+  --   "romgrk/kirby.nvim",
+  --   dependencies = {
+  --     { "romgrk/fzy-lua-native", build = "make install" },
+  --     { "romgrk/kui.nvim" },
+  --   },
+  -- },
 }
 -- {
 --   "shortcuts/no-neck-pain.nvim",
@@ -721,12 +756,6 @@ return {
 --       end,
 --     })
 --
---
---     use({
---       "ibhagwan/fzf-lua",
---       dependencies = { "kyazdani42/nvim-web-devicons" },
---       disable = true,
---     })
 --
 --     use({ "junegunn/vim-easy-align" })
 --

@@ -26,10 +26,10 @@ if vim.g.vscode then
 elseif vim.g.neovide then
   require("neovide")
 else
-  local has_impatient, _ = pcall(require, "impatient")
-  if has_impatient then
-    require("impatient")
-  end
+  -- local has_impatient, _ = pcall(require, "impatient")
+  -- if has_impatient then
+  --   require("impatient")
+  -- end
 end
 
 require("plugins")

@@ -13,7 +13,7 @@ return {
     "saadparwaiz1/cmp_luasnip",
     { dir = "~/Code/neovim/plugins/cmp-treesitter" },
     { "tzachar/cmp-tabnine", build = "./install.sh" },
-},
+  },
 
   config = function()
     local cmp = require("cmp")
@@ -113,11 +113,11 @@ return {
         compare.kind,
         compare.length,
       },
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
-      },
+      -- snippet = {
+      --   expand = function(args)
+      --     luasnip.lsp_expand(args.body)
+      --   end,
+      -- },
       window = {
         completion = cmp.config.window.bordered({ border = "rounded" }),
         documentation = cmp.config.window.bordered({ border = "rounded", winhighlight = "FloatBorder:FloatBorder" }),
