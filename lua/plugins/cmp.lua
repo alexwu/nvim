@@ -118,9 +118,9 @@ return {
           name = "nvim_lsp",
           max_item_count = 20,
           entry_filter = function(entry, ctx)
-            -- vim.pretty_print(entry:get_insert_text())
-            -- vim.pretty_print(ctx)
-            return entry:get_insert_text() ~= vim.trim("(file is not `# typed: true` or higher)")
+            local label = entry:get_completion_item().label
+            local sorbet_type_warning = "(file is not `# typed: true` or higher)"
+            return not vim.endswith(label, sorbet_type_warning)
           end,
         },
         { name = "treesitter", max_item_count = 10 },
