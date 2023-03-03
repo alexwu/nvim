@@ -16,13 +16,13 @@ function M.setup()
   vim.keymap.del({ "x", "o" }, "X")
   vim.keymap.del("", "gs")
 
-  require("flit").setup({
-    keys = { f = "f", F = "F", t = "t", T = "T" },
-    labeled_modes = "v",
-    multiline = true,
-    opts = {},
-  })
-
+  -- require("flit").setup({
+  --   keys = { f = "f", F = "F", t = "t", T = "T" },
+  --   labeled_modes = "v",
+  --   multiline = true,
+  --   opts = {},
+  -- })
+  --
   require("leap-spooky").setup({
     affixes = {
       -- These will generate mappings for all native text objects, like:

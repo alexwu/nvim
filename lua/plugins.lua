@@ -1,5 +1,4 @@
 vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
-vim.fn.setenv("NEOVIM_PLUGINS_LOCAL", vim.fs.normalize("~/Code/neovim/plugins/"))
 
 return {
   {
@@ -33,7 +32,25 @@ return {
     lazy = false,
     priority = 1001,
   },
-  { "tpope/vim-repeat" },
+  { "tpope/vim-repeat", lazy = false },
+  {
+    "sheerun/vim-polyglot",
+    lazy = false,
+    init = function()
+      vim.g.polyglot_disabled = { "sensible", "ftdetect" }
+    end,
+  },
+  {
+    "chaoren/vim-wordmotion",
+    lazy = false,
+  },
+  {
+    "Wansmer/treesj",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("treesj").setup({})
+    end,
+  },
   {
     "nvim-treesitter/nvim-treesitter-context",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
@@ -76,68 +93,13 @@ return {
     end,
     dependencies = {
       "ggandor/leap-spooky.nvim",
-      "ggandor/flit.nvim",
       "nvim-telescope/telescope.nvim",
-    },
-  },
-  {
-    "folke/noice.nvim",
-    event = "VimEnter",
-    config = function()
-      require("noice").setup({
-        popupmenu = {
-          enabled = false,
-        },
-        notify = { enabled = true },
-        lsp = {
-          progress = {
-            enabled = true,
-            -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
-            -- See the section on formatting for more details on how to customize.
-            --- @type NoiceFormat|string
-            format = "lsp_progress",
-            --- @type NoiceFormat|string
-            format_done = "lsp_progress_done",
-            throttle = 1000 / 30, -- frequency to update lsp progress message
-            view = "mini",
-          },
-          hover = { enabled = true },
-          signature = { enabled = true },
-          documentation = {
-            enabled = true,
-            view = "hover",
-          },
-        },
-        presets = {
-          command_palette = true,
-          long_message_to_split = true,
-          inc_rename = true,
-          lsp_doc_border = true,
-        },
-      })
-
-      require("telescope").load_extension("noice")
-    end,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
     },
   },
   {
     "mhartington/formatter.nvim",
     config = function()
       require("bombeelu.format")
-    end,
-  },
-  {
-    "williamboman/mason.nvim",
-    dependencies = { "williamboman/mason-lspconfig.nvim", "neovim/nvim-lspconfig" },
-    config = function()
-      require("mason").setup()
-      require("mason-lspconfig").setup()
-    end,
-    cond = function()
-      return not vim.g.vscode
     end,
   },
   {
@@ -361,6 +323,44 @@ return {
       require("mini.bracketed").setup()
     end,
   },
+  {
+    "NvChad/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup({
+        filetypes = { "*" },
+        user_default_options = {
+          names = false, -- "Name" codes like Blue or blue
+        },
+        -- all the sub-options of filetypes apply to buftypes
+        buftypes = {},
+      })
+    end,
+    cmd = { "ColorizerToggle" },
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "cshuaimin/ssr.nvim",
+    module = "ssr",
+    config = function()
+      require("ssr").setup({
+        border = "rounded",
+        min_width = 50,
+        min_height = 5,
+        max_width = 120,
+        max_height = 25,
+        keymaps = {
+          close = "q",
+          next_match = "n",
+          prev_match = "N",
+          replace_confirm = "<cr>",
+          replace_all = "<leader><cr>",
+        },
+      })
+      vim.api.nvim_create_user_command("SSR", require("ssr").open, { bang = true })
+    end,
+  },
 
   -- {
   --   "romgrk/kirby.nvim",
@@ -507,21 +507,6 @@ return {
 --       end,
 --     })
 --
---
---     use({
---       "folke/neodev.nvim",
---       ft = "lua",
---       dependencies = {
---         "neovim/nvim-lspconfig",
---         "hrsh7th/nvim-cmp",
---       },
---       config = function()
---         require("bombeelu.lsp").lua.setup()
---       end,
---       cond = function()
---         return vim.g.vscode
---       end,
---     })
 --
 --     --       use({
 --     --         "~/Projects/neovim/spectacle.nvim",

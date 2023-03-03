@@ -9,6 +9,7 @@ return {
     "RRethy/nvim-treesitter-endwise",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
+  tag = "v0.8.5.2",
   config = function()
     require("nvim-treesitter.configs").setup({
       -- ensure_installed = {
@@ -46,8 +47,8 @@ return {
       -- },
       highlight = {
         enable = not vim.g.vscode,
-        additional_vim_regex_highlighting = false,
-        -- disable = { "lua" },
+        additional_vim_regex_highlighting = { "ruby" },
+        disable = { "ruby" },
       },
       indent = { enable = not vim.g.vscode },
       incremental_selection = {

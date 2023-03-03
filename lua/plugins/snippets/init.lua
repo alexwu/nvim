@@ -2,6 +2,13 @@ return {
   "L3MON4D3/LuaSnip",
   dependencies = {
     "rafamadriz/friendly-snippets",
+    {
+      "dsznajder/vscode-es7-javascript-react-snippets",
+      build = "yarn install --frozen-lockfile && yarn compile",
+      cond = function()
+        return not vim.g.vscode
+      end,
+    },
   },
   config = function()
     local ls = require("luasnip")
