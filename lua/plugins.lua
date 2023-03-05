@@ -5,7 +5,7 @@ return {
     "alexwu/nvim-snazzy",
     dependencies = { "rktjmp/lush.nvim" },
     branch = "lush",
-    dev = true,
+    dev = false,
     lazy = false,
     priority = 1000,
     config = function()

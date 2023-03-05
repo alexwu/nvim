@@ -17,10 +17,8 @@ local theme = {
 }
 
 function M.setup(provider)
-  if provider == "feline" then
-    require("statusline.feline").setup({ theme = theme })
-  else
-    require("statusline.lualine")
+  if provider == "lualine" then
+    require("plugins.statusline.lualine")
   end
 end
 
