@@ -9,7 +9,7 @@ return {
     "RRethy/nvim-treesitter-endwise",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  tag = "v0.8.5.2",
+  -- tag = "v0.8.5.2",
   config = function()
     require("nvim-treesitter.configs").setup({
       -- ensure_installed = {

@@ -15,7 +15,7 @@ return {
     "nvim-telescope/telescope.nvim",
     "b0o/schemastore.nvim",
     "stevearc/dressing.nvim",
-    "barrett-ruth/import-cost.nvim",
+    { "barrett-ruth/import-cost.nvim", build = "sh install.sh yarn", config = true },
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
     {

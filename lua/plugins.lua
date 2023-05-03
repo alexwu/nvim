@@ -5,7 +5,7 @@ return {
     "alexwu/nvim-snazzy",
     dependencies = { "rktjmp/lush.nvim" },
     branch = "lush",
-    dev = false,
+    dev = true,
     lazy = false,
     priority = 1000,
     config = function()
@@ -40,9 +40,19 @@ return {
       vim.g.polyglot_disabled = { "sensible", "ftdetect" }
     end,
   },
+  { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
-    "chaoren/vim-wordmotion",
-    lazy = false,
+    "chrisgrieser/nvim-spider",
+    config = function()
+      require("spider").setup({
+        skipInsignificantPunctuation = false,
+      })
+
+      vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
+      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-w" })
+      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-w" })
+      vim.keymap.set({ "n", "o", "x" }, "ge", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-w" })
+    end,
   },
   {
     "Wansmer/treesj",
@@ -56,7 +66,7 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       require("treesitter-context").setup({
-        enable = true,
+        enabled = true,
         max_lines = 3,
         trim_scope = "outer",
         patterns = {
@@ -128,6 +138,7 @@ return {
       vim.keymap.set("n", "gS", spread.out, default_options)
       vim.keymap.set("n", "gJ", spread.combine, default_options)
     end,
+    enabled = false,
   },
   {
     "nvim-neotest/neotest",
@@ -136,6 +147,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
       "haydenmeade/neotest-jest",
       "olimorris/neotest-rspec",
+      "antoinemadec/FixCursorHold.nvim",
     },
     config = function()
       require("bombeelu.neotest").setup()
@@ -157,7 +169,7 @@ return {
     dependencies = { "nvim-treesitter" },
     config = function()
       require("ts-node-action").setup({})
-      -- vim.keymap.set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
+      vim.keymap.set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
     end,
   },
   {
@@ -184,15 +196,6 @@ return {
     "folke/which-key.nvim",
     config = function()
       require("which-key").setup({})
-    end,
-  },
-  {
-    "sindrets/diffview.nvim",
-    config = function()
-      require("plugins.diffview")
-    end,
-    cond = function()
-      return not vim.g.vscode
     end,
   },
   {
@@ -292,35 +295,41 @@ return {
     event = "InsertEnter",
   },
   {
-    "otavioschwanck/ruby-toolkit.nvim",
-    ft = { "ruby" },
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-treesitter/nvim-treesitter-textobjects" },
-    keys = {
-      {
-        "<leader>mv",
-        "<cmd>lua require('ruby-toolkit').extract_variable()<CR>",
-        desc = "Extract Variable",
-        mode = { "v" },
-      },
-      {
-        "<leader>mf",
-        "<cmd>lua require('ruby-toolkit').extract_to_function()<CR>",
-        desc = "Extract To Function",
-        mode = { "v" },
-      },
-      {
-        "<leader>mf",
-        "<cmd>lua require('ruby-toolkit').create_function_from_text()<CR>",
-        desc = "Create Function from item on cursor",
-      },
-    },
+    "willothy/wezterm.nvim",
+    config = true,
   },
+  -- {
+  --   "otavioschwanck/ruby-toolkit.nvim",
+  --   ft = { "ruby" },
+  --   dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-treesitter/nvim-treesitter-textobjects" },
+  --   keys = {
+  --     {
+  --       "<leader>mv",
+  --       "<cmd>lua require('ruby-toolkit').extract_variable()<CR>",
+  --       desc = "Extract Variable",
+  --       mode = { "v" },
+  --     },
+  --     {
+  --       "<leader>mf",
+  --       "<cmd>lua require('ruby-toolkit').extract_to_function()<CR>",
+  --       desc = "Extract To Function",
+  --       mode = { "v" },
+  --     },
+  --     {
+  --       "<leader>mf",
+  --       "<cmd>lua require('ruby-toolkit').create_function_from_text()<CR>",
+  --       desc = "Create Function from item on cursor",
+  --     },
+  --   },
+  -- },
 
   {
     "echasnovski/mini.nvim",
     version = false,
     config = function()
       require("mini.bracketed").setup()
+      require("mini.splitjoin").setup()
+      require("mini.colors").setup()
     end,
   },
   {
@@ -360,6 +369,7 @@ return {
       })
       vim.api.nvim_create_user_command("SSR", require("ssr").open, { bang = true })
     end,
+    enabled = false,
   },
 
   -- {
@@ -369,17 +379,17 @@ return {
   --     { "romgrk/kui.nvim" },
   --   },
   -- },
+  -- {
+  --   "cbochs/portal.nvim",
+  --   dependencies = {
+  --     "cbochs/grapple.nvim",
+  --   },
+  -- },
+
+  { "shortcuts/no-neck-pain.nvim", version = "*" },
+  { "mrjones2014/smart-splits.nvim" },
 }
--- {
---   "shortcuts/no-neck-pain.nvim",
---   config = function()
---     require("no-neck-pain").setup({
---       enableOnVimEnter = true,
---       width = 200,
---     })
---   end,
--- },
---
+
 --     use({
 --       "andrewferrier/textobj-diagnostic.nvim",
 --       config = function()
@@ -488,16 +498,8 @@ return {
 --         return not vim.g.vscode
 --       end,
 --     })
+
 --     use({ "tpope/vim-rails", ft = "ruby", disable = true })
---
---     use({
---       "chaoren/vim-wordmotion",
---       config = function()
---         set("n", "w", "<Plug>WordMotion_w", { silent = true })
---       end,
---       disable = true,
---     })
---
 --     use({
 --       "beauwilliams/focus.nvim",
 --       config = function()
@@ -631,10 +633,7 @@ return {
 --       end,
 --       disable = true,
 --     })
---
 
---
---
 --     use({
 --       "lewis6991/satellite.nvim",
 --       config = function()

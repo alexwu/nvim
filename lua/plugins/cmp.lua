@@ -11,6 +11,12 @@ return {
     "nvim-treesitter/nvim-treesitter",
     "onsails/lspkind-nvim",
     "saadparwaiz1/cmp_luasnip",
+    {
+      "garyhurtz/cmp_kitty",
+      cond = function()
+        return vim.env.TERM == "xterm-kitty"
+      end,
+    },
     { dir = "~/Code/neovim/plugins/cmp-treesitter" },
     { "tzachar/cmp-tabnine", build = "./install.sh" },
     {
@@ -127,6 +133,7 @@ return {
         { name = "copilot" },
         { name = "luasnip", max_item_count = 3 },
         { name = "cmp_tabnine" },
+        { name = "kitty" },
         { name = "path" },
         { name = "npm", keyword_length = 4 },
       }),
