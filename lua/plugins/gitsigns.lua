@@ -67,7 +67,9 @@ return {
         end, { expr = true, desc = "Previous Git hunk" })
 
         -- Actions
-        map({ "n", "v" }, "gssh", gs.stage_hunk, { desc = "Stage Git hunk" })
+        local keymap = require("legendary").keymap
+
+        keymap({ "gssh", gs.stage_hunk, description = "Stage hunk", opts = { desc = "Stage Git hunk" } })
         map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
         map("n", "gsuh", gs.undo_stage_hunk, { desc = "Undo stage Git hunk" })
 

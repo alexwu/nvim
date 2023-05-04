@@ -118,16 +118,18 @@ return {
       require("FTerm").setup({
         border = "rounded",
       })
-      vim.api.nvim_create_user_command("FTermOpen", require("FTerm").open, { bang = true })
-      vim.api.nvim_create_user_command("FTermClose", require("FTerm").close, { bang = true })
-      vim.api.nvim_create_user_command("FTermExit", require("FTerm").exit, { bang = true })
-      vim.api.nvim_create_user_command("FTermToggle", require("FTerm").toggle, { bang = true })
-      -- vim.keymap.set("n", [[<C-\>]], require("FTerm").toggle)
-      -- vim.keymap.set("t", [[<C-\>]], '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+
+      local commands = require("legendary").commands
+
+      commands({
+        { ":FTermOpen", require("FTerm").open, description = "Open terminal", opts = { bang = true } },
+        { ":FTermClose", require("FTerm").close, description = "Close terminal", opts = { bang = true } },
+        { ":FTermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
+        { ":FTermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
+      })
     end,
   },
 
-  -- { "AndrewRadev/splitjoin.vim" },
   {
     "aarondiel/spread.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
