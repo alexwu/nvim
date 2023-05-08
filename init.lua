@@ -18,6 +18,7 @@ require("lazy").setup("plugins", {
   dev = {
     path = "~/Code/neovim/plugins",
     patterns = { "alexwu" },
+    fallback = true,
   },
 })
 
