@@ -70,11 +70,13 @@ return {
         local keymap = require("legendary").keymap
 
         keymap({ "gssh", gs.stage_hunk, description = "Stage hunk", opts = { desc = "Stage Git hunk" } })
-        map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
-        map("n", "gsuh", gs.undo_stage_hunk, { desc = "Undo stage Git hunk" })
+        -- map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
+        keymap({ "gsrh", gs.reset_hunk, description = "Reset Git hunk", mode = { "n", "v" } })
+        keymap({ "gsuh", gs.undo_stage_hunk, description = "Undo stage Git hunk", mode = { "n" } })
+        -- map("n", "gsuh", gs.undo_stage_hunk, { desc = "Undo stage Git hunk" })
 
-        map("n", "gssb", gs.stage_buffer, { desc = "Stage Git buffer" })
-        map("n", "gsrb", gs.reset_buffer, { desc = "Reset Git buffer" })
+        keymap({ "gssb", gs.stage_buffer, description = "Stage Git buffer", mode = { "n" } })
+        keymap({ "gsrb", gs.reset_buffer, description = "Reset Git buffer", mode = { "n" } })
 
         map("n", "M", function()
           gs.preview_hunk()

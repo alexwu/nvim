@@ -374,22 +374,14 @@ return {
     enabled = false,
   },
 
-  -- {
-  --   "romgrk/kirby.nvim",
-  --   dependencies = {
-  --     { "romgrk/fzy-lua-native", build = "make install" },
-  --     { "romgrk/kui.nvim" },
-  --   },
-  -- },
-  -- {
-  --   "cbochs/portal.nvim",
-  --   dependencies = {
-  --     "cbochs/grapple.nvim",
-  --   },
-  -- },
-
   { "shortcuts/no-neck-pain.nvim", version = "*" },
-  { "mrjones2014/smart-splits.nvim" },
+  {
+    "mrjones2014/smart-splits.nvim",
+    config = function()
+      require("smart-splits").setup()
+    end,
+    lazy = false,
+  },
 }
 
 --     use({
