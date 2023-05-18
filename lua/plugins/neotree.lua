@@ -124,6 +124,8 @@ return {
           ["l"] = "toggle_node",
           ["h"] = "close_node",
           ["H"] = "close_all_nodes",
+          ["s"] = "noop",
+          ["S"] = "noop",
           --["Z"] = "expand_all_nodes",
           ["a"] = {
             "add",
@@ -227,6 +229,16 @@ return {
             ["gp"] = "git_push",
             ["gg"] = "git_commit_and_push",
           },
+        },
+      },
+      source_selector = {
+        winbar = true,
+        statusline = true,
+        sources = {
+          { source = "filesystem" },
+          { source = "buffers" },
+          { source = "git_status" },
+          { source = "document_symbol" },
         },
       },
     })

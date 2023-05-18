@@ -6,6 +6,7 @@ function M.setup(opts)
 
   if cond then
     require("syntax-tree-surfer").setup()
+
     vim.keymap.set("n", "vU", function()
       vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
       return "g@l"

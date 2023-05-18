@@ -6,18 +6,17 @@ return {
     "hrsh7th/cmp-cmdline",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-path",
-    "L3MON4D3/LuaSnip",
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "onsails/lspkind-nvim",
-    "saadparwaiz1/cmp_luasnip",
+    -- { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
+    { "dcampos/cmp-snippy", dependencies = { "dcampos/nvim-snippy" } },
     {
       "garyhurtz/cmp_kitty",
       cond = function()
         return vim.env.TERM == "xterm-kitty"
       end,
     },
-    { dir = "~/Code/neovim/plugins/cmp-treesitter" },
     { "tzachar/cmp-tabnine", build = "./install.sh" },
     {
       "zbirenbaum/copilot.lua",
@@ -56,7 +55,7 @@ return {
     local mapping = cmp.mapping
     local compare = cmp.config.compare
     local lspkind = require("lspkind")
-    local luasnip = require("luasnip")
+    -- local luasnip = require("luasnip")
 
     lspkind.init({
       symbol_map = {
@@ -73,8 +72,8 @@ return {
     local tab_next = function(fallback)
       if cmp.visible() and has_words_before() then
         cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
+      -- elseif luasnip.expand_or_locally_jumpable() then
+      --   luasnip.expand_or_jump()
       elseif has_words_before() then
         cmp.complete()
       else
@@ -85,8 +84,8 @@ return {
     local tab_prev = function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
+      -- elseif luasnip.jumpable(-1) then
+      --   luasnip.jump(-1)
       else
         fallback()
       end
@@ -111,11 +110,11 @@ return {
     end
 
     local preset = function()
-      if vim.env.TERM_PROGRAM == "iTerm.app" or vim.g.neovide then
-        return "default"
-      else
-        return "codicons"
-      end
+      -- if vim.env.TERM_PROGRAM == "iTerm.app" or vim.g.neovide then
+      return "default"
+      -- else
+      -- return "codicons"
+      -- end
     end
 
     cmp.setup({
@@ -129,11 +128,10 @@ return {
             return not vim.endswith(label, sorbet_type_warning)
           end,
         },
-        { name = "treesitter", max_item_count = 10 },
         { name = "copilot" },
-        { name = "luasnip", max_item_count = 3 },
+        -- { name = "luasnip", max_item_count = 3 },
+        { name = "snippy" },
         { name = "cmp_tabnine" },
-        { name = "kitty" },
         { name = "path" },
         { name = "npm", keyword_length = 4 },
       }),
@@ -143,7 +141,7 @@ return {
         compare.offset,
         compare.score,
         require("cmp_tabnine.compare"),
-        require("copilot_cmp.comparators").prioritize,
+        -- require("copilot_cmp.comparators").prioritize,
         require("copilot_cmp.comparators").score,
         compare.recently_used,
         compare.scopes,
@@ -152,7 +150,8 @@ return {
       },
       snippet = {
         expand = function(args)
-          luasnip.lsp_expand(args.body)
+          -- luasnip.lsp_expand(args.body)
+          require("snippy").expand_snippet(args.body)
         end,
       },
       window = {

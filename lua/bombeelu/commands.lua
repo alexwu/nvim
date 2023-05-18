@@ -32,6 +32,7 @@ nvim.create_autocmd("BufRead", {
   group = "bombeelu.autocmd",
   pattern = vim.fs.normalize("~/.local/share/chezmoi/*"),
   callback = function(o)
+    -- require("legendary").command(o.buf, ":Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
     nvim.buf_create_user_command(o.buf, "Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
   end,
 })
@@ -40,6 +41,7 @@ nvim.create_autocmd("BufRead", {
 RELOAD = require("plenary.reload").reload_module
 
 -- selene: allow(unscoped_variables)
+-- selene: allow(unused_variable)
 R = function(name)
   RELOAD(name)
   return require(name)

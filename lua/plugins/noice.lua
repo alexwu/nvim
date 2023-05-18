@@ -6,7 +6,10 @@ return {
       popupmenu = {
         enabled = false,
       },
-      notify = { enabled = true },
+      notify = {
+        enabled = true,
+        view = "notify_send",
+      },
       lsp = {
         progress = {
           enabled = true,
@@ -19,8 +22,25 @@ return {
           throttle = 1000 / 30, -- frequency to update lsp progress message
           view = "mini",
         },
-        hover = { enabled = true },
-        signature = { enabled = true },
+        hover = {
+          enabled = true,
+          silent = false, -- set to true to not show a message if hover is not available
+          view = nil, -- when nil, use defaults from documentation
+          ---@type NoiceViewOptions
+          opts = {}, -- merged with defaults from documentation
+        },
+        signature = {
+          enabled = true,
+          auto_open = {
+            enabled = true,
+            trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
+            luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
+            throttle = 50, -- Debounce lsp signature help request by 50ms
+          },
+          view = nil, -- when nil, use defaults from documentation
+          ---@type NoiceViewOptions
+          opts = {}, -- merged with defaults from documentation
+        },
         documentation = {
           enabled = true,
           view = "hover",

@@ -7,7 +7,6 @@ end
 return {
   "vim-test/vim-test",
   dependencies = {
-    "akinsho/toggleterm.nvim",
     "numToStr/FTerm.nvim",
   },
   cond = function()

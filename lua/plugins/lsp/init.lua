@@ -15,9 +15,9 @@ return {
     "nvim-telescope/telescope.nvim",
     "b0o/schemastore.nvim",
     "stevearc/dressing.nvim",
-    { "barrett-ruth/import-cost.nvim", build = "sh install.sh yarn", config = true },
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
+    "folke/neodev.nvim",
     {
       "lvimuser/lsp-inlayhints.nvim",
       config = function()
@@ -119,6 +119,9 @@ return {
       update_in_insert = false,
     })
 
+    require("mason").setup()
+    require("mason-lspconfig").setup()
+
     vim.lsp.handlers["textDocument/hover"] =
       vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
 
@@ -131,6 +134,8 @@ return {
     lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
+    -- lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
     -- lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
 
     --- Sends an async request to all active clients attached to the current
@@ -246,6 +251,18 @@ return {
     end, { silent = true, desc = "Select a code action" })
 
     set("n", "K", hover, { silent = true })
+
+    vim.keymap.set({ "n", "i", "s" }, "<c-f>", function()
+      if not require("noice.lsp").scroll(4) then
+        return "<c-f>"
+      end
+    end, { silent = true, expr = true })
+
+    vim.keymap.set({ "n", "i", "s" }, "<c-b>", function()
+      if not require("noice.lsp").scroll(-4) then
+        return "<c-b>"
+      end
+    end, { silent = true, expr = true })
 
     augroup("LspCustom", { clear = true })
 

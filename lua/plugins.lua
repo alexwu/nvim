@@ -26,14 +26,14 @@ return {
         -- require("bombeelu.pin").setup()
         require("bombeelu.visual-surround").setup()
         -- require("bombeelu.refactoring").setup()
-        require("bombeelu.just").setup()
+        -- require("bombeelu.just").setup()
       end
     end,
     lazy = false,
     priority = 1001,
   },
-  { "tpope/vim-repeat", lazy = false },
   {
+    { "tpope/vim-repeat", lazy = false },
     "sheerun/vim-polyglot",
     lazy = false,
     init = function()
@@ -107,6 +107,31 @@ return {
     },
   },
   {
+    "ggandor/flit.nvim",
+    dependencies = { "ggandor/leap.nvim" },
+    config = function()
+      require("flit").setup({
+        keys = { f = "f", F = "F", t = "t", T = "T" },
+        labeled_modes = "v",
+        multiline = true,
+        opts = {},
+      })
+    end,
+  },
+  {
+    "ggandor/leap-spooky.nvim",
+    dependencies = { "ggandor/leap.nvim" },
+    config = function()
+      require("leap-spooky").setup({
+        affixes = {
+          remote = { window = "r", cross_window = "R" },
+          magnetic = { window = "m", cross_window = "M" },
+        },
+        paste_on_remote_yank = false,
+      })
+    end,
+  },
+  {
     "mhartington/formatter.nvim",
     config = function()
       require("bombeelu.format")
@@ -127,6 +152,11 @@ return {
         { ":FTermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
         { ":FTermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
       })
+
+      vim.api.nvim_create_user_command("YarnTest", function()
+        require("FTerm").run({ "yarn", "test" })
+      end, { bang = true })
+      key.map({ [[<C-\>]], [[<C-`>]] }, require("FTerm").toggle, { desc = "Toggle terminal", modes = { "n", "t" } })
     end,
   },
 
@@ -156,8 +186,8 @@ return {
     end,
   },
   {
-    "alexwu/ruby.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
+    "alexwu/ruby.nvim",
     dev = true,
     config = function()
       require("bombeelu.lsp").sorbet.setup()
@@ -165,6 +195,8 @@ return {
     cond = function()
       return not vim.g.vscode
     end,
+    ft = { "ruby" },
+    enabled = true,
   },
   {
     "ckolkey/ts-node-action",
@@ -373,7 +405,6 @@ return {
     end,
     enabled = false,
   },
-
   { "shortcuts/no-neck-pain.nvim", version = "*" },
   {
     "mrjones2014/smart-splits.nvim",

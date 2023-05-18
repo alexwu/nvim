@@ -9,7 +9,7 @@ return {
     "RRethy/nvim-treesitter-endwise",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  -- tag = "v0.8.5.2",
+  tag = "v0.9.0",
   config = function()
     require("nvim-treesitter.configs").setup({
       -- ensure_installed = {
@@ -48,9 +48,12 @@ return {
       highlight = {
         enable = not vim.g.vscode,
         additional_vim_regex_highlighting = { "ruby" },
-        disable = { "ruby" },
+        -- disable = { "ruby" },
       },
-      indent = { enable = not vim.g.vscode },
+      indent = {
+        enable = not vim.g.vscode,
+        -- disable = { "lua" }
+      },
       incremental_selection = {
         enable = true,
         keymaps = {
@@ -70,7 +73,7 @@ return {
       },
       textobjects = {
         select = {
-          enable = true,
+          enable = false,
           lookahead = true,
           keymaps = {
             ["af"] = "@function.outer",

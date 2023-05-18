@@ -3,6 +3,7 @@ return {
   cond = function()
     return not vim.g.vscode
   end,
+  enabled = false,
   config = function()
     local set = vim.keymap.set
     local Terminal = require("toggleterm.terminal").Terminal

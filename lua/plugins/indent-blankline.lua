@@ -7,7 +7,7 @@ return {
   dependencies = { "nvim-treesitter/nvim-treesitter" },
   config = function()
     require("indent_blankline").setup({
-      use_treesitter = true,
+      use_treesitter = false,
       show_current_context = true,
       show_current_context_start = false,
       context_highlight = "Label",
