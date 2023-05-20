@@ -28,42 +28,32 @@ return {
     },
   },
   config = function()
-    -- Unless you are still migrating, remove the deprecated commands from v1.x
     vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
 
-    -- If you want icons for diagnostic errors, you'll need to define them somewhere:
-    -- vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
-    -- vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
-    -- vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
-    -- vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
-
     require("neo-tree").setup({
-      close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
+      close_if_last_window = true,
       popup_border_style = "rounded",
       enable_git_status = true,
       enable_diagnostics = true,
-      sort_case_insensitive = false, -- used when sorting files and directories in the tree
-      sort_function = nil, -- use a custom function for sorting files and directories in the tree
-      -- sort_function = function (a,b)
-      --       if a.type == b.type then
-      --           return a.path > b.path
-      --       else
-      --           return a.type > b.type
-      --       end
-      --   end , -- this sorts files and directories descendantly
+      sort_case_insensitive = false,
+      sort_function = nil,
+      sources = {
+        "filesystem",
+        "buffers",
+        "git_status",
+        "document_symbols",
+      },
       default_component_configs = {
         container = {
           enable_character_fade = true,
         },
         indent = {
           indent_size = 2,
-          padding = 1, -- extra padding on left hand side
-          -- indent guides
+          padding = 1,
           with_markers = true,
           indent_marker = "│",
           last_indent_marker = "└",
           highlight = "NeoTreeIndentMarker",
-          -- expander config, needed for nesting files
           with_expanders = nil, -- if nil and file nesting is enabled, will enable expanders
           expander_collapsed = "",
           expander_expanded = "",
@@ -73,8 +63,6 @@ return {
           folder_closed = "",
           folder_open = "",
           folder_empty = "ﰊ",
-          -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
-          -- then these will never be used.
           default = "*",
           highlight = "NeoTreeFileIcon",
         },
@@ -89,17 +77,35 @@ return {
         },
         git_status = {
           symbols = {
-            -- Change type
-            added = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
-            modified = "", -- or "", but this is redundant info if you use git_status_colors on the name
+            added = "",
+            modified = "",
             deleted = "✖", -- this can only be used in the git_status source
             renamed = "", -- this can only be used in the git_status source
-            -- Status type
             untracked = "",
             ignored = "",
             unstaged = "",
             staged = "",
             conflict = "",
+          },
+        },
+        document_symbols = {
+          kinds = {
+            File = { icon = "󰈙", hl = "Tag" },
+            Namespace = { icon = "󰌗", hl = "Include" },
+            Package = { icon = "󰏖", hl = "Label" },
+            Class = { icon = "󰌗", hl = "Include" },
+            Property = { icon = "󰆧", hl = "@property" },
+            Enum = { icon = "󰒻", hl = "@number" },
+            Function = { icon = "󰊕", hl = "Function" },
+            String = { icon = "󰀬", hl = "String" },
+            Number = { icon = "󰎠", hl = "Number" },
+            Array = { icon = "󰅪", hl = "Type" },
+            Object = { icon = "󰅩", hl = "Type" },
+            Key = { icon = "󰌋", hl = "" },
+            Struct = { icon = "󰌗", hl = "Type" },
+            Operator = { icon = "󰆕", hl = "Operator" },
+            TypeParameter = { icon = "󰊄", hl = "Type" },
+            StaticMethod = { icon = "󰠄 ", hl = "Function" },
           },
         },
       },
@@ -115,22 +121,14 @@ return {
           ["<2-LeftMouse>"] = "open",
           ["<cr>"] = "open",
           ["P"] = { "toggle_preview", config = { use_float = true } },
-          -- ["S"] = "split_with_window_picker",
-          -- ["s"] = "vsplit_with_window_picker",
           ["t"] = "open_tabnew",
-          -- ["<cr>"] = "open_drop",
-          -- ["t"] = "open_tab_drop",
-          -- ["w"] = "open_with_window_picker",
           ["l"] = "toggle_node",
           ["h"] = "close_node",
           ["H"] = "close_all_nodes",
           ["s"] = "noop",
           ["S"] = "noop",
-          --["Z"] = "expand_all_nodes",
           ["a"] = {
             "add",
-            -- this command supports BASH style brace expansion ("x{a,b,c}" -> xa,xb,xc). see `:h neo-tree-file-actions` for details
-            -- some commands may take optional config options, see `:h neo-tree-mappings` for details
             config = {
               show_path = "none", -- "none", "relative", "absolute"
             },
