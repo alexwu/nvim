@@ -61,7 +61,7 @@ return {
     -- vim.notify = require("notify")
     require("notify").setup({
       timeout = 100,
-      fps = 60,
+      fps = 120,
       stages = stages(),
       background_colour = "Normal",
       render = "minimal",

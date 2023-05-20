@@ -11,6 +11,42 @@ return {
     config = function()
       vim.cmd("colorscheme snazzy")
     end,
+    enabled = true,
+  },
+  {
+    "xiyaowong/transparent.nvim",
+    dependencies = { "nvim-snazzy" },
+    config = function()
+      require("transparent").setup({
+        groups = { -- table: default groups
+          "Normal",
+          "NormalNC",
+          "Comment",
+          "Constant",
+          "Special",
+          "Identifier",
+          "Statement",
+          "PreProc",
+          "Type",
+          "Underlined",
+          "Todo",
+          "String",
+          "Function",
+          "Conditional",
+          "Repeat",
+          "Operator",
+          "Structure",
+          "LineNr",
+          "NonText",
+          "SignColumn",
+          "CursorLineNr",
+          "EndOfBuffer",
+        },
+        extra_groups = {},   -- table: additional groups that should be cleared
+        exclude_groups = {}, -- table: groups you don't want to clear
+      })
+    end,
+    enabled = true,
   },
   {
     "nvim-lua/plenary.nvim",
@@ -147,9 +183,9 @@ return {
       local commands = require("legendary").commands
 
       commands({
-        { ":FTermOpen", require("FTerm").open, description = "Open terminal", opts = { bang = true } },
-        { ":FTermClose", require("FTerm").close, description = "Close terminal", opts = { bang = true } },
-        { ":FTermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
+        { ":FTermOpen",   require("FTerm").open,   description = "Open terminal",   opts = { bang = true } },
+        { ":FTermClose",  require("FTerm").close,  description = "Close terminal",  opts = { bang = true } },
+        { ":FTermExit",   require("FTerm").exit,   description = "Exit terminal",   opts = { bang = true } },
         { ":FTermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
       })
 
@@ -260,7 +296,6 @@ return {
     end,
   },
   {
-
     "andymass/vim-matchup",
     setup = function()
       vim.g.matchup_matchparen_deferred = 1
@@ -269,6 +304,7 @@ return {
     cond = function()
       return not vim.g.vscode
     end,
+    enabled = false,
   },
   {
     "ziontee113/syntax-tree-surfer",
@@ -332,7 +368,13 @@ return {
     "willothy/wezterm.nvim",
     config = true,
   },
-  -- {
+
+  -- Lua
+  {
+    "folke/trouble.nvim",
+    requires = "nvim-tree/nvim-web-devicons",
+    config = true,
+  },
   --   "otavioschwanck/ruby-toolkit.nvim",
   --   ft = { "ruby" },
   --   dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-treesitter/nvim-treesitter-textobjects" },
@@ -364,6 +406,26 @@ return {
       require("mini.bracketed").setup()
       require("mini.splitjoin").setup()
       require("mini.colors").setup()
+      -- require("mini.base16").setup({
+      --   palette = {
+      --     base00 = "#282a36",
+      --     base01 = "#34353e",
+      --     base02 = "#43454f",
+      --     base03 = "#78787e",
+      --     base04 = "#a5a5a9",
+      --     base05 = "#e2e4e5",
+      --     base06 = "#eff0eb",
+      --     base07 = "#f1f1f0",
+      --     base08 = "#ff5c57",
+      --     base09 = "#ff9f43",
+      --     base0A = "#f3f99d",
+      --     base0B = "#5af78e",
+      --     base0C = "#9aedfe",
+      --     base0D = "#57c7ff",
+      --     base0E = "#ff6ac1",
+      --     base0F = "#b2643c",
+      --   },
+      -- })
     end,
   },
   {
@@ -405,7 +467,7 @@ return {
     end,
     enabled = false,
   },
-  { "shortcuts/no-neck-pain.nvim", version = "*" },
+  { "shortcuts/no-neck-pain.nvim",     version = "*" },
   {
     "mrjones2014/smart-splits.nvim",
     config = function()
@@ -680,79 +742,4 @@ return {
 --
 --
 --     use({ "junegunn/vim-easy-align" })
---
---     use({
---       "folke/noice.nvim",
---       event = "VimEnter",
---       config = function()
---         require("noice").setup({
---           popupmenu = {
---             enabled = false,
---           },
---           routes = {
---             {
---               filter = {
---                 event = "msg_show",
---                 kind = "",
---                 find = "written",
---               },
---               opts = { skip = true },
---             },
---             {
---               filter = {
---                 event = "msg_show",
---                 kind = "search_count",
---               },
---               opts = { skip = true },
---             },
---           },
---           notify = { enabled = true },
---           lsp = {
---             progress = {
---               enabled = true,
---               -- Lsp Progress is formatted using the builtins for lsp_progress. See config.format.builtin
---               -- See the section on formatting for more details on how to customize.
---               --- @type NoiceFormat|string
---               format = "lsp_progress",
---               --- @type NoiceFormat|string
---               format_done = "lsp_progress_done",
---               throttle = 1000 / 30, -- frequency to update lsp progress message
---               view = "mini",
---             },
---             hover = {
---               enabled = false,
---               view = nil, -- when nil, use defaults from documentation
---               ---@type NoiceViewOptions
---               opts = {}, -- merged with defaults from documentation
---             },
---             signature = {
---               enabled = false,
---               auto_open = true, -- Automatically show signature help when typing a trigger character from the LSP
---               view = nil, -- when nil, use defaults from documentation
---               ---@type NoiceViewOptions
---               opts = {}, -- merged with defaults from documentation
---             },
---             -- defaults for hover and signature help
---             documentation = {
---               view = "hover",
---               ---@type NoiceViewOptions
---               opts = {
---                 lang = "markdown",
---                 replace = true,
---                 render = "plain",
---                 format = { "{message}" },
---                 win_options = { concealcursor = "n", conceallevel = 3 },
---               },
---             },
---           },
---         })
---
---         require("telescope").load_extension("noice")
---       end,
---       dependencies = {
---         "MunifTanjim/nui.nvim",
---         "rcarriga/nvim-notify",
---       },
---       disable = false,
---     })
 --

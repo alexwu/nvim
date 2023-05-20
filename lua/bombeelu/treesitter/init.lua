@@ -14,16 +14,16 @@ function M.is_supported(lang)
 end
 
 function M.init()
-  require("nvim-treesitter").define_modules({
-    highlight_current_node = {
-      module_path = "bombeelu.treesitter",
-      enable = false,
-      disable = {},
-      is_supported = function(lang)
-        return parser.has_parser(lang) and lang ~= "help"
-      end,
-    },
-  })
+  -- require("nvim-treesitter").define_modules({
+  --   highlight_current_node = {
+  --     module_path = "bombeelu.treesitter",
+  --     enable = false,
+  --     disable = {},
+  --     is_supported = function(lang)
+  --       return parser.has_parser(lang) and lang ~= "help"
+  --     end,
+  --   },
+  -- })
 end
 
 M.config = {

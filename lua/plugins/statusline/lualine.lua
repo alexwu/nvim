@@ -68,7 +68,14 @@ require("lualine").setup({
     section_separators = { left = "", right = "" },
     globalstatus = true,
   },
-  extensions = { "fzf", "fugitive", "nvim-tree", "quickfix", "toggleterm" },
+  extensions = {
+    "fzf",
+    "fugitive",
+    "quickfix",
+    "neo-tree",
+    "lazy",
+    "trouble"
+  },
   sections = {
     lualine_a = {
       {
@@ -109,6 +116,13 @@ require("lualine").setup({
         update_in_insert = false,
         always_visible = false,
       },
+      {
+        "filetype",
+        icon_only = true,
+        separator = "",
+        padding = { left = 1, right = 0 },
+      },
+      { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
     },
     lualine_x = {
       {
