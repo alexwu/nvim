@@ -158,7 +158,7 @@ return {
       filesystem = {
         bind_to_cwd = false, -- true creates a 2-way binding between vim's cwd and neo-tree's root
         filtered_items = {
-          visible = true, -- when true, they will just be displayed differently than normal items
+          visible = true,    -- when true, they will just be displayed differently than normal items
           hide_dotfiles = true,
           hide_gitignored = true,
           hide_hidden = true, -- only works on Windows for hidden files/directories
@@ -180,9 +180,9 @@ return {
             --".null-ls_*",
           },
         },
-        follow_current_file = true, -- This will find and focus the file in the active buffer every
+        follow_current_file = true,             -- This will find and focus the file in the active buffer every
         -- time the current file is changed while the tree is open.
-        group_empty_dirs = false, -- when true, empty folders will be grouped together
+        group_empty_dirs = false,               -- when true, empty folders will be grouped together
         hijack_netrw_behavior = "open_current", -- netrw disabled, opening a directory opens neo-tree
         -- in whatever position is specified in window.position
         -- "open_current",  -- netrw disabled, opening a directory opens within the
@@ -207,7 +207,7 @@ return {
       buffers = {
         follow_current_file = true, -- This will find and focus the file in the active buffer every
         -- time the current file is changed while the tree is open.
-        group_empty_dirs = true, -- when true, empty folders will be grouped together
+        group_empty_dirs = true,    -- when true, empty folders will be grouped together
         show_unloaded = true,
         window = {
           mappings = {
@@ -250,5 +250,15 @@ return {
     key.map("-", function()
       vim.cmd.Neotree("current", "dir=%:p:h")
     end)
+
+    require("legendary").commands({
+      {
+        ":DocumentSymbols",
+        function()
+          vim.cmd.Neotree("document_symbols")
+        end,
+        description = "Show document symbols",
+      },
+    })
   end,
 }

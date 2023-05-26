@@ -54,7 +54,7 @@ function M.setup(opts)
     sorbet = {
       enable = true,
       experimental = true,
-      rubyfmt_path = vim.fs.normalize("~/.bin/rubyfmt"),
+      rubyfmt_path = vim.fs.normalize("/opt/homebrew/bin/rubyfmt"),
       on_attach = on_attach,
       capabilities = capabilities,
     },

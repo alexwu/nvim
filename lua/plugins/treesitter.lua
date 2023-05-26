@@ -3,7 +3,6 @@ local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
 return {
   "nvim-treesitter/nvim-treesitter",
   dependencies = {
-    "nvim-treesitter/nvim-treesitter-textobjects",
     "nvim-treesitter/nvim-treesitter-refactor",
     "RRethy/nvim-treesitter-textsubjects",
     "RRethy/nvim-treesitter-endwise",
@@ -42,22 +41,6 @@ return {
       endwise = {
         enable = true,
       },
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-            ["ab"] = "@block.outer",
-            ["ib"] = "@block.inner",
-            ["a?"] = "@block.outer",
-            ["i?"] = "@block.inner",
-          },
-        },
-      },
       playground = {
         enable = true,
         disable = {},
@@ -69,35 +52,35 @@ return {
         use_virtual_text = true,
         lint_events = { "BufWrite", "CursorHold" },
       },
-      refactor = {
-        smart_rename = {
-          enable = true,
-          keymaps = {
-            smart_rename = "gsn",
-          },
-        },
-        navigation = {
-          enable = false,
-          keymaps = {
-            goto_definition_lsp_fallback = "gd",
-          },
-        },
-        highlight_current_scope = { enable = false },
-        highlight_definitions = {
-          enable = false,
-          clear_on_cursor_move = false,
-        },
-      },
+      -- refactor = {
+      --   smart_rename = {
+      --     enable = true,
+      --     keymaps = {
+      --       smart_rename = "gsn",
+      --     },
+      --   },
+      --   navigation = {
+      --     enable = false,
+      --     keymaps = {
+      --       goto_definition_lsp_fallback = "gd",
+      --     },
+      --   },
+      --   highlight_current_scope = { enable = false },
+      --   highlight_definitions = {
+      --     enable = false,
+      --     clear_on_cursor_move = false,
+      --   },
+      -- },
       autopairs = { enable = true },
       autotag = { enable = true },
       context_commentstring = { enable = true, enable_autocmd = false },
       matchup = {
         enable = false,
       },
-      highlight_current_node = {
-        enable = true,
-        excluded_filetypes = { "help" },
-      },
+      -- highlight_current_node = {
+      --   enable = true,
+      --   excluded_filetypes = { "help" },
+      -- },
     })
 
     require("nvim-treesitter.parsers").ft_to_lang = function(ft)
@@ -116,6 +99,6 @@ return {
     --   maintainers = { "@IndianBoy42" },
     -- }
 
-    require("bombeelu.treesitter").init()
+    -- require("bombeelu.treesitter").init()
   end,
 }

@@ -204,7 +204,8 @@ M.setup = function(opts)
       null_ls.builtins.formatting.stylua,
       null_ls.builtins.diagnostics.dotenv_linter,
       null_ls.builtins.formatting.erb_format,
-      -- null_ls.builtins.code_actions.gitsigns,
+      require("typescript.extensions.null-ls.code-actions"),
+      null_ls.builtins.code_actions.gitsigns,
     },
     on_attach = on_attach,
   })

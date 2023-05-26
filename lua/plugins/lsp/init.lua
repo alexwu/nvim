@@ -20,6 +20,7 @@ return {
     "folke/neodev.nvim",
     {
       "lvimuser/lsp-inlayhints.nvim",
+      branch = "anticonceal",
       config = function()
         require("lsp-inlayhints").setup()
 
@@ -138,33 +139,6 @@ return {
     -- lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
     -- lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
 
-    --- Sends an async request to all active clients attached to the current
-    --- buffer.
-    ---
-    ---@param method (string) LSP method name
-    ---@param params (table|nil) Parameters to send to the server
-    ---@param handler (function|nil) See |lsp-handler|. Follows |lsp-handler-resolution|
-    --
-    ---@returns 2-tuple:
-    ---  - Map of client-id:request-id pairs for all successful requests.
-    ---  - Function which can be used to cancel all the requests. You could instead
-    ---    iterate all clients and call their `cancel_request()` methods.
-    ---
-    ---@see |vim.lsp.buf_request()|
-    -- local function request(method, params, handler)
-    --   validate({
-    --     method = { method, "s" },
-    --     handler = { handler, "f", true },
-    --   })
-    --   return vim.lsp.buf_request(0, method, params, handler)
-    -- end
-
-    --- Hover info from ALL attached buffers
-    function super_hover()
-      local params = vim.lsp.util.make_position_params()
-      -- request("textDocument/hover", params)
-    end
-
     local function hover()
       local filetype = detect(vim.api.nvim_buf_get_name(0))
       if vim.tbl_contains({ "vim", "help" }, filetype) then
@@ -224,10 +198,12 @@ return {
       "n",
       "]d",
       rpt(function()
-        vim.diagnostic.goto_next({ float = {
-          border = "rounded",
-          focusable = false,
-        } })
+        vim.diagnostic.goto_next({
+          float = {
+            border = "rounded",
+            focusable = false,
+          },
+        })
       end),
       { silent = true, desc = "Go to next diagnostic" }
     )

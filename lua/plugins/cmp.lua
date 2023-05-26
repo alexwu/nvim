@@ -7,7 +7,7 @@ return {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-path",
     "nvim-lua/plenary.nvim",
-    "nvim-treesitter/nvim-treesitter",
+    -- "nvim-treesitter/nvim-treesitter",
     "onsails/lspkind-nvim",
     -- { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
     { "dcampos/cmp-snippy", dependencies = { "dcampos/nvim-snippy" } },
@@ -72,8 +72,8 @@ return {
     local tab_next = function(fallback)
       if cmp.visible() and has_words_before() then
         cmp.select_next_item()
-      -- elseif luasnip.expand_or_locally_jumpable() then
-      --   luasnip.expand_or_jump()
+        -- elseif luasnip.expand_or_locally_jumpable() then
+        --   luasnip.expand_or_jump()
       elseif has_words_before() then
         cmp.complete()
       else
@@ -84,8 +84,8 @@ return {
     local tab_prev = function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      -- elseif luasnip.jumpable(-1) then
-      --   luasnip.jump(-1)
+        -- elseif luasnip.jumpable(-1) then
+        --   luasnip.jump(-1)
       else
         fallback()
       end
@@ -110,11 +110,11 @@ return {
     end
 
     local preset = function()
-      -- if vim.env.TERM_PROGRAM == "iTerm.app" or vim.g.neovide then
-      return "default"
-      -- else
-      -- return "codicons"
-      -- end
+      if vim.env.TERM_PROGRAM == "iTerm.app" or vim.g.neovide then
+        return "default"
+      else
+        return "codicons"
+      end
     end
 
     cmp.setup({

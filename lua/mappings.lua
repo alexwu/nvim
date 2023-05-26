@@ -46,11 +46,6 @@ vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move up" })
 vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<cr>==gi", { desc = "Move up" })
 
--- set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
--- set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
--- set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })
--- set({ "x" }, "<C-l>", "5l", { desc = "Move right 5 columns" })
-
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })

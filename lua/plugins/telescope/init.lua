@@ -58,6 +58,7 @@ return {
       "nvim-telescope/telescope-fzf-native.nvim",
       build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
     },
+    "tsakirist/telescope-lazy.nvim",
   },
   cond = function()
     return not vim.g.vscode
@@ -184,6 +185,19 @@ return {
         recent_files = {
           only_cwd = true,
         },
+        lazy = {
+          theme = "ivy",
+          show_icon = true,
+          mappings = {
+            open_in_browser = "<C-o>",
+            open_in_file_browser = "<M-b>",
+            open_in_find_files = "<C-f>",
+            open_in_live_grep = "<C-g>",
+            open_plugins_picker = "<C-b>",
+            open_lazy_root_find_files = "<C-r>f",
+            open_lazy_root_live_grep = "<C-r>g",
+          },
+        },
       },
     })
 
@@ -196,7 +210,7 @@ return {
       enable_persistent_history = true,
     })
 
-    set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
+    -- set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
     set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
     -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
@@ -210,7 +224,7 @@ return {
     )
     set(
       "n",
-      "<Leader>e",
+      "<Leader><Leader>",
       lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
       { desc = "Select oldfiles" }
     )

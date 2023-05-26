@@ -122,6 +122,32 @@ return {
     end,
   },
   {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+              ["ab"] = "@block.outer",
+              ["ib"] = "@block.inner",
+              ["a?"] = "@block.outer",
+              ["i?"] = "@block.inner",
+            },
+          },
+        },
+      })
+    end,
+  },
+  {
     "kylechui/nvim-surround",
     config = function()
       require("nvim-surround").setup({
@@ -254,6 +280,12 @@ return {
     end,
   },
   {
+    "vuki656/package-info.nvim",
+    event = { "BufRead package.json" },
+    dependencies = "MunifTanjim/nui.nvim",
+    config = true,
+  },
+  {
     "stevearc/dressing.nvim",
     config = function()
       require("plugins.dressing")
@@ -340,10 +372,6 @@ return {
     end,
   },
   {
-    "nvim-treesitter/playground",
-    cmd = { "TSHighlightCapturesUnderCursor", "TSPlaygroundToggle", "TSNodeUnderCursor" },
-  },
-  {
     "ray-x/go.nvim",
     dependencies = { "ray-x/guihua.lua" },
     ft = "go",
@@ -374,6 +402,53 @@ return {
     "folke/trouble.nvim",
     requires = "nvim-tree/nvim-web-devicons",
     config = true,
+  },
+  {
+    "kevinhwang91/nvim-bqf",
+    config = function()
+      require("bqf").setup({
+        auto_enable = true,
+        auto_resize_height = false,
+        preview = {
+          should_preview_cb = function(bufnr, _qwinid)
+            return bufnr ~= vim.api.nvim_get_current_buf()
+          end,
+        },
+        func_map = {
+          drop = "o",
+          openc = "O",
+          split = "<C-s>",
+          tabdrop = "<C-t>",
+          tabc = "",
+          ptogglemode = "z,",
+        },
+      })
+    end,
+    cond = function()
+      return not vim.g.vscode
+    end,
+  },
+  {
+    "rest-nvim/rest.nvim",
+    requires = { "nvim-lua/plenary.nvim" },
+    config = true,
+  },
+  {
+    "RRethy/vim-illuminate",
+    config = function()
+      require("illuminate").configure({
+        -- providers: provider used to get references in the buffer, ordered by priority
+        providers = {
+          "lsp",
+          "treesitter",
+        },
+        delay = 100,
+        filetype_overrides = {},
+        filetypes_denylist = {
+          "neotree",
+        },
+      })
+    end,
   },
   --   "otavioschwanck/ruby-toolkit.nvim",
   --   ft = { "ruby" },
@@ -467,13 +542,48 @@ return {
     end,
     enabled = false,
   },
-  { "shortcuts/no-neck-pain.nvim",     version = "*" },
+  {
+    "shortcuts/no-neck-pain.nvim",
+    version = "*",
+    config = function()
+      require("no-neck-pain").setup({
+        width = 300,
+        autocmds = {
+          enableOnVimEnter = true,
+          enableOnTabEnter = true,
+        },
+      })
+    end,
+  },
   {
     "mrjones2014/smart-splits.nvim",
     config = function()
       require("smart-splits").setup()
     end,
     lazy = false,
+  },
+
+  {
+    "otavioschwanck/telescope-alternate",
+    config = function()
+      require("telescope-alternate").setup({
+        presets = { "rails", "rspec" },
+        open_only_one_with = "current_pane",
+      })
+
+      -- On your telescope:
+      require("telescope").load_extension("telescope-alternate")
+    end,
+  },
+
+  {
+    "lewis6991/satellite.nvim",
+    dependencies = { "gitsigns.nvim" },
+    config = function()
+      require("satellite").setup({
+        current_only = true,
+      })
+    end,
   },
 }
 
@@ -721,17 +831,6 @@ return {
 --       disable = true,
 --     })
 
---     use({
---       "lewis6991/satellite.nvim",
---       config = function()
---         if not vim.g.vscode then
---           require("satellite").setup({
---             current_only = true,
---           })
---         end
---       end,
---     })
---
 --     use({
 --       "nvim-telescope/telescope-dap.nvim",
 --       dependencies = { "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap" },
