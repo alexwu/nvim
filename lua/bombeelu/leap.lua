@@ -15,14 +15,6 @@ function M.setup()
   vim.keymap.del({ "x", "o" }, "x")
   vim.keymap.del({ "x", "o" }, "X")
   vim.keymap.del("", "gs")
-
-  -- require("flit").setup({
-  --   keys = { f = "f", F = "F", t = "t", T = "T" },
-  --   labeled_modes = "v",
-  --   multiline = true,
-  --   opts = {},
-  -- })
-  --
 end
 
 function M.get_line_starts(winid)

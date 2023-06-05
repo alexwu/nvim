@@ -41,8 +41,9 @@ return {
           "SignColumn",
           "CursorLineNr",
           "EndOfBuffer",
+          "NoiceMini",
         },
-        extra_groups = {},   -- table: additional groups that should be cleared
+        extra_groups = {}, -- table: additional groups that should be cleared
         exclude_groups = {}, -- table: groups you don't want to clear
       })
     end,
@@ -168,6 +169,8 @@ return {
       "nvim-telescope/telescope.nvim",
     },
   },
+  { "Bekaboo/dropbar.nvim" },
+
   {
     "ggandor/flit.nvim",
     dependencies = { "ggandor/leap.nvim" },
@@ -209,9 +212,9 @@ return {
       local commands = require("legendary").commands
 
       commands({
-        { ":FTermOpen",   require("FTerm").open,   description = "Open terminal",   opts = { bang = true } },
-        { ":FTermClose",  require("FTerm").close,  description = "Close terminal",  opts = { bang = true } },
-        { ":FTermExit",   require("FTerm").exit,   description = "Exit terminal",   opts = { bang = true } },
+        { ":FTermOpen", require("FTerm").open, description = "Open terminal", opts = { bang = true } },
+        { ":FTermClose", require("FTerm").close, description = "Close terminal", opts = { bang = true } },
+        { ":FTermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
         { ":FTermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
       })
 
@@ -299,6 +302,11 @@ return {
     config = function()
       require("which-key").setup({})
     end,
+  },
+  {
+    "folke/edgy.nvim",
+    event = "VeryLazy",
+    opts = {},
   },
   {
     "smjonas/inc-rename.nvim",
@@ -549,8 +557,8 @@ return {
       require("no-neck-pain").setup({
         width = 300,
         autocmds = {
-          enableOnVimEnter = true,
-          enableOnTabEnter = true,
+          enableOnVimEnter = false,
+          enableOnTabEnter = false,
         },
       })
     end,
@@ -571,7 +579,6 @@ return {
         open_only_one_with = "current_pane",
       })
 
-      -- On your telescope:
       require("telescope").load_extension("telescope-alternate")
     end,
   },
@@ -585,6 +592,18 @@ return {
       })
     end,
   },
+  {
+    "johmsalas/text-case.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    config = function()
+      require("textcase").setup({})
+      require("telescope").load_extension("textcase")
+      vim.api.nvim_set_keymap("n", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
+      vim.api.nvim_set_keymap("v", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
+    end,
+  },
+
+  { "Civitasv/cmake-tools.nvim", config = true },
 }
 
 --     use({
@@ -655,58 +674,6 @@ return {
 --       end,
 --     })
 --
---
---
---     use({
---       "NvChad/nvim-colorizer.lua",
---       config = function()
---         require("colorizer").setup({
---           filetypes = { "*" },
---           user_default_options = {
---             names = false, -- "Name" codes like Blue or blue
---           },
---           -- all the sub-options of filetypes apply to buftypes
---           buftypes = {},
---         })
---       end,
---       cmd = { "ColorizerToggle" },
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---
---     use({
---     })
---
---     use({
---       "dsznajder/vscode-es7-javascript-react-snippets",
---       run = "yarn install --frozen-lockfile && yarn compile",
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---
---     use({
---       "tpope/vim-projectionist",
---       dependencies = { "tpope/vim-dispatch" },
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
-
---     use({ "tpope/vim-rails", ft = "ruby", disable = true })
---     use({
---       "beauwilliams/focus.nvim",
---       config = function()
---         if not vim.g.vscode then
---           require("plugins.focus")
---         end
---       end,
---     })
---
---
 --     --       use({
 --     --         "~/Projects/neovim/spectacle.nvim",
 --     --         dependencies = {
@@ -744,48 +711,6 @@ return {
 --     -- })
 --     --
 --
---
---     use({
---       "simrat39/inlay-hints.nvim",
---       config = function()
---         if not vim.g.vscode then
---           require("inlay-hints").setup({
---             renderer = "inlay-hints/render/eol",
---             hints = {
---               parameter = {
---                 show = false,
---                 highlight = "LspInlayHints",
---               },
---               type = {
---                 show = true,
---                 highlight = "LspInlayHints",
---               },
---             },
---             only_current_line = false,
---             eol = {
---               right_align = false,
---               right_align_padding = 7,
---               parameter = {
---                 separator = ", ",
---                 format = function(hints)
---                   return string.format(" <- (%s)", hints)
---                 end,
---               },
---
---               type = {
---                 separator = ", ",
---                 format = function(hints)
---                   return string.format(" => (%s)", hints)
---                 end,
---               },
---             },
---           })
---         end
---       end,
---       disable = true,
---     })
---
---
 --     use({
 --       "mrshmllow/document-color.nvim",
 --       config = function()
@@ -794,13 +719,6 @@ return {
 --     })
 --
 --     use({
---       "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
---       config = function()
---         require("lsp_lines").setup()
---         vim.diagnostic.config({ virtual_lines = false })
---
---         vim.keymap.set("n", "gL", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
---       end,
 --     })
 --
 --     use({
@@ -838,7 +756,3 @@ return {
 --         require("telescope").load_extension("dap")
 --       end,
 --     })
---
---
---     use({ "junegunn/vim-easy-align" })
---

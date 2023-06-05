@@ -24,6 +24,6 @@ return {
     set("n", "<C-Left>", "<cmd>KittyNavigateLeft<cr>")
     set("n", "<C-Right>", "<cmd>KittyNavigateRight<cr>")
     set("n", "<C-Down>", "<cmd>KittyNavigateDown<cr>")
-
   end,
+  enabled = false,
 }

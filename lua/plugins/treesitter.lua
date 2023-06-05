@@ -27,7 +27,7 @@ return {
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = "<CR>",
+          init_selection = "<C-CR>",
         },
       },
       textsubjects = {

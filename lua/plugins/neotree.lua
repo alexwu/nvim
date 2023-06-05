@@ -245,7 +245,11 @@ return {
     -- vim.cmd([[nnoremap - <cmd>Neotree current dir=%:p:h<cr>]])
 
     key.map("<leader>n", function()
-      vim.cmd.Neotree("float", "reveal", "toggle")
+      vim.cmd.Neotree("left", "reveal", "toggle")
+    end)
+
+    key.map("<C-e>", function()
+      vim.cmd.Neotree("left", "reveal", "toggle")
     end)
     key.map("-", function()
       vim.cmd.Neotree("current", "dir=%:p:h")
