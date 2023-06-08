@@ -6,7 +6,7 @@ return {
     dependencies = { "rktjmp/lush.nvim" },
     branch = "lush",
     dev = true,
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       vim.cmd("colorscheme snazzy")
@@ -49,28 +49,8 @@ return {
     end,
     enabled = true,
   },
+  { "tpope/vim-repeat", lazy = false },
   {
-    "nvim-lua/plenary.nvim",
-    config = function()
-      require("plenary.filetype").add_file("extras")
-      require("globals")
-      require("bombeelu.nvim")
-      require("bombeelu.autocmd")
-      require("bombeelu.commands")
-      require("mappings")
-
-      if not vim.g.vscode then
-        -- require("bombeelu.pin").setup()
-        require("bombeelu.visual-surround").setup()
-        -- require("bombeelu.refactoring").setup()
-        -- require("bombeelu.just").setup()
-      end
-    end,
-    lazy = false,
-    priority = 1001,
-  },
-  {
-    { "tpope/vim-repeat", lazy = false },
     "sheerun/vim-polyglot",
     lazy = false,
     init = function()
@@ -80,6 +60,7 @@ return {
   { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
     "chrisgrieser/nvim-spider",
+    event = "VeryLazy",
     config = function()
       require("spider").setup({
         skipInsignificantPunctuation = false,
@@ -93,6 +74,7 @@ return {
   },
   {
     "Wansmer/treesj",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       require("treesj").setup({})
@@ -100,6 +82,7 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       require("treesitter-context").setup({
@@ -124,6 +107,7 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "VeryLazy",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
@@ -150,6 +134,7 @@ return {
   },
   {
     "kylechui/nvim-surround",
+    event = "VeryLazy",
     config = function()
       require("nvim-surround").setup({
         keymaps = {
@@ -161,6 +146,12 @@ return {
   },
   {
     "ggandor/leap.nvim",
+    event = "VeryLazy",
+    keys = {
+      { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
+      { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
+      -- { "gs", mode = { "n", "x", "o" }, desc = "Leap from windows" },
+    },
     config = function()
       require("bombeelu.leap").setup()
     end,
@@ -173,11 +164,12 @@ return {
 
   {
     "ggandor/flit.nvim",
+    event = "VeryLazy",
     dependencies = { "ggandor/leap.nvim" },
     config = function()
       require("flit").setup({
         keys = { f = "f", F = "F", t = "t", T = "T" },
-        labeled_modes = "v",
+        labeled_modes = "nx",
         multiline = true,
         opts = {},
       })
@@ -185,6 +177,7 @@ return {
   },
   {
     "ggandor/leap-spooky.nvim",
+    event = "VeryLazy",
     dependencies = { "ggandor/leap.nvim" },
     config = function()
       require("leap-spooky").setup({
@@ -198,12 +191,14 @@ return {
   },
   {
     "mhartington/formatter.nvim",
+    event = "VeryLazy",
     config = function()
       require("bombeelu.format")
     end,
   },
   {
     "numToStr/FTerm.nvim",
+    event = "VeryLazy",
     config = function()
       require("FTerm").setup({
         border = "rounded",
@@ -227,6 +222,7 @@ return {
 
   {
     "aarondiel/spread.nvim",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       local spread = require("spread")
@@ -239,6 +235,7 @@ return {
   },
   {
     "nvim-neotest/neotest",
+    event = "VeryLazy",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
@@ -251,8 +248,9 @@ return {
     end,
   },
   {
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
     "alexwu/ruby.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
     dev = true,
     config = function()
       require("bombeelu.lsp").sorbet.setup()
@@ -265,6 +263,7 @@ return {
   },
   {
     "ckolkey/ts-node-action",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter" },
     config = function()
       require("ts-node-action").setup({})
@@ -290,6 +289,7 @@ return {
   },
   {
     "stevearc/dressing.nvim",
+    event = "VeryLazy",
     config = function()
       require("plugins.dressing")
     end,
@@ -299,6 +299,7 @@ return {
   },
   {
     "folke/which-key.nvim",
+    event = "VeryLazy",
     config = function()
       require("which-key").setup({})
     end,
@@ -306,10 +307,43 @@ return {
   {
     "folke/edgy.nvim",
     event = "VeryLazy",
-    opts = {},
+    enabled = false,
+    opts = {
+      left = {
+        -- Neo-tree filesystem always takes half the screen height
+        {
+          title = "Neo-Tree",
+          ft = "neo-tree",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "filesystem"
+          end,
+          size = { height = 0.5 },
+        },
+        {
+          title = "Neo-Tree Git",
+          ft = "neo-tree",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "git_status"
+          end,
+          pinned = true,
+          open = "Neotree position=right git_status",
+        },
+        {
+          title = "Neo-Tree Buffers",
+          ft = "neo-tree",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "buffers"
+          end,
+          pinned = true,
+          open = "Neotree position=top buffers",
+        },
+        "neo-tree",
+      },
+    },
   },
   {
     "smjonas/inc-rename.nvim",
+    event = "VeryLazy",
     config = function()
       require("inc_rename").setup({})
 
@@ -321,6 +355,7 @@ return {
   {
     "simrat39/rust-tools.nvim",
     ft = "rust",
+    event = "VeryLazy",
     dependencies = {
       "neovim/nvim-lspconfig",
       "hrsh7th/nvim-cmp",
@@ -348,18 +383,21 @@ return {
   },
   {
     "ziontee113/syntax-tree-surfer",
+    event = "VeryLazy",
     config = function()
       require("bombeelu.syntax-tree-surfer").setup()
     end,
   },
   {
     "windwp/nvim-ts-autotag",
+    event = "VeryLazy",
     cond = function()
       return not vim.g.vscode
     end,
   },
   {
     "akinsho/git-conflict.nvim",
+    event = "VeryLazy",
     config = function()
       require("git-conflict").setup({
         disable_diagnostics = true,
@@ -381,6 +419,7 @@ return {
   },
   {
     "ray-x/go.nvim",
+    event = "VeryLazy",
     dependencies = { "ray-x/guihua.lua" },
     ft = "go",
     config = function()
@@ -402,17 +441,20 @@ return {
   },
   {
     "willothy/wezterm.nvim",
+    event = "VeryLazy",
     config = true,
   },
 
   -- Lua
   {
     "folke/trouble.nvim",
+    event = "VeryLazy",
     requires = "nvim-tree/nvim-web-devicons",
     config = true,
   },
   {
     "kevinhwang91/nvim-bqf",
+    event = "VeryLazy",
     config = function()
       require("bqf").setup({
         auto_enable = true,
@@ -438,11 +480,13 @@ return {
   },
   {
     "rest-nvim/rest.nvim",
+    event = "VeryLazy",
     requires = { "nvim-lua/plenary.nvim" },
     config = true,
   },
   {
     "RRethy/vim-illuminate",
+    event = "VeryLazy",
     config = function()
       require("illuminate").configure({
         -- providers: provider used to get references in the buffer, ordered by priority
@@ -573,6 +617,7 @@ return {
 
   {
     "otavioschwanck/telescope-alternate",
+    event = "VeryLazy",
     config = function()
       require("telescope-alternate").setup({
         presets = { "rails", "rspec" },
@@ -594,6 +639,7 @@ return {
   },
   {
     "johmsalas/text-case.nvim",
+    event = "VeryLazy",
     dependencies = { "nvim-telescope/telescope.nvim" },
     config = function()
       require("textcase").setup({})
@@ -603,7 +649,60 @@ return {
     end,
   },
 
-  { "Civitasv/cmake-tools.nvim", config = true },
+  {
+    "Civitasv/cmake-tools.nvim",
+    event = "VeryLazy",
+    config = true
+  },
+  {
+    "goolord/alpha-nvim",
+    event = "VimEnter",
+    opts = function() end,
+    config = function()
+      local dash = require("alpha.themes.dashboard")
+
+      dash.section.buttons.val = {
+        dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+        dash.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
+        dash.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
+        -- dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
+        -- dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
+        dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
+        dash.button("q", " " .. " Quit", ":qa<CR>"),
+      }
+      for _, button in ipairs(dash.section.buttons.val) do
+        button.opts.hl = "AlphaButtons"
+        button.opts.hl_shortcut = "AlphaShortcut"
+      end
+      dash.section.header.opts.hl = "AlphaHeader"
+      dash.section.buttons.opts.hl = "AlphaButtons"
+      dash.section.footer.opts.hl = "AlphaFooter"
+      dash.opts.layout[1].val = 8
+      -- close Lazy and re-open when the dashboard is ready
+      if vim.o.filetype == "lazy" then
+        vim.cmd.close()
+        vim.api.nvim_create_autocmd("User", {
+          pattern = "AlphaReady",
+          callback = function()
+            require("lazy").show()
+          end,
+        })
+      end
+
+      require("alpha").setup(dash.opts)
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LazyVimStarted",
+        callback = function()
+          local stats = require("lazy").stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          dash.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
+    end,
+  },
 }
 
 --     use({

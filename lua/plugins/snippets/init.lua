@@ -13,6 +13,7 @@ return {
     "honza/vim-snippets",
   },
   enabled = true,
+  event = "VeryLazy",
   config = function()
     require("snippy").setup({
       mappings = {

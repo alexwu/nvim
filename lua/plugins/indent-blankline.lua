@@ -4,10 +4,11 @@ end
 
 return {
   "lukas-reineke/indent-blankline.nvim",
+  event = "VeryLazy",
   dependencies = { "nvim-treesitter/nvim-treesitter" },
   config = function()
     require("indent_blankline").setup({
-      use_treesitter = false,
+      use_treesitter = true,
       show_current_context = true,
       show_current_context_start = false,
       context_highlight = "Label",

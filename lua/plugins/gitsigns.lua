@@ -68,22 +68,76 @@ return {
 
         -- Actions
         local keymap = require("legendary").keymap
+        local keymaps = require("legendary").keymaps
 
-        keymap({ "gssh", gs.stage_hunk, description = "Stage hunk", opts = { desc = "Stage Git hunk" } })
+        keymaps({
+          {
+            "gssh",
+            gs.stage_hunk,
+            description = "Stage hunk",
+            opts = { desc = "Stage Git hunk", buffer = bufnr },
+          },
+          {
+            "gsrh",
+            gs.reset_hunk,
+            description = "Reset Git hunk",
+            mode = { "n", "v" },
+            opts = {
+              buffer = bufnr,
+            },
+          },
+          {
+            "gsuh",
+            gs.undo_stage_hunk,
+            description = "Undo stage Git hunk",
+            mode = { "n" },
+            opts = { buffer = bufnr },
+          },
+          {
+            "gssb",
+            gs.stage_buffer,
+            description = "Stage Git buffer",
+            mode = { "n" },
+            opts = { buffer = bufnr },
+          },
+          {
+            "gsrb",
+            gs.reset_buffer,
+            description = "Reset Git buffer",
+            mode = { "n" },
+            opts = { buffer = bufnr },
+          },
+          {
+            "gM",
+            function()
+              gs.blame_line({ full = true, ignore_whitespace = true })
+            end,
+            description = "Show Git blame",
+            opts = { desc = "Show Git blame", buffer = bufnr },
+          },
+        })
+
+        -- keymap({ "gssh", gs.stage_hunk, description = "Stage hunk", opts = { desc = "Stage Git hunk", buffer = bufnr } })
         -- map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
-        keymap({ "gsrh", gs.reset_hunk, description = "Reset Git hunk", mode = { "n", "v" } })
-        keymap({ "gsuh", gs.undo_stage_hunk, description = "Undo stage Git hunk", mode = { "n" } })
+        -- keymap({ "gsrh", gs.reset_hunk, description = "Reset Git hunk", mode = { "n", "v" }, opts = { buffer = bufnr } })
+        -- keymap({
+        --   "gsuh",
+        --   gs.undo_stage_hunk,
+        --   description = "Undo stage Git hunk",
+        --   mode = { "n" },
+        --   opts = { buffer = bufnr },
+        -- })
         -- map("n", "gsuh", gs.undo_stage_hunk, { desc = "Undo stage Git hunk" })
 
-        keymap({ "gssb", gs.stage_buffer, description = "Stage Git buffer", mode = { "n" } })
-        keymap({ "gsrb", gs.reset_buffer, description = "Reset Git buffer", mode = { "n" } })
+        -- keymap({ "gssb", gs.stage_buffer, description = "Stage Git buffer", mode = { "n" } })
+        -- keymap({ "gsrb", gs.reset_buffer, description = "Reset Git buffer", mode = { "n" } })
 
         map("n", "M", function()
           gs.preview_hunk()
         end, { desc = "Preview git hunk" })
-        map("n", "gM", function()
-          gs.blame_line({ full = true, ignore_whitespace = true })
-        end, { desc = "Show Git blame" })
+        -- map("n", "gM", function()
+        --   gs.blame_line({ full = true, ignore_whitespace = true })
+        -- end, { desc = "Show Git blame" })
         -- map("n", "gsdh", gs.diffthis, { desc = "Git diff" })
         map("n", "ghD", function()
           gs.diffthis("~")

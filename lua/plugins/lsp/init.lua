@@ -1,5 +1,6 @@
 return {
   "neovim/nvim-lspconfig",
+  event = "VeryLazy",
   dependencies = {
     {
       -- NOTE: This needs to be at the top
@@ -132,8 +133,8 @@ return {
     require("mason").setup()
     require("mason-lspconfig").setup()
 
-    vim.lsp.handlers["textDocument/hover"] =
-      vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
+    -- vim.lsp.handlers["textDocument/hover"] =
+    --   vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
 
     lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
@@ -231,7 +232,7 @@ return {
       { silent = true, desc = "Go to previous diagnostic" }
     )
 
-    set({ "n", "x" }, "<Leader>a", function()
+    set({ "n", "x" }, { "<Leader>a", "<C-.>" }, function()
       vim.lsp.buf.code_action()
     end, { silent = true, desc = "Select a code action" })
 

@@ -20,7 +20,7 @@ local default_popup_options = {
   },
   win_options = {
     winblend = 10,
-    winhighlight = "Normal:Normal",
+    winhighlight = "Normal:Normal,FloatBorder:Normal",
   },
   -- bufnr = 1,
 }

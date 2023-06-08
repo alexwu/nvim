@@ -50,35 +50,6 @@ function M.setup()
     neotest.run.stop()
   end, {})
 
-  nvim.create_user_command("Test", function(opts)
-    local args = opts.fargs
-
-    if vim.tbl_isempty(args) then
-      Palette(commands, {
-        prompt = "Select a command:",
-      }):run()
-    elseif args[1] == "summary" then
-      neotest.summary.toggle()
-    elseif args[1] == "nearest" then
-      neotest.run.run()
-    elseif args[1] == "file" then
-      neotest.run.run(vim.fn.expand("%"))
-    elseif args[1] == "last" then
-      neotest.run.run_last()
-    else
-      vim.notify("Unknown command: " .. args[1], vim.log.levels.ERROR)
-    end
-  end, {
-    nargs = "?",
-    complete = function()
-      return { "nearest", "file", "summry", "last" }
-    end,
-  })
-
-  -- nvim.create_user_command("TestDebug", function()
-  --   neotest.run.run({ strategy = "dap" })
-  -- end, {})
-
   local commands = {
     -- {
     --   display = "Run last run test",
@@ -129,6 +100,35 @@ function M.setup()
       end,
     },
   }
+
+  -- nvim.create_user_command("TestDebug", function()
+  --   neotest.run.run({ strategy = "dap" })
+  -- end, {})
+
+  nvim.create_user_command("Test", function(opts)
+    local args = opts.fargs
+
+    if vim.tbl_isempty(args) then
+      Palette(commands, {
+        prompt = "Select a command:",
+      }):run()
+    elseif args[1] == "summary" then
+      neotest.summary.toggle()
+    elseif args[1] == "nearest" then
+      neotest.run.run()
+    elseif args[1] == "file" then
+      neotest.run.run(vim.fn.expand("%"))
+    elseif args[1] == "last" then
+      neotest.run.run_last()
+    else
+      vim.notify("Unknown command: " .. args[1], vim.log.levels.ERROR)
+    end
+  end, {
+    nargs = "?",
+    complete = function()
+      return { "nearest", "file", "summry", "last" }
+    end,
+  })
 
   key.map("[t", function()
     require("neotest").jump.prev()

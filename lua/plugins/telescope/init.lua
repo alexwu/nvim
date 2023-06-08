@@ -50,10 +50,12 @@ local defaults = require("telescope.themes").get_dropdown({
 return {
   "nvim-telescope/telescope.nvim",
   dependencies = {
+    "mrjones2014/legendary.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
     "kkharji/sqlite.lua",
     "AckslD/nvim-neoclip.lua",
+    "smartpde/telescope-recent-files",
     {
       "nvim-telescope/telescope-fzf-native.nvim",
       build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
@@ -201,7 +203,10 @@ return {
       },
     })
 
+    local extensions = require("telescope").extensions
+    local legendary = require("legendary")
     require("telescope").load_extension("fzf")
+    require("telescope").load_extension("recent_files")
     -- require("telescope").load_extension("fzf")
     -- require("telescope").load_extension("commander")
     -- require("telescope").load_extension("related_files")
@@ -222,12 +227,19 @@ return {
       lazy(builtin.find_files, { prompt_title = "Find Files", no_ignore = true }),
       { desc = "Find files (no_ignore)" }
     )
-    set(
-      "n",
-      "<Leader><Leader>",
-      lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
-      { desc = "Select oldfiles" }
-    )
+    -- set(
+    --   "n",
+    --   "<Leader><Leader>",
+    --   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
+    --   { desc = "Select oldfiles" }
+    -- )
+    legendary.keymaps({
+      {
+        "<Leader><Leader>",
+        extensions.recent_files.pick,
+        description = "Select from recent files",
+      },
+    })
 
     -- Map a shortcut to open the picker.
     set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })

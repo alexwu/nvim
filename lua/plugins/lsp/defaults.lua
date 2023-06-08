@@ -1,7 +1,7 @@
 local M = {}
 
--- FIXME: Some of this will get called multiple times unnecessarily. This might need the project config stuff?
 function M.on_attach(client, bufnr)
+  local legendary = require("legendary")
   -- if not client.name == "null-ls" and client.server_capabilities.inlayHintProvider then
   --   require("inlay-hints").on_attach(client, bufnr)
   -- end
@@ -10,8 +10,16 @@ function M.on_attach(client, bufnr)
     require("document-color").buf_attach(bufnr)
   end
 
-  vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
-  local semanticTokensProviderFull = vim.tbl_get(client, "server_capabilities", "semanticTokensProvider", "full")
+  vim.api.nvim_create_augroup("LspDiagnosticsBufferConfig", { clear = true })
+
+  legendary.keymap({
+    "<Leader>a",
+    function()
+      vim.lsp.buf.code_action()
+    end,
+    modes = { "n", "x" },
+    opts = { silent = true, desc = "Select a code action", buffer = bufnr },
+  })
   -- if not client.name == "eslint" and semanticTokensProviderFull then
   --   vim.api.nvim_create_autocmd({ "BufEnter" }, {
   --     group = "LspDiagnosticsConfig",

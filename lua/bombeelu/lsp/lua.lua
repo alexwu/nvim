@@ -57,6 +57,7 @@ function lua.setup(opts)
         completion = { autoRequire = false },
         hint = {
           enable = true,
+          arrayIndex = "Disable",
         },
       },
     },

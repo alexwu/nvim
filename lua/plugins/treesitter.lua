@@ -2,6 +2,7 @@ local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
 
 return {
   "nvim-treesitter/nvim-treesitter",
+  event = { "BufReadPost", "BufNewFile" },
   dependencies = {
     "nvim-treesitter/nvim-treesitter-refactor",
     "RRethy/nvim-treesitter-textsubjects",

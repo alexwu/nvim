@@ -62,7 +62,7 @@ require("lualine").setup({
     theme = snazzy(),
     disabled_filetypes = {
       statusline = {},
-      winbar = { "toggleterm" },
+      winbar = { "neo-tree" },
     },
     component_separators = "|",
     section_separators = { left = "", right = "" },
@@ -74,7 +74,7 @@ require("lualine").setup({
     "quickfix",
     "neo-tree",
     "lazy",
-    "trouble"
+    "trouble",
   },
   sections = {
     lualine_a = {

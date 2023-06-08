@@ -32,4 +32,7 @@ return {
   config = function()
     M.setup("lualine")
   end,
+  cond = function()
+    return not vim.g.vscode
+  end,
 }
