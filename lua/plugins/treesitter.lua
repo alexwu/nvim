@@ -3,6 +3,7 @@ local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
 return {
   "nvim-treesitter/nvim-treesitter",
   event = { "BufReadPost", "BufNewFile" },
+  commit = "ab3bf7d95615098f47596ab245282c03149195e7",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-refactor",
     "RRethy/nvim-treesitter-textsubjects",
@@ -17,9 +18,10 @@ return {
   config = function()
     require("nvim-treesitter.configs").setup({
       highlight = {
-        enable = not vim.g.vscode,
+        enable = false,
+        -- enable = not vim.g.vscode,
         additional_vim_regex_highlighting = { "ruby" },
-        -- disable = { "ruby" },
+        disable = { "lua", "comment", "bash" },
       },
       indent = {
         enable = not vim.g.vscode,
@@ -28,7 +30,7 @@ return {
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = "<C-CR>",
+          init_selection = "<CR>",
         },
       },
       textsubjects = {

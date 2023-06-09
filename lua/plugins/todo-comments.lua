@@ -1,5 +1,6 @@
 return {
   "folke/todo-comments.nvim",
+  enabled = false,
   cond = function()
     return not vim.g.vscode
   end,

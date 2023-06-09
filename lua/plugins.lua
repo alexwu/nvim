@@ -6,12 +6,28 @@ return {
     dependencies = { "rktjmp/lush.nvim" },
     branch = "lush",
     dev = true,
-    lazy = true,
+    lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd("colorscheme snazzy")
+      vim.cmd.colorscheme("snazzy")
     end,
     enabled = true,
+  },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    enabled = false,
+    dev = true,
+    config = function()
+      require("tokyonight").setup({
+        style = "snazzy", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+        transparent = true, -- Enable this to disable setting the background color
+        terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+      })
+      -- Lua
+      vim.cmd([[colorscheme tokyonight]])
+    end,
   },
   {
     "xiyaowong/transparent.nvim",
@@ -103,6 +119,10 @@ return {
         },
         zindex = 41,
       })
+
+      vim.keymap.set("n", "[C", function()
+        require("treesitter-context").go_to_context()
+      end, { silent = true })
     end,
   },
   {
@@ -216,7 +236,11 @@ return {
       vim.api.nvim_create_user_command("YarnTest", function()
         require("FTerm").run({ "yarn", "test" })
       end, { bang = true })
-      key.map({ [[<C-\>]], [[<C-`>]] }, require("FTerm").toggle, { desc = "Toggle terminal", modes = { "n", "t" } })
+
+      key.map({ [[<C-\>]], [[<C-`>]] }, require("FTerm").toggle, { desc = "Toggle terminal", modes = { "n" } })
+
+      vim.keymap.set("t", [[<C-\>]], require("FTerm").toggle, { desc = "Toggle terminal" })
+      vim.keymap.set("t", [[<C-`>]], require("FTerm").toggle, { desc = "Toggle terminal" })
     end,
   },
 
@@ -308,7 +332,12 @@ return {
     "folke/edgy.nvim",
     event = "VeryLazy",
     enabled = false,
+    init = function()
+      vim.opt.laststatus = 3
+      vim.opt.splitkeep = "screen"
+    end,
     opts = {
+      exit_when_last = true,
       left = {
         -- Neo-tree filesystem always takes half the screen height
         {
@@ -337,7 +366,6 @@ return {
           pinned = true,
           open = "Neotree position=top buffers",
         },
-        "neo-tree",
       },
     },
   },
@@ -652,7 +680,7 @@ return {
   {
     "Civitasv/cmake-tools.nvim",
     event = "VeryLazy",
-    config = true
+    config = true,
   },
   {
     "goolord/alpha-nvim",

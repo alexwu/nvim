@@ -48,6 +48,13 @@ return {
         return not vim.g.vscode
       end,
     },
+    {
+      "roobert/tailwindcss-colorizer-cmp.nvim",
+      dependencies = { "hrsh7th/nvim-cmp" },
+      config = function()
+        require("tailwindcss-colorizer-cmp").setup({})
+      end,
+    },
   },
 
   config = function()
