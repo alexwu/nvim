@@ -27,6 +27,9 @@ local defaults = require("telescope.themes").get_dropdown({
   },
   sorting_strategy = "ascending",
   dynamic_preview_title = true,
+  preview = {
+    treesitter = false,
+  },
   winblend = 20,
   mappings = {
     i = {

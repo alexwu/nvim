@@ -2,10 +2,12 @@ local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
 
 return {
   "nvim-treesitter/nvim-treesitter",
+  build = ":TSUpdate",
   event = { "BufReadPost", "BufNewFile" },
-  commit = "ab3bf7d95615098f47596ab245282c03149195e7",
+  commit = "56c63529c052a179134842c56c6df5728cc375da",
+  -- tag = "v0.9.0",
   dependencies = {
-    "nvim-treesitter/nvim-treesitter-refactor",
+    -- "nvim-treesitter/nvim-treesitter-refactor",
     "RRethy/nvim-treesitter-textsubjects",
     "RRethy/nvim-treesitter-endwise",
     "JoosepAlviste/nvim-ts-context-commentstring",
@@ -14,14 +16,13 @@ return {
     "nvim-treesitter/playground",
     "andymass/vim-matchup",
   },
-  -- tag = "v0.9.0",
   config = function()
     require("nvim-treesitter.configs").setup({
       highlight = {
         enable = false,
         -- enable = not vim.g.vscode,
-        additional_vim_regex_highlighting = { "ruby" },
-        disable = { "lua", "comment", "bash" },
+        -- additional_vim_regex_highlighting = { "ruby" },
+        -- disable = { "lua", "comment", "bash", "ruby" },
       },
       indent = {
         enable = not vim.g.vscode,

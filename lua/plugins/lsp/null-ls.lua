@@ -204,6 +204,7 @@ M.setup = function(opts)
       null_ls.builtins.formatting.stylua,
       null_ls.builtins.diagnostics.dotenv_linter,
       null_ls.builtins.formatting.erb_format,
+      null_ls.builtins.formatting.rubyfmt,
       -- require("typescript.extensions.null-ls.code-actions"),
       -- null_ls.builtins.code_actions.gitsigns,
     },
@@ -214,9 +215,9 @@ M.setup = function(opts)
   --   name = "more_actions",
   --   method = { require("null-ls").methods.CODE_ACTION },
   --   filetypes = { "_all" },
-    -- generator = {
-    --   fn = require("ts-node-action").available_actions,
-    -- },
+  -- generator = {
+  --   fn = require("ts-node-action").available_actions,
+  -- },
   -- })
 end
 

@@ -55,6 +55,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+vim.cmd([[
+  aunmenu PopUp.How-to\ disable\ mouse
+  aunmenu PopUp.-1-
+]])
+
 -- disable python 2
 vim.g.loaded_python_provider = 0
 vim.g["python3_host_prog"] = bin .. "python3"
