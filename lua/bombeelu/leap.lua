@@ -4,12 +4,12 @@ local M = {}
 
 function M.setup()
   leap.setup({
-    highlight_unlabled = true,
+    highlight_unlabeled_phase_one_targets = true,
   })
 
   leap.add_default_mappings()
 
-  set({ "n", "o" }, "gsl", function()
+  set({ "n", "o" }, "<Tab>sl", function()
     M.leap_to_line()
   end)
   vim.keymap.del({ "x", "o" }, "x")

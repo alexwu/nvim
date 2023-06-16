@@ -45,27 +45,6 @@ return {
           vim.keymap.set(mode, l, r, opts)
         end
 
-        -- Navigation
-        map("n", "]c", function()
-          if vim.wo.diff then
-            return "]c"
-          end
-          vim.schedule(function()
-            gs.next_hunk({ navigation_message = false, preview = false })
-          end)
-          return "<Ignore>"
-        end, { expr = true, desc = "Next Git hunk" })
-
-        map("n", "[c", function()
-          if vim.wo.diff then
-            return "[c"
-          end
-          vim.schedule(function()
-            gs.prev_hunk({ navigation_message = false, preview = false })
-          end)
-          return "<Ignore>"
-        end, { expr = true, desc = "Previous Git hunk" })
-
         -- Actions
         local keymap = require("legendary").keymap
         local keymaps = require("legendary").keymaps
@@ -74,12 +53,14 @@ return {
           {
             "gssh",
             gs.stage_hunk,
+            -- itemgroup = "Git",
             description = "Stage hunk",
             opts = { desc = "Stage Git hunk", buffer = bufnr },
           },
           {
             "gsrh",
             gs.reset_hunk,
+            -- itemgroup = "Git",
             description = "Reset Git hunk",
             mode = { "n", "v" },
             opts = {
@@ -89,6 +70,7 @@ return {
           {
             "gsuh",
             gs.undo_stage_hunk,
+            -- itemgroup = "Git",
             description = "Undo stage Git hunk",
             mode = { "n" },
             opts = { buffer = bufnr },
@@ -96,6 +78,7 @@ return {
           {
             "gssb",
             gs.stage_buffer,
+            -- itemgroup = "Git",
             description = "Stage Git buffer",
             mode = { "n" },
             opts = { buffer = bufnr },
@@ -103,6 +86,7 @@ return {
           {
             "gsrb",
             gs.reset_buffer,
+            -- itemgroup = "Git",
             description = "Reset Git buffer",
             mode = { "n" },
             opts = { buffer = bufnr },
@@ -112,8 +96,48 @@ return {
             function()
               gs.blame_line({ full = true, ignore_whitespace = true })
             end,
+            -- itemgroup = "Git",
             description = "Show Git blame",
             opts = { desc = "Show Git blame", buffer = bufnr },
+          },
+          {
+            "]c",
+            function()
+              if vim.wo.diff then
+                return "]c"
+              end
+              vim.schedule(function()
+                gs.next_hunk({ navigation_message = false, preview = false })
+              end)
+              return "<Ignore>"
+            end,
+            -- itemgroup = "Git",
+            description = "Next Git hunk",
+            opts = { desc = "Next Git hunk", buffer = bufnr, expr = true },
+          },
+          {
+            "[c",
+            function()
+              if vim.wo.diff then
+                return "[c"
+              end
+              vim.schedule(function()
+                gs.prev_hunk({ navigation_message = false, preview = false })
+              end)
+              return "<Ignore>"
+            end,
+            -- itemgroup = "Git",
+            description = "Previous Git hunk",
+            opts = { desc = "Previous Git hunk", buffer = bufnr, expr = true },
+          },
+          {
+            "M",
+            function()
+              gs.preview_hunk()
+            end,
+            -- itemgroup = "Git",
+            description = "Preview Git hunk",
+            opts = { desc = "Preview Git hunk", buffer = bufnr },
           },
         })
 
@@ -132,16 +156,13 @@ return {
         -- keymap({ "gssb", gs.stage_buffer, description = "Stage Git buffer", mode = { "n" } })
         -- keymap({ "gsrb", gs.reset_buffer, description = "Reset Git buffer", mode = { "n" } })
 
-        map("n", "M", function()
-          gs.preview_hunk()
-        end, { desc = "Preview git hunk" })
         -- map("n", "gM", function()
         --   gs.blame_line({ full = true, ignore_whitespace = true })
         -- end, { desc = "Show Git blame" })
         -- map("n", "gsdh", gs.diffthis, { desc = "Git diff" })
-        map("n", "ghD", function()
-          gs.diffthis("~")
-        end)
+        -- map("n", "ghD", function()
+        --   gs.diffthis("~")
+        -- end)
 
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Inner Git hunk" })
       end,

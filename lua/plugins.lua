@@ -100,6 +100,7 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
+    enabled = true,
     config = function()
       require("treesitter-context").setup({
         enabled = true,
@@ -190,7 +191,7 @@ return {
       require("flit").setup({
         keys = { f = "f", F = "F", t = "t", T = "T" },
         labeled_modes = "nx",
-        multiline = true,
+        multiline = false,
         opts = {},
       })
     end,
@@ -325,13 +326,20 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     config = function()
-      require("which-key").setup({})
+      require("which-key").setup({
+        layout = {
+          height = { min = 4, max = 25 }, -- min and max height of the columns
+          width = { min = 20, max = 50 }, -- min and max width of the columns
+          spacing = 3, -- spacing between columns
+          align = "right", -- align columns left, center or right
+        },
+      })
     end,
   },
   {
     "folke/edgy.nvim",
     event = "VeryLazy",
-    enabled = false,
+    enabled = true,
     init = function()
       vim.opt.laststatus = 3
       vim.opt.splitkeep = "screen"
@@ -344,7 +352,7 @@ return {
           title = "Neo-Tree",
           ft = "neo-tree",
           filter = function(buf)
-            return vim.b[buf].neo_tree_source == "filesystem"
+            return vim.b[buf].neo_tree_source == "filesystem" and vim.b[buf].neo_tree_position ~= "current"
           end,
           size = { height = 0.5 },
         },
@@ -357,15 +365,15 @@ return {
           pinned = true,
           open = "Neotree position=right git_status",
         },
-        {
-          title = "Neo-Tree Buffers",
-          ft = "neo-tree",
-          filter = function(buf)
-            return vim.b[buf].neo_tree_source == "buffers"
-          end,
-          pinned = true,
-          open = "Neotree position=top buffers",
-        },
+        -- {
+        --   title = "Neo-Tree Buffers",
+        --   ft = "neo-tree",
+        --   filter = function(buf)
+        --     return vim.b[buf].neo_tree_source == "buffers"
+        --   end,
+        --   pinned = true,
+        --   open = "Neotree position=top buffers",
+        -- },
       },
     },
   },

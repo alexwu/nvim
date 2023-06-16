@@ -27,9 +27,6 @@ local defaults = require("telescope.themes").get_dropdown({
   },
   sorting_strategy = "ascending",
   dynamic_preview_title = true,
-  preview = {
-    treesitter = false,
-  },
   winblend = 20,
   mappings = {
     i = {
@@ -74,6 +71,9 @@ return {
         set_env = { ["COLORTERM"] = "truecolor" },
         prompt_prefix = "❯ ",
         -- sorting_strategy = "ascending",
+        -- preview = {
+          -- treesitter = { disable = { "lua" } },
+        -- },
         winblend = 20,
         mappings = {
           i = {

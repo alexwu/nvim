@@ -4,7 +4,7 @@ return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   event = { "BufReadPost", "BufNewFile" },
-  commit = "56c63529c052a179134842c56c6df5728cc375da",
+  -- commit = "56c63529c052a179134842c56c6df5728cc375da",
   -- tag = "v0.9.0",
   dependencies = {
     -- "nvim-treesitter/nvim-treesitter-refactor",
@@ -19,10 +19,10 @@ return {
   config = function()
     require("nvim-treesitter.configs").setup({
       highlight = {
-        enable = false,
+        enable = true,
         -- enable = not vim.g.vscode,
         -- additional_vim_regex_highlighting = { "ruby" },
-        -- disable = { "lua", "comment", "bash", "ruby" },
+        -- disable = { "lua" },
       },
       indent = {
         enable = not vim.g.vscode,
