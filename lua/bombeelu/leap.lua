@@ -1,8 +1,7 @@
-local leap = require("leap")
-
 local M = {}
 
 function M.setup()
+  local leap = require("leap")
   leap.setup({
     highlight_unlabeled_phase_one_targets = true,
   })

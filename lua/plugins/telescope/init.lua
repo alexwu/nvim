@@ -61,6 +61,20 @@ return {
       build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
     },
     "tsakirist/telescope-lazy.nvim",
+    {
+      "danielfalk/smart-open.nvim",
+      branch = "0.2.x",
+      config = function()
+        require("telescope").load_extension("smart_open")
+      end,
+      dependencies = {
+        "kkharji/sqlite.lua",
+        -- Only required if using match_algorithm fzf
+        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
+        { "nvim-telescope/telescope-fzy-native.nvim" },
+      },
+    },
   },
   cond = function()
     return not vim.g.vscode
@@ -72,7 +86,7 @@ return {
         prompt_prefix = "❯ ",
         -- sorting_strategy = "ascending",
         -- preview = {
-          -- treesitter = { disable = { "lua" } },
+        -- treesitter = { disable = { "lua" } },
         -- },
         winblend = 20,
         mappings = {
@@ -239,7 +253,10 @@ return {
     legendary.keymaps({
       {
         "<Leader><Leader>",
-        extensions.recent_files.pick,
+        -- extensions.recent_files.pick,
+        function()
+          require("telescope").extensions.smart_open.smart_open({ cwd_only = true })
+        end,
         description = "Select from recent files",
       },
     })

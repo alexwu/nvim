@@ -2,9 +2,6 @@ local M = {}
 
 function M.on_attach(client, bufnr)
   local legendary = require("legendary")
-  -- if not client.name == "null-ls" and client.server_capabilities.inlayHintProvider then
-  --   require("inlay-hints").on_attach(client, bufnr)
-  -- end
 
   if not client.name == "null-ls" and client.server_capabilities.colorProvider then
     require("document-color").buf_attach(bufnr)
@@ -20,15 +17,6 @@ function M.on_attach(client, bufnr)
     modes = { "n", "x" },
     opts = { silent = true, desc = "Select a code action", buffer = bufnr },
   })
-  -- if not client.name == "eslint" and semanticTokensProviderFull then
-  --   vim.api.nvim_create_autocmd({ "BufEnter" }, {
-  --     group = "LspDiagnosticsConfig",
-  --     buffer = bufnr,
-  --     callback = function()
-  --       vim.lsp.buf.semantic_tokens_full()
-  --     end,
-  --   })
-  -- end
 end
 
 local make_capabilities = function()

@@ -29,34 +29,45 @@ return {
       end,
     },
     {
-      "lvimuser/lsp-inlayhints.nvim",
-      branch = "anticonceal",
-      config = function()
-        require("lsp-inlayhints").setup()
-
-        vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
-        vim.api.nvim_create_autocmd("LspAttach", {
-          group = "LspAttach_inlayhints",
-          callback = function(args)
-            if not (args.data and args.data.client_id) then
-              return
-            end
-
-            local bufnr = args.buf
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            require("lsp-inlayhints").on_attach(client, bufnr)
-          end,
-        })
-      end,
-    },
-    {
       "jose-elias-alvarez/typescript.nvim",
       ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
+      enabled = false,
       cond = function()
         return not vim.g.vscode
       end,
       config = function()
         require("bombeelu.lsp").typescript.setup()
+      end,
+    },
+    {
+      "pmizio/typescript-tools.nvim",
+      dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+      cond = function()
+        return not vim.g.vscode
+      end,
+      opts = {},
+      config = function()
+        require("typescript-tools").setup({
+          on_attach = require("plugins.lsp.defaults").on_attach,
+          capabilities = require("plugins.lsp.defaults").capabilities,
+          settings = {
+            tsserver_file_preferences = {
+              includeInlayParameterNameHints = "none",
+              includeCompletionsForModuleExports = true,
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = false,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+              quotePreference = "double",
+            },
+            tsserver_format_options = {
+              allowIncompleteCompletions = false,
+              allowRenameOfImportPath = true,
+            },
+          },
+        })
       end,
     },
     {
@@ -269,9 +280,27 @@ return {
       { silent = true, desc = "Go to previous diagnostic" }
     )
 
-    set({ "n", "x" }, { "<Leader>a", "<C-.>" }, function()
-      vim.lsp.buf.code_action()
-    end, { silent = true, desc = "Select a code action" })
+    local legendary = require("legendary")
+    legendary.keymaps({
+      {
+        "[D",
+        rpt(function()
+          vim.diagnostic.goto_prev({
+            severity = vim.diagnostic.severity.ERROR,
+            float = {
+              border = "rounded",
+              focusable = false,
+            },
+          })
+        end),
+        description = "Go to previous error",
+        { silent = true, desc = "Go to previous error" },
+      },
+    })
+
+    -- set({ "n", "x" }, { "<Leader>a", "<C-.>" }, function()
+    --   vim.lsp.buf.code_action()
+    -- end, { silent = true, desc = "Select a code action" })
 
     set("n", "K", hover, { silent = true })
 
@@ -288,6 +317,49 @@ return {
     end, { silent = true, expr = true })
 
     augroup("LspCustom", { clear = true })
+
+    vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = "LspAttach_inlayhints",
+      callback = function(args)
+        if not (args.data and args.data.client_id) then
+          return
+        end
+
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+        if client.server_capabilities.inlayHintProvider then
+          vim.lsp.buf.inlay_hint(bufnr, true)
+        end
+        -- if client.server_capabilities.inlayHintProvider then
+        --   vim.api.nvim_create_autocmd({ "BufEnter" }, {
+        --     callback = function()
+        --     end,
+        --   })
+        --   vim.api.nvim_create_autocmd({ "BufLeave" }, {
+        --     callback = function()
+        --       vim.lsp.buf.inlay_hint(bufnr, false)
+        --     end,
+        --   })
+        -- end
+      end,
+    })
+    vim.api.nvim_create_autocmd("LspDetach", {
+      group = "LspAttach_inlayhints",
+      callback = function(args)
+        if not (args.data and args.data.client_id) then
+          return
+        end
+
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+        if client.server_capabilities.inlayHintProvider then
+          vim.lsp.buf.inlay_hint(bufnr, false)
+        end
+      end,
+    })
 
     autocmd("FileType", {
       pattern = { "LspInfo", "null-ls-info" },

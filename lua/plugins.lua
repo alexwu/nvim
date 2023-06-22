@@ -17,16 +17,54 @@ return {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    enabled = false,
-    dev = true,
+    enabled = true,
     config = function()
       require("tokyonight").setup({
-        style = "snazzy", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+        style = "default", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
         transparent = true, -- Enable this to disable setting the background color
         terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+        on_colors = function(colors)
+          -- colors = {
+          --   none = "NONE",
+          --   bg = "#24283b",
+          --   bg_highlight = "#292e42",
+          --   terminal_black = "#414868",
+          --   fg = "#c0caf5",
+          --   fg_gutter = "#3b4261",
+          --   dark3 = "#545c7e",
+          --   comment = "#565f89",
+          --   dark5 = "#737aa2",
+          --   blue0 = "#3d59a1",
+          --   blue = "#7aa2f7",
+          --   cyan = "#7dcfff",
+          --   blue1 = "#2ac3de",
+          --   blue2 = "#0db9d7",
+          --   blue5 = "#89ddff",
+          --   blue6 = "#b4f9f8",
+          --   blue7 = "#394b70",
+          --   magenta = "#bb9af7",
+          --   magenta2 = "#ff007c",
+          --   purple = "#9d7cd8",
+          --   orange = "#ff9e64",
+          --   yellow = "#e0af68",
+          --   green = "#9ece6a",
+          --   green1 = "#73daca",
+          --   green2 = "#41a6b5",
+          --   teal = "#1abc9c",
+          --   red = "#f7768e",
+          --   red1 = "#db4b4b",
+          --   git = { change = "#6183bb", add = "#449dab", delete = "#914c54" },
+          --   gitSigns = {
+          --     add = "#266d6a",
+          --     change = "#536c9e",
+          --     delete = "#b2555b",
+          --   },
+          -- }
+          colors.fg_dark = "#eff0eb"
+          colors.bg_dark = "#282a36"
+        end,
       })
-      -- Lua
-      vim.cmd([[colorscheme tokyonight]])
+      -- vim.cmd([[colorscheme tokyonight]])
     end,
   },
   {
@@ -83,9 +121,9 @@ return {
       })
 
       vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
-      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-w" })
-      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-w" })
-      vim.keymap.set({ "n", "o", "x" }, "ge", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-w" })
+      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
+      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
+      vim.keymap.set({ "n", "o", "x" }, "ge", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-ge" })
     end,
   },
   {
@@ -168,11 +206,12 @@ return {
   {
     "ggandor/leap.nvim",
     event = "VeryLazy",
-    keys = {
-      { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
-      { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
-      -- { "gs", mode = { "n", "x", "o" }, desc = "Leap from windows" },
-    },
+    -- keys = {
+    --   { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
+    --   { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
+    -- { "gss", mode = { "n", "x", "o" }, desc = "Leap from windows" },
+    -- },
+    enabled = false,
     config = function()
       require("bombeelu.leap").setup()
     end,
@@ -195,11 +234,13 @@ return {
         opts = {},
       })
     end,
+    enabled = false,
   },
   {
     "ggandor/leap-spooky.nvim",
     event = "VeryLazy",
     dependencies = { "ggandor/leap.nvim" },
+    enabled = false,
     config = function()
       require("leap-spooky").setup({
         affixes = {
@@ -209,6 +250,51 @@ return {
         paste_on_remote_yank = false,
       })
     end,
+  },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    enabled = true,
+    ---@type Flash.Config
+    opts = {
+      search = {
+        multi_window = false,
+        forwards = false,
+      },
+      jump = {
+        autojump = true,
+      },
+      modes = {
+        search = {
+          enabled = false,
+        },
+        char = {
+          enabled = true,
+          search = { wrap = false },
+          highlight = { backdrop = false },
+          jump = { register = false },
+        },
+      },
+    },
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          -- default options: exact mode, multi window, all directions, with a backdrop
+          require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
+        end,
+      },
+      {
+        "S",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").jump({
+            search = { forward = false, wrap = false, multi_window = false },
+          })
+        end,
+      },
+    },
   },
   {
     "mhartington/formatter.nvim",
@@ -415,7 +501,7 @@ return {
     cond = function()
       return not vim.g.vscode
     end,
-    enabled = false,
+    enabled = true,
   },
   {
     "ziontee113/syntax-tree-surfer",
