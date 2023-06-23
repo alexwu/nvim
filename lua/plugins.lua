@@ -825,6 +825,41 @@ return {
       })
     end,
   },
+  {
+    "rgroli/other.nvim",
+    config = function()
+      require("other-nvim").setup({
+        mappings = {
+          -- builtin mappings
+          "livewire",
+          "angular",
+          "laravel",
+          "rails",
+          "golang",
+          -- custom mapping
+          {
+            pattern = "app/javascript/(.*)/.*.ts$",
+            target= "app/javascript/(.*)/.*.test.ts$",
+            -- transformer = "lowercase",
+          },
+        },
+        transformers = {
+          lowercase = function(inputString)
+            return inputString:lower()
+          end,
+        },
+        style = {
+          border = "rounded",
+
+          seperator = "|",
+
+          width = 0.7,
+
+          minHeight = 2,
+        },
+      })
+    end,
+  },
 }
 
 --     use({
