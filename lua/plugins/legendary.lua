@@ -4,8 +4,5 @@ return {
   config = function()
     require("bombeelu.legendary").setup()
   end,
-  cond = function()
-    return not vim.g.vscode
-  end,
   lazy = false,
 }

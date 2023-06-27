@@ -47,7 +47,10 @@ end
 ---@param opts? table
 function M.keymap(mappings, callback, opts)
   opts = if_nil(opts, {})
-  local modes = if_nil(opts.modes, "")
+  local modes = if_nil(opts.modes, { "n" })
+  if type(modes) == "string" then
+    modes = { modes }
+  end
   opts.modes = nil
 
   if type(mappings) == "string" then
@@ -67,7 +70,7 @@ local function starts_with(str, start)
 end
 
 local function ends_with(str, ending)
-  return ending == "" or str:sub(-#ending) == ending
+  return ending == "" or str:sub(- #ending) == ending
 end
 
 local function needs_command_wrapping(str)

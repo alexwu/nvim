@@ -20,9 +20,9 @@ return {
     enabled = true,
     config = function()
       require("tokyonight").setup({
-        style = "default", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-        transparent = true, -- Enable this to disable setting the background color
-        terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+        style = "default",
+        transparent = true,
+        terminal_colors = true,
         on_colors = function(colors)
           -- colors = {
           --   none = "NONE",
@@ -53,7 +53,7 @@ return {
           --   teal = "#1abc9c",
           --   red = "#f7768e",
           --   red1 = "#db4b4b",
-          --   git = { change = "#6183bb", add = "#449dab", delete = "#914c54" },
+          -- git = { change = "#6183bb", add = "#449dab", delete = "#914c54" },
           --   gitSigns = {
           --     add = "#266d6a",
           --     change = "#536c9e",
@@ -97,8 +97,8 @@ return {
           "EndOfBuffer",
           "NoiceMini",
         },
-        extra_groups = {}, -- table: additional groups that should be cleared
-        exclude_groups = {}, -- table: groups you don't want to clear
+        extra_groups = {},
+        exclude_groups = {},
       })
     end,
     enabled = true,
@@ -120,10 +120,10 @@ return {
         skipInsignificantPunctuation = false,
       })
 
-      vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
-      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
-      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
-      vim.keymap.set({ "n", "o", "x" }, "ge", "<cmd>lua require('spider').motion('ge')<CR>", { desc = "Spider-ge" })
+      key.map("w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w", modes = { "n", "o", "x" } })
+      key.map("e", "<cmd>lua require('spider').motion('e')<CR>", { modes = { "n", "o", "x" }, desc = "Spider-e" })
+      key.map("b", "<cmd>lua require('spider').motion('b')<CR>", { modes = { "n", "o", "x" }, desc = "Spider-b" })
+      key.map("ge", "<cmd>lua require('spider').motion('ge')<CR>", { modes = { "n", "o", "x" }, desc = "Spider-ge" })
     end,
   },
   {
@@ -281,7 +281,6 @@ return {
         "s",
         mode = { "n", "x", "o" },
         function()
-          -- default options: exact mode, multi window, all directions, with a backdrop
           require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
         end,
       },
@@ -414,10 +413,10 @@ return {
     config = function()
       require("which-key").setup({
         layout = {
-          height = { min = 4, max = 25 }, -- min and max height of the columns
-          width = { min = 20, max = 50 }, -- min and max width of the columns
-          spacing = 3, -- spacing between columns
-          align = "right", -- align columns left, center or right
+          height = { min = 4, max = 25 },
+          width = { min = 20, max = 50 },
+          spacing = 3,
+          align = "right",
         },
       })
     end,
@@ -678,14 +677,82 @@ return {
     end,
   },
   {
+    "echasnovski/mini.ai",
+    -- keys = {
+    --   { "a", mode = { "x", "o" } },
+    --   { "i", mode = { "x", "o" } },
+    -- },
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter-textobjects" },
+    opts = function()
+      local ai = require("mini.ai")
+      return {
+        n_lines = 500,
+        custom_textobjects = {
+          o = ai.gen_spec.treesitter({
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+          }, {}),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
+        },
+      }
+    end,
+    config = function(_, opts)
+      require("mini.ai").setup(opts)
+      -- register all text objects with which-key
+      -- if require("lazyvim.util").has("which-key.nvim") then
+      ---@type table<string, string|table>
+      local i = {
+        [" "] = "Whitespace",
+        ['"'] = 'Balanced "',
+        ["'"] = "Balanced '",
+        ["`"] = "Balanced `",
+        ["("] = "Balanced (",
+        [")"] = "Balanced ) including white-space",
+        [">"] = "Balanced > including white-space",
+        ["<lt>"] = "Balanced <",
+        ["]"] = "Balanced ] including white-space",
+        ["["] = "Balanced [",
+        ["}"] = "Balanced } including white-space",
+        ["{"] = "Balanced {",
+        ["?"] = "User Prompt",
+        _ = "Underscore",
+        a = "Argument",
+        b = "Balanced ), ], }",
+        c = "Class",
+        f = "Function",
+        o = "Block, conditional, loop",
+        q = "Quote `, \", '",
+        t = "Tag",
+      }
+      local a = vim.deepcopy(i)
+      for k, v in pairs(a) do
+        a[k] = v:gsub(" including.*", "")
+      end
+
+      local ic = vim.deepcopy(i)
+      local ac = vim.deepcopy(a)
+      for key, name in pairs({ n = "Next", l = "Last" }) do
+        i[key] = vim.tbl_extend("force", { name = "Inside " .. name .. " textobject" }, ic)
+        a[key] = vim.tbl_extend("force", { name = "Around " .. name .. " textobject" }, ac)
+      end
+      require("which-key").register({
+        mode = { "o", "x" },
+        i = i,
+        a = a,
+      })
+      -- end
+    end,
+  },
+  {
     "NvChad/nvim-colorizer.lua",
     config = function()
       require("colorizer").setup({
         filetypes = { "*" },
         user_default_options = {
-          names = false, -- "Name" codes like Blue or blue
+          names = false,
         },
-        -- all the sub-options of filetypes apply to buftypes
         buftypes = {},
       })
     end,
@@ -788,7 +855,7 @@ return {
         dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dash.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
         dash.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
-        -- dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
+        -- dash.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
         -- dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
         dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dash.button("q", " " .. " Quit", ":qa<CR>"),
@@ -839,7 +906,7 @@ return {
           -- custom mapping
           {
             pattern = "app/javascript/(.*)/.*.ts$",
-            target= "app/javascript/(.*)/.*.test.ts$",
+            target = "app/javascript/(.*)/.*.test.ts$",
             -- transformer = "lowercase",
           },
         },

@@ -1,6 +1,9 @@
 return {
   "neovim/nvim-lspconfig",
   event = "VeryLazy",
+  cond = function()
+    return not vim.g.vscode
+  end,
   dependencies = {
     {
       -- NOTE: This needs to be at the top
@@ -10,8 +13,8 @@ return {
         require("neoconf").setup()
       end,
     },
-    "hrsh7th/nvim-cmp",
-    "hrsh7th/cmp-nvim-lsp",
+    { "hrsh7th/nvim-cmp" },
+    { "hrsh7th/cmp-nvim-lsp" },
     "kosayoda/nvim-lightbulb",
     "nvim-telescope/telescope.nvim",
     "b0o/schemastore.nvim",
@@ -99,9 +102,6 @@ return {
   },
   init = function()
     vim.g.navic_silence = true
-  end,
-  cond = function()
-    return not vim.g.vscode
   end,
   config = function()
     local capabilities = require("plugins.lsp.defaults").capabilities

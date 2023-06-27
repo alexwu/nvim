@@ -1,5 +1,8 @@
 return {
   "hrsh7th/nvim-cmp",
+  cond = function()
+    return not vim.g.vscode
+  end,
   dependencies = {
     "David-Kunz/cmp-npm",
     "hrsh7th/cmp-buffer",
@@ -9,15 +12,15 @@ return {
     "nvim-lua/plenary.nvim",
     -- "nvim-treesitter/nvim-treesitter",
     "onsails/lspkind-nvim",
-    -- { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
-    { "dcampos/cmp-snippy", dependencies = { "dcampos/nvim-snippy" } },
+    { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
+    -- { "dcampos/cmp-snippy", dependencies = { "dcampos/nvim-snippy" } },
     {
       "garyhurtz/cmp_kitty",
       cond = function()
         return vim.env.TERM == "xterm-kitty"
       end,
     },
-    { "tzachar/cmp-tabnine", build = "./install.sh" },
+    { "tzachar/cmp-tabnine",      build = "./install.sh" },
     {
       "zbirenbaum/copilot.lua",
       dependencies = { "hrsh7th/nvim-cmp" },
@@ -62,7 +65,7 @@ return {
     local mapping = cmp.mapping
     local compare = cmp.config.compare
     local lspkind = require("lspkind")
-    -- local luasnip = require("luasnip")
+    local luasnip = require("luasnip")
 
     lspkind.init({
       symbol_map = {
@@ -79,8 +82,8 @@ return {
     local tab_next = function(fallback)
       if cmp.visible() and has_words_before() then
         cmp.select_next_item()
-        -- elseif luasnip.expand_or_locally_jumpable() then
-        --   luasnip.expand_or_jump()
+      elseif luasnip.expand_or_locally_jumpable() then
+        luasnip.expand_or_jump()
       elseif has_words_before() then
         cmp.complete()
       else
@@ -91,8 +94,8 @@ return {
     local tab_prev = function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-        -- elseif luasnip.jumpable(-1) then
-        --   luasnip.jump(-1)
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
       else
         fallback()
       end
@@ -136,11 +139,11 @@ return {
           end,
         },
         { name = "copilot" },
-        -- { name = "luasnip", max_item_count = 3 },
-        { name = "snippy" },
+        { name = "luasnip",    max_item_count = 3 },
+        -- { name = "snippy" },
         { name = "cmp_tabnine" },
         { name = "path" },
-        { name = "npm", keyword_length = 4 },
+        { name = "npm",        keyword_length = 4 },
       }),
       comparators = {
         compare.locality,
@@ -157,8 +160,8 @@ return {
       },
       snippet = {
         expand = function(args)
-          -- luasnip.lsp_expand(args.body)
-          require("snippy").expand_snippet(args.body)
+          luasnip.lsp_expand(args.body)
+          -- require("snippy").expand_snippet(args.body)
         end,
       },
       window = {
