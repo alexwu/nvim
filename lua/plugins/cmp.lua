@@ -4,23 +4,22 @@ return {
     return not vim.g.vscode
   end,
   dependencies = {
-    "David-Kunz/cmp-npm",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-cmdline",
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-path",
     "nvim-lua/plenary.nvim",
-    -- "nvim-treesitter/nvim-treesitter",
     "onsails/lspkind-nvim",
     { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
-    -- { "dcampos/cmp-snippy", dependencies = { "dcampos/nvim-snippy" } },
     {
-      "garyhurtz/cmp_kitty",
-      cond = function()
-        return vim.env.TERM == "xterm-kitty"
+      "doxnit/cmp-luasnip-choice",
+      config = function()
+        require("cmp_luasnip_choice").setup({
+          auto_open = true,
+        })
       end,
     },
-    { "tzachar/cmp-tabnine",      build = "./install.sh" },
+    { "tzachar/cmp-tabnine", build = "./install.sh" },
     {
       "zbirenbaum/copilot.lua",
       dependencies = { "hrsh7th/nvim-cmp" },
@@ -38,7 +37,6 @@ return {
     {
       "zbirenbaum/copilot-cmp",
       dependencies = { "hrsh7th/nvim-cmp", "zbirenbaum/copilot.lua" },
-      after = "copilot.lua",
       config = function()
         require("copilot_cmp").setup({
           method = "getCompletionsCycling",
@@ -132,18 +130,29 @@ return {
         {
           name = "nvim_lsp",
           max_item_count = 20,
-          entry_filter = function(entry, ctx)
+          entry_filter = function(entry, _ctx)
             local label = entry:get_completion_item().label
             local sorbet_type_warning = "(file is not `# typed: true` or higher)"
             return not vim.endswith(label, sorbet_type_warning)
           end,
         },
+        { name = "luasnip", max_item_count = 3 },
+        { name = "luasnip_choice" },
+        {
+          name = "buffer",
+          option = {
+            get_bufnrs = function()
+              local bufs = {}
+              for _, win in ipairs(vim.api.nvim_list_wins()) do
+                bufs[vim.api.nvim_win_get_buf(win)] = true
+              end
+              return vim.tbl_keys(bufs)
+            end,
+          },
+        },
         { name = "copilot" },
-        { name = "luasnip",    max_item_count = 3 },
-        -- { name = "snippy" },
         { name = "cmp_tabnine" },
         { name = "path" },
-        { name = "npm",        keyword_length = 4 },
       }),
       comparators = {
         compare.locality,
@@ -203,7 +212,6 @@ return {
               copilot = "[copilot]",
               crates = "[Crates]",
               luasnip = "[LuaSnip]",
-              npm = "[npm]",
               nvim_lsp = "[LSP]",
               path = "[Path]",
               treesitter = "[TreeSitter]",
@@ -277,8 +285,6 @@ return {
         { name = "cmdline" },
       }),
     })
-
-    -- require("cmp-npm").setup({})
 
     nvim.create_augroup("bombeelu.cmp", { clear = true })
     nvim.create_autocmd("FileType", {
