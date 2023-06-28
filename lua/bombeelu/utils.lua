@@ -58,8 +58,7 @@ function M.keymap(mappings, callback, opts)
   end
 
   local maps = vim.tbl_map(function(mapping)
-    return { mapping, callback, modes = modes, opts = opts }
-    -- vim.keymap.set(modes, mapping, callback, opts)
+    return { mapping, callback, mode = modes, opts = opts }
   end, mappings)
 
   legendary.keymaps(maps)
