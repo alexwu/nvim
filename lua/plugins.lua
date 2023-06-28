@@ -72,7 +72,7 @@ return {
     dependencies = { "nvim-snazzy" },
     config = function()
       require("transparent").setup({
-        groups = { -- table: default groups
+        groups = {
           "Normal",
           "NormalNC",
           "Comment",
@@ -120,10 +120,38 @@ return {
         skipInsignificantPunctuation = false,
       })
 
-      key.map("w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w", modes = { "n", "o", "x" } })
-      key.map("e", "<cmd>lua require('spider').motion('e')<CR>", { modes = { "n", "o", "x" }, desc = "Spider-e" })
-      key.map("b", "<cmd>lua require('spider').motion('b')<CR>", { modes = { "n", "o", "x" }, desc = "Spider-b" })
-      key.map("ge", "<cmd>lua require('spider').motion('ge')<CR>", { modes = { "n", "o", "x" }, desc = "Spider-ge" })
+      local keymaps = require("legendary").keymaps
+
+      keymaps({
+        {
+          "w",
+          "<cmd>lua require('spider').motion('w')<CR>",
+          description = "Spider-w",
+          mode = { "n", "o", "x" },
+          opts = { desc = "Spider-w" },
+        },
+        {
+          "e",
+          "<cmd>lua require('spider').motion('e')<CR>",
+          description = "Spider-e",
+          mode = { "n", "o", "x" },
+          opts = { desc = "Spider-e" },
+        },
+        {
+          "b",
+          "<cmd>lua require('spider').motion('b')<CR>",
+          description = "Spider-b",
+          mode = { "n", "o", "x" },
+          opts = { desc = "Spider-b" },
+        },
+        {
+          "ge",
+          "<cmd>lua require('spider').motion('ge')<CR>",
+          description = "Spider-ge",
+          mode = { "n", "o", "x" },
+          opts = { desc = "Spider-ge" },
+        },
+      })
     end,
   },
   {
@@ -369,7 +397,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = true,
+    enabled = false,
   },
   {
     "ckolkey/ts-node-action",
