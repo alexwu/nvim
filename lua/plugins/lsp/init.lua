@@ -99,6 +99,12 @@ return {
         })
       end,
     },
+    {
+      "mrshmllow/document-color.nvim",
+      config = function()
+        require("document-color").setup({})
+      end,
+    },
   },
   init = function()
     vim.g.navic_silence = true

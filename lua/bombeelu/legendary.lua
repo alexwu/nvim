@@ -11,6 +11,7 @@ function M.setup()
       smart_splits = true,
       diffview = true,
     },
+    lazy_nvim = { auto_register = true },
   })
 end
 

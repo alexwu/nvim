@@ -397,7 +397,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = false,
+    enabled = true,
   },
   {
     "ckolkey/ts-node-action",
@@ -955,6 +955,14 @@ return {
       })
     end,
   },
+  {
+    "abecodes/tabout.nvim",
+    config = function()
+      require("tabout").setup()
+    end,
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
+  },
 }
 
 --     use({
@@ -973,23 +981,6 @@ return {
 --         end,
 --       })
 --
---     use({
---       "mfussenegger/nvim-dap",
---       dependencies = {
---         "rcarriga/nvim-dap-ui",
---         "theHamsta/nvim-dap-virtual-text",
---         "mxsdev/nvim-dap-vscode-js",
---       },
---       config = function()
---         require("bombeelu.dap").setup()
---       end,
---     })
---
---     use({
---       "microsoft/vscode-js-debug",
---       opt = true,
---       run = "npm install --legacy-peer-deps && npm run compile",
---     })
 --
 --     use({
 --       "gennaro-tedesco/nvim-jqx",
@@ -1023,11 +1014,6 @@ return {
 --     --         end,
 --     --         disable = true,
 --     --       })
---
---
---     use({
---     })
---
 --     use({
 --       "andrewferrier/debugprint.nvim",
 --       config = function()

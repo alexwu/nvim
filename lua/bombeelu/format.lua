@@ -119,7 +119,7 @@ local function format()
     vim.lsp.buf.format({
       async = true,
       filter = function(client)
-        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "lua_ls"
       end,
     })
   else
@@ -136,16 +136,16 @@ local function format_range()
   if use_lsp(true) then
     vim.lsp.buf.range_formatting({
       filter = function(client)
-        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "lua_ls"
       end,
     })
   else
   end
 end
 
-set({ "n" }, { "<F8>", "<Leader>y", "gq" }, lazy(format), { silent = true, desc = "Format" })
-set({ "i" }, { "<F8>" }, lazy(format), { silent = true, desc = "Format" })
-set({ "v" }, { "<F8>", "<Leader>y" }, lazy(format_range), { silent = true, desc = "Format range" })
+key.map({ "<F8>", "<Leader>y", "gq" }, lazy(format), { silent = true, desc = "Format", modes = { "n" } })
+key.map({ "<F8>" }, lazy(format), { silent = true, desc = "Format", modes = { "i" } })
+-- key.map({ "<F8>", "<Leader>y" }, lazy(format_range), { silent = true, desc = "Format range", modes = "v" })
 
 vim.cmd([[
 function! s:formatter_complete(...)
