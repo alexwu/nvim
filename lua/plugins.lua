@@ -966,12 +966,12 @@ return {
 --       end,
 --     })
 --
---     --       use({
---     --         "nanotee/sqls.nvim",
---     --         cond = function()
---     --           return not vim.g.vscode
---     --         end,
---     --       })
+--       use({
+--         "nanotee/sqls.nvim",
+--         cond = function()
+--           return not vim.g.vscode
+--         end,
+--       })
 --
 --     use({
 --       "mfussenegger/nvim-dap",
@@ -994,32 +994,6 @@ return {
 --     use({
 --       "gennaro-tedesco/nvim-jqx",
 --       ft = { "json" },
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     use({
---       "kevinhwang91/nvim-bqf",
---       config = function()
---         require("bqf").setup({
---           auto_enable = true,
---           auto_resize_height = false,
---           preview = {
---             should_preview_cb = function(bufnr, _qwinid)
---               return bufnr ~= vim.api.nvim_get_current_buf()
---             end,
---           },
---           func_map = {
---             drop = "o",
---             openc = "O",
---             split = "<C-s>",
---             tabdrop = "<C-t>",
---             tabc = "",
---             ptogglemode = "z,",
---           },
---         })
---       end,
 --       cond = function()
 --         return not vim.g.vscode
 --       end,
@@ -1052,13 +1026,6 @@ return {
 --
 --
 --     use({
---       "mrshmllow/document-color.nvim",
---       config = function()
---         require("document-color").setup({})
---       end,
---     })
---
---     use({
 --     })
 --
 --     use({
@@ -1070,29 +1037,9 @@ return {
 --     })
 --
 --     use({
---       "kevinhwang91/nvim-ufo",
---       dependencies = "kevinhwang91/promise-async",
---       config = function()
---         require("bombeelu.folds").setup()
---       end,
---       cond = function()
---         return not vim.g.vscode
---       end,
---       disable = true,
---     })
---
---     use({
 --       "IndianBoy42/tree-sitter-just",
 --       config = function()
 --         require("tree-sitter-just").setup()
 --       end,
 --       disable = true,
---     })
-
---     use({
---       "nvim-telescope/telescope-dap.nvim",
---       dependencies = { "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap" },
---       config = function()
---         require("telescope").load_extension("dap")
---       end,
 --     })
