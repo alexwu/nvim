@@ -958,7 +958,15 @@ return {
   {
     "abecodes/tabout.nvim",
     config = function()
-      require("tabout").setup()
+      require("tabout").setup({
+        tabouts = {
+          { open = "'", close = "'" },
+          { open = '"', close = '"' },
+          { open = "`", close = "`" },
+          { open = "(", close = ")" },
+          { open = "[", close = "]" },
+        },
+      })
     end,
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
