@@ -1,108 +1,6 @@
 vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
 
 return {
-  {
-    "alexwu/nvim-snazzy",
-    dependencies = { "rktjmp/lush.nvim" },
-    branch = "lush",
-    dev = true,
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme("snazzy")
-    end,
-    enabled = true,
-  },
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    enabled = true,
-    config = function()
-      require("tokyonight").setup({
-        style = "default",
-        transparent = true,
-        terminal_colors = true,
-        on_colors = function(colors)
-          -- colors = {
-          --   none = "NONE",
-          --   bg = "#24283b",
-          --   bg_highlight = "#292e42",
-          --   terminal_black = "#414868",
-          --   fg = "#c0caf5",
-          --   fg_gutter = "#3b4261",
-          --   dark3 = "#545c7e",
-          --   comment = "#565f89",
-          --   dark5 = "#737aa2",
-          --   blue0 = "#3d59a1",
-          --   blue = "#7aa2f7",
-          --   cyan = "#7dcfff",
-          --   blue1 = "#2ac3de",
-          --   blue2 = "#0db9d7",
-          --   blue5 = "#89ddff",
-          --   blue6 = "#b4f9f8",
-          --   blue7 = "#394b70",
-          --   magenta = "#bb9af7",
-          --   magenta2 = "#ff007c",
-          --   purple = "#9d7cd8",
-          --   orange = "#ff9e64",
-          --   yellow = "#e0af68",
-          --   green = "#9ece6a",
-          --   green1 = "#73daca",
-          --   green2 = "#41a6b5",
-          --   teal = "#1abc9c",
-          --   red = "#f7768e",
-          --   red1 = "#db4b4b",
-          -- git = { change = "#6183bb", add = "#449dab", delete = "#914c54" },
-          --   gitSigns = {
-          --     add = "#266d6a",
-          --     change = "#536c9e",
-          --     delete = "#b2555b",
-          --   },
-          -- }
-          colors.fg_dark = "#eff0eb"
-          colors.bg_dark = "#282a36"
-        end,
-      })
-      -- vim.cmd([[colorscheme tokyonight]])
-    end,
-  },
-  {
-    "xiyaowong/transparent.nvim",
-    dependencies = { "nvim-snazzy" },
-    config = function()
-      require("transparent").setup({
-        groups = {
-          "Normal",
-          "NormalNC",
-          "Comment",
-          "Constant",
-          "Special",
-          "Identifier",
-          "Statement",
-          "PreProc",
-          "Type",
-          "Underlined",
-          "Todo",
-          "String",
-          "Function",
-          "Conditional",
-          "Repeat",
-          "Operator",
-          "Structure",
-          "LineNr",
-          "NonText",
-          "SignColumn",
-          "CursorLineNr",
-          "EndOfBuffer",
-          "NoiceMini",
-        },
-        extra_groups = {},
-        exclude_groups = {},
-      })
-    end,
-    enabled = true,
-  },
   { "tpope/vim-repeat", lazy = false },
   {
     "sheerun/vim-polyglot",
@@ -231,54 +129,7 @@ return {
       })
     end,
   },
-  {
-    "ggandor/leap.nvim",
-    event = "VeryLazy",
-    -- keys = {
-    --   { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
-    --   { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
-    -- { "gss", mode = { "n", "x", "o" }, desc = "Leap from windows" },
-    -- },
-    enabled = false,
-    config = function()
-      require("bombeelu.leap").setup()
-    end,
-    dependencies = {
-      "ggandor/leap-spooky.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-  },
   { "Bekaboo/dropbar.nvim" },
-
-  {
-    "ggandor/flit.nvim",
-    event = "VeryLazy",
-    dependencies = { "ggandor/leap.nvim" },
-    config = function()
-      require("flit").setup({
-        keys = { f = "f", F = "F", t = "t", T = "T" },
-        labeled_modes = "nx",
-        multiline = false,
-        opts = {},
-      })
-    end,
-    enabled = false,
-  },
-  {
-    "ggandor/leap-spooky.nvim",
-    event = "VeryLazy",
-    dependencies = { "ggandor/leap.nvim" },
-    enabled = false,
-    config = function()
-      require("leap-spooky").setup({
-        affixes = {
-          remote = { window = "r", cross_window = "R" },
-          magnetic = { window = "m", cross_window = "M" },
-        },
-        paste_on_remote_yank = false,
-      })
-    end,
-  },
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -397,7 +248,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = true,
+    enabled = false,
   },
   {
     "ckolkey/ts-node-action",
@@ -594,7 +445,6 @@ return {
     config = true,
   },
 
-  -- Lua
   {
     "folke/trouble.nvim",
     event = "VeryLazy",
@@ -632,6 +482,7 @@ return {
     event = "VeryLazy",
     requires = { "nvim-lua/plenary.nvim" },
     config = true,
+    enabled = false,
   },
   {
     "RRethy/vim-illuminate",
@@ -963,8 +814,6 @@ return {
           { open = "'", close = "'" },
           { open = '"', close = '"' },
           { open = "`", close = "`" },
-          { open = "(", close = ")" },
-          { open = "[", close = "]" },
         },
       })
     end,
