@@ -13,44 +13,35 @@ return {
   {
     "chrisgrieser/nvim-spider",
     event = "VeryLazy",
-    config = function()
-      require("spider").setup({
-        skipInsignificantPunctuation = false,
-      })
-
-      local keymaps = require("legendary").keymaps
-
-      keymaps({
-        {
-          "w",
-          "<cmd>lua require('spider').motion('w')<CR>",
-          description = "Spider-w",
-          mode = { "n", "o", "x" },
-          opts = { desc = "Spider-w" },
-        },
-        {
-          "e",
-          "<cmd>lua require('spider').motion('e')<CR>",
-          description = "Spider-e",
-          mode = { "n", "o", "x" },
-          opts = { desc = "Spider-e" },
-        },
-        {
-          "b",
-          "<cmd>lua require('spider').motion('b')<CR>",
-          description = "Spider-b",
-          mode = { "n", "o", "x" },
-          opts = { desc = "Spider-b" },
-        },
-        {
-          "ge",
-          "<cmd>lua require('spider').motion('ge')<CR>",
-          description = "Spider-ge",
-          mode = { "n", "o", "x" },
-          opts = { desc = "Spider-ge" },
-        },
-      })
-    end,
+    opts = {
+      skipInsignificantPunctuation = false,
+    },
+    keys = {
+      {
+        "w",
+        "<cmd>lua require('spider').motion('w')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-w",
+      },
+      {
+        "e",
+        "<cmd>lua require('spider').motion('e')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-e",
+      },
+      {
+        "b",
+        "<cmd>lua require('spider').motion('b')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-b",
+      },
+      {
+        "ge",
+        "<cmd>lua require('spider').motion('ge')<CR>",
+        mode = { "n", "o", "x" },
+        desc = "Spider-ge",
+      },
+    },
   },
   {
     "Wansmer/treesj",
@@ -129,7 +120,68 @@ return {
       })
     end,
   },
-  { "Bekaboo/dropbar.nvim" },
+  {
+    "ggandor/leap.nvim",
+    event = "VeryLazy",
+    -- keys = {
+    --   { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
+    --   { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
+    -- { "gss", mode = { "n", "x", "o" }, desc = "Leap from windows" },
+    -- },
+    enabled = false,
+    config = function()
+      require("bombeelu.leap").setup()
+    end,
+    dependencies = {
+      "ggandor/leap-spooky.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+  },
+  {
+    "Bekaboo/dropbar.nvim",
+    config = true,
+    opts = {
+      general = {
+        enable = function(buf, win)
+          return vim.api.nvim_get_current_buf() == buf
+            and not vim.api.nvim_win_get_config(win).zindex
+            and vim.bo[buf].buftype == ""
+            and vim.api.nvim_buf_get_name(buf) ~= ""
+            and not vim.wo[win].diff
+        end,
+      },
+    },
+  },
+
+  {
+    "ggandor/flit.nvim",
+    event = "VeryLazy",
+    dependencies = { "ggandor/leap.nvim" },
+    config = function()
+      require("flit").setup({
+        keys = { f = "f", F = "F", t = "t", T = "T" },
+        labeled_modes = "nx",
+        multiline = false,
+        opts = {},
+      })
+    end,
+    enabled = false,
+  },
+  {
+    "ggandor/leap-spooky.nvim",
+    event = "VeryLazy",
+    dependencies = { "ggandor/leap.nvim" },
+    enabled = false,
+    config = function()
+      require("leap-spooky").setup({
+        affixes = {
+          remote = { window = "r", cross_window = "R" },
+          magnetic = { window = "m", cross_window = "M" },
+        },
+        paste_on_remote_yank = false,
+      })
+    end,
+  },
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -289,6 +341,10 @@ return {
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
+    init = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+    end,
     config = function()
       require("which-key").setup({
         layout = {
@@ -339,6 +395,19 @@ return {
         --   open = "Neotree position=top buffers",
         -- },
       },
+      bottom = {
+        "Trouble",
+        { ft = "qf", title = "QuickFix" },
+      },
+      -- top = {
+      --   {
+      --     ft = "help",
+      --     -- only show help buffers
+      --     filter = function(buf)
+      --       return vim.bo[buf].buftype == "help"
+      --     end,
+      --   },
+      -- },
     },
   },
   {

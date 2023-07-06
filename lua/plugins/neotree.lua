@@ -1,3 +1,23 @@
+if false then
+  return {
+    {
+      "stevearc/oil.nvim",
+      opts = {},
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      keys = {
+        {
+          "-",
+          function()
+            require("oil").open()
+          end,
+          mode = { "n" },
+          desc = "Open parent directory",
+        },
+      },
+    },
+  }
+end
+
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "main",

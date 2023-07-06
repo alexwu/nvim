@@ -1,6 +1,6 @@
 return {
   "neovim/nvim-lspconfig",
-  event = "VeryLazy",
+  event = "BufEnter",
   cond = function()
     return not vim.g.vscode
   end,
@@ -335,9 +335,9 @@ return {
         local bufnr = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-        if client.server_capabilities.inlayHintProvider then
-          vim.lsp.buf.inlay_hint(bufnr, true)
-        end
+        -- if client.server_capabilities.inlayHintProvider then
+        --   vim.lsp.buf.inlay_hint(bufnr, true)
+        -- end
         -- if client.server_capabilities.inlayHintProvider then
         --   vim.api.nvim_create_autocmd({ "BufEnter" }, {
         --     callback = function()

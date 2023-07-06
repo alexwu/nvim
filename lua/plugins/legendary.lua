@@ -4,5 +4,10 @@ return {
   config = function()
     require("bombeelu.legendary").setup()
   end,
+  -- config = true,
+  -- opts = {
+  --
+  -- },
+  -- keys = {}
   lazy = false,
 }
