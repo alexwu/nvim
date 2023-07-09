@@ -11,104 +11,6 @@ return {
   },
   { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
-    "chrisgrieser/nvim-spider",
-    event = "VeryLazy",
-    opts = {
-      skipInsignificantPunctuation = false,
-    },
-    keys = {
-      {
-        "w",
-        "<cmd>lua require('spider').motion('w')<CR>",
-        mode = { "n", "o", "x" },
-        desc = "Spider-w",
-      },
-      {
-        "e",
-        "<cmd>lua require('spider').motion('e')<CR>",
-        mode = { "n", "o", "x" },
-        desc = "Spider-e",
-      },
-      {
-        "b",
-        "<cmd>lua require('spider').motion('b')<CR>",
-        mode = { "n", "o", "x" },
-        desc = "Spider-b",
-      },
-      {
-        "ge",
-        "<cmd>lua require('spider').motion('ge')<CR>",
-        mode = { "n", "o", "x" },
-        desc = "Spider-ge",
-      },
-    },
-  },
-  {
-    "Wansmer/treesj",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("treesj").setup({})
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    enabled = true,
-    config = function()
-      require("treesitter-context").setup({
-        enabled = true,
-        max_lines = 3,
-        trim_scope = "outer",
-        patterns = {
-          default = {
-            "class",
-            "function",
-            "method",
-            "for",
-            "while",
-            "if",
-            "switch",
-            "case",
-          },
-        },
-        zindex = 41,
-      })
-
-      vim.keymap.set("n", "[C", function()
-        require("treesitter-context").go_to_context()
-      end, { silent = true })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "VeryLazy",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        textobjects = {
-          select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ["af"] = "@function.outer",
-              ["if"] = "@function.inner",
-              ["ac"] = "@class.outer",
-              ["ic"] = "@class.inner",
-              ["ab"] = "@block.outer",
-              ["ib"] = "@block.inner",
-              ["a?"] = "@block.outer",
-              ["i?"] = "@block.inner",
-            },
-          },
-        },
-      })
-    end,
-  },
-  {
     "kylechui/nvim-surround",
     event = "VeryLazy",
     config = function()
@@ -121,107 +23,15 @@ return {
     end,
   },
   {
-    "ggandor/leap.nvim",
-    event = "VeryLazy",
-    -- keys = {
-    --   { "s", mode = { "n", "x", "o" }, desc = "Leap forward to" },
-    --   { "S", mode = { "n", "x", "o" }, desc = "Leap backward to" },
-    -- { "gss", mode = { "n", "x", "o" }, desc = "Leap from windows" },
-    -- },
-    enabled = false,
-    config = function()
-      require("bombeelu.leap").setup()
-    end,
-    dependencies = {
-      "ggandor/leap-spooky.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-  },
-  {
     "Bekaboo/dropbar.nvim",
     config = true,
     opts = {
       general = {
         enable = function(buf, win)
-          return vim.api.nvim_get_current_buf() == buf
-            and not vim.api.nvim_win_get_config(win).zindex
+          return not vim.api.nvim_win_get_config(win).zindex
             and vim.bo[buf].buftype == ""
             and vim.api.nvim_buf_get_name(buf) ~= ""
             and not vim.wo[win].diff
-        end,
-      },
-    },
-  },
-
-  {
-    "ggandor/flit.nvim",
-    event = "VeryLazy",
-    dependencies = { "ggandor/leap.nvim" },
-    config = function()
-      require("flit").setup({
-        keys = { f = "f", F = "F", t = "t", T = "T" },
-        labeled_modes = "nx",
-        multiline = false,
-        opts = {},
-      })
-    end,
-    enabled = false,
-  },
-  {
-    "ggandor/leap-spooky.nvim",
-    event = "VeryLazy",
-    dependencies = { "ggandor/leap.nvim" },
-    enabled = false,
-    config = function()
-      require("leap-spooky").setup({
-        affixes = {
-          remote = { window = "r", cross_window = "R" },
-          magnetic = { window = "m", cross_window = "M" },
-        },
-        paste_on_remote_yank = false,
-      })
-    end,
-  },
-  {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    enabled = true,
-    ---@type Flash.Config
-    opts = {
-      search = {
-        multi_window = false,
-        forwards = false,
-      },
-      jump = {
-        autojump = true,
-      },
-      modes = {
-        search = {
-          enabled = false,
-        },
-        char = {
-          enabled = true,
-          search = { wrap = false },
-          highlight = { backdrop = false },
-          jump = { register = false },
-        },
-      },
-    },
-    keys = {
-      {
-        "s",
-        mode = { "n", "x", "o" },
-        function()
-          require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
-        end,
-      },
-      {
-        "S",
-        mode = { "n", "o", "x" },
-        function()
-          require("flash").jump({
-            search = { forward = false, wrap = false, multi_window = false },
-          })
         end,
       },
     },
@@ -260,20 +70,6 @@ return {
       vim.keymap.set("t", [[<C-`>]], require("FTerm").toggle, { desc = "Toggle terminal" })
     end,
   },
-
-  {
-    "aarondiel/spread.nvim",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      local spread = require("spread")
-      local default_options = { silent = true, noremap = true }
-
-      vim.keymap.set("n", "gS", spread.out, default_options)
-      vim.keymap.set("n", "gJ", spread.combine, default_options)
-    end,
-    enabled = false,
-  },
   {
     "nvim-neotest/neotest",
     event = "VeryLazy",
@@ -287,6 +83,57 @@ return {
     config = function()
       require("bombeelu.neotest").setup()
     end,
+    keys = {
+      {
+        "<leader>tt",
+        function()
+          require("neotest").run.run(vim.fn.expand("%"))
+        end,
+        desc = "Run File",
+      },
+      {
+        "<leader>tT",
+        function()
+          require("neotest").run.run(vim.loop.cwd())
+        end,
+        desc = "Run All Test Files",
+      },
+      {
+        "<leader>tr",
+        function()
+          require("neotest").run.run()
+        end,
+        desc = "Run Nearest",
+      },
+      {
+        "<leader>ts",
+        function()
+          require("neotest").summary.toggle()
+        end,
+        desc = "Toggle Summary",
+      },
+      {
+        "<leader>to",
+        function()
+          require("neotest").output.open({ enter = true, auto_close = true })
+        end,
+        desc = "Show Output",
+      },
+      {
+        "<leader>tO",
+        function()
+          require("neotest").output_panel.toggle()
+        end,
+        desc = "Toggle Output Panel",
+      },
+      {
+        "<leader>tS",
+        function()
+          require("neotest").run.stop()
+        end,
+        desc = "Stop",
+      },
+    },
   },
   {
     "alexwu/ruby.nvim",
@@ -300,7 +147,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = false,
+    enabled = true,
   },
   {
     "ckolkey/ts-node-action",
@@ -345,16 +192,18 @@ return {
       vim.o.timeout = true
       vim.o.timeoutlen = 300
     end,
-    config = function()
-      require("which-key").setup({
-        layout = {
-          height = { min = 4, max = 25 },
-          width = { min = 20, max = 50 },
-          spacing = 3,
-          align = "right",
-        },
-      })
-    end,
+    config = true,
+    opts = {
+      layout = {
+        height = { min = 4, max = 25 },
+        width = { min = 20, max = 50 },
+        spacing = 3,
+        align = "right",
+      },
+      defaults = {
+        ["<leader>t"] = { name = "+test" },
+      },
+    },
   },
   {
     "folke/edgy.nvim",
@@ -449,20 +298,6 @@ return {
       return not vim.g.vscode
     end,
     enabled = true,
-  },
-  {
-    "ziontee113/syntax-tree-surfer",
-    event = "VeryLazy",
-    config = function()
-      require("bombeelu.syntax-tree-surfer").setup()
-    end,
-  },
-  {
-    "windwp/nvim-ts-autotag",
-    event = "VeryLazy",
-    cond = function()
-      return not vim.g.vscode
-    end,
   },
   {
     "akinsho/git-conflict.nvim",
@@ -751,20 +586,6 @@ return {
     end,
     lazy = false,
   },
-
-  {
-    "otavioschwanck/telescope-alternate",
-    event = "VeryLazy",
-    config = function()
-      require("telescope-alternate").setup({
-        presets = { "rails", "rspec" },
-        open_only_one_with = "current_pane",
-      })
-
-      require("telescope").load_extension("telescope-alternate")
-    end,
-  },
-
   {
     "lewis6991/satellite.nvim",
     dependencies = { "gitsigns.nvim" },

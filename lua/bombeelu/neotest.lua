@@ -6,7 +6,17 @@ local M = {}
 function M.setup()
   neotest.setup({
     adapters = {
-      require("neotest-rspec"),
+      -- require("neotest-rspec"),
+      ["neotest-rspec"] = {
+        -- NOTE: By default neotest-rspec uses the system wide rspec gem instead of the one through bundler
+        rspec_cmd = function()
+          return vim.tbl_flatten({
+            "bundle",
+            "exec",
+            "rspec",
+          })
+        end,
+      },
       require("neotest-jest")({
         jestCommand = "yarn test",
         jestConfigFile = "jest.config.js",
@@ -36,7 +46,20 @@ function M.setup()
       final_child_indent = " ",
     },
     status = { virtual_text = false },
+    output = { open_on_run = true },
+    quickfix = {
+      open = function()
+        vim.cmd("Trouble quickfix")
+      end,
+    },
   })
+
+  local wk = require("which-key")
+  wk.register({
+    t = {
+      name = "+test",
+    },
+  }, { prefix = "<Leader>" })
 
   nvim.create_user_command("TestSummary", function()
     neotest.summary.toggle()
@@ -138,11 +161,11 @@ function M.setup()
     require("neotest").jump.next()
   end, { modes = "n", desc = "Move to next test" })
 
-  key.map({ "<Leader>t" }, function()
-    Palette(commands, {
-      prompt = "Select a command:",
-    }):run()
-  end, { modes = "n" })
+  -- key.map({ "<Leader>t" }, function()
+  --   Palette(commands, {
+  --     prompt = "Select a command:",
+  --   }):run()
+  -- end, { modes = "n" })
 end
 
 return M

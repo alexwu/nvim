@@ -1,6 +1,6 @@
 return {
   "neovim/nvim-lspconfig",
-  event = "BufEnter",
+  event = { "BufReadPre", "BufNewFile" },
   cond = function()
     return not vim.g.vscode
   end,
@@ -13,9 +13,24 @@ return {
         require("neoconf").setup()
       end,
     },
-    { "hrsh7th/nvim-cmp" },
-    { "hrsh7th/cmp-nvim-lsp" },
-    "kosayoda/nvim-lightbulb",
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-nvim-lsp",
+    {
+      "kosayoda/nvim-lightbulb",
+      config = true,
+      opts = {
+        autocmd = {
+          enabled = true,
+        },
+        action_kinds = { "quickfix", "refactor.rewrite" },
+        ignore = {
+          clients = {
+            "null-ls",
+          },
+          ft = { "neo-tree" },
+        },
+      },
+    },
     "nvim-telescope/telescope.nvim",
     "b0o/schemastore.nvim",
     "stevearc/dressing.nvim",
@@ -72,6 +87,10 @@ return {
           },
         })
       end,
+    },
+    {
+      "dmmulroy/tsc.nvim",
+      config = true,
     },
     {
       "p00f/clangd_extensions.nvim",
@@ -237,12 +256,12 @@ return {
     --   callback = smart_diagnostic_hover,
     -- })
     --
-    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-      group = "LspDiagnosticsConfig",
-      callback = function()
-        require("nvim-lightbulb").update_lightbulb({ ignore = { "null-ls" } })
-      end,
-    })
+    -- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+    --   group = "LspDiagnosticsConfig",
+    --   callback = function()
+    --     require("nvim-lightbulb").update_lightbulb({ ignore = { "null-ls" } })
+    --   end,
+    -- })
 
     set("n", "gy", function()
       vim.lsp.buf.type_definition()
@@ -323,35 +342,8 @@ return {
     end, { silent = true, expr = true })
 
     augroup("LspCustom", { clear = true })
-
-    vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
-    vim.api.nvim_create_autocmd("LspAttach", {
-      group = "LspAttach_inlayhints",
-      callback = function(args)
-        if not (args.data and args.data.client_id) then
-          return
-        end
-
-        local bufnr = args.buf
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-        -- if client.server_capabilities.inlayHintProvider then
-        --   vim.lsp.buf.inlay_hint(bufnr, true)
-        -- end
-        -- if client.server_capabilities.inlayHintProvider then
-        --   vim.api.nvim_create_autocmd({ "BufEnter" }, {
-        --     callback = function()
-        --     end,
-        --   })
-        --   vim.api.nvim_create_autocmd({ "BufLeave" }, {
-        --     callback = function()
-        --       vim.lsp.buf.inlay_hint(bufnr, false)
-        --     end,
-        --   })
-        -- end
-      end,
-    })
-    vim.api.nvim_create_autocmd("LspDetach", {
+    augroup("LspAttach_inlayhints", {})
+    autocmd("LspAttach", {
       group = "LspAttach_inlayhints",
       callback = function(args)
         if not (args.data and args.data.client_id) then
@@ -362,7 +354,23 @@ return {
         local client = vim.lsp.get_client_by_id(args.data.client_id)
 
         if client.server_capabilities.inlayHintProvider then
-          vim.lsp.buf.inlay_hint(bufnr, false)
+          vim.lsp.inlay_hint(bufnr, true)
+        end
+      end,
+    })
+
+    autocmd("LspDetach", {
+      group = "LspAttach_inlayhints",
+      callback = function(args)
+        if not (args.data and args.data.client_id) then
+          return
+        end
+
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+        if client.server_capabilities.inlayHintProvider then
+          vim.lsp.inlay_hint(bufnr, false)
         end
       end,
     })

@@ -9,13 +9,13 @@ return {
     config = function()
       vim.cmd.colorscheme("snazzy")
     end,
-    enabled = false,
+    enabled = true,
   },
   {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       require("tokyonight").setup({
         style = "default",
@@ -163,6 +163,6 @@ return {
         exclude_groups = {},
       })
     end,
-    enabled = false,
+    enabled = true,
   },
 }

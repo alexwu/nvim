@@ -185,7 +185,7 @@ return {
           },
           never_show_by_pattern = {},
         },
-        follow_current_file = true,
+        follow_current_file = { enabled = true },
         group_empty_dirs = false,
         hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
         window = {
@@ -203,7 +203,7 @@ return {
         },
       },
       buffers = {
-        follow_current_file = true,
+        follow_current_file = { enabled = true },
         use_libuv_file_watcher = true,
         group_empty_dirs = true,
         show_unloaded = true,
@@ -243,17 +243,10 @@ return {
     -- vim.cmd([[nnoremap <leader>n :NeoTreeFloatToggle <cr>]])
     -- vim.cmd([[nnoremap - <cmd>Neotree current dir=%:p:h<cr>]])
 
-    key.map("<leader>n", function()
-      vim.cmd.Neotree("left", "reveal", "toggle")
-    end)
 
-    key.map("<C-e>", function()
-      vim.cmd.Neotree("left", "reveal", "toggle")
-    end)
-
-    key.map("-", function()
-      vim.cmd.Neotree("current", "dir=%:p:h")
-    end)
+    -- key.map("-", function()
+    --   vim.cmd.Neotree("current", "dir=%:p:h")
+    -- end)
 
     require("legendary").commands({
       {
@@ -265,4 +258,28 @@ return {
       },
     })
   end,
+
+  keys = {
+    {
+      "-",
+      function()
+        vim.cmd.Neotree("current", "dir=%:p:h")
+      end,
+      desc = "Go up a directory",
+    },
+    {
+      "<C-e>",
+      function()
+        vim.cmd.Neotree("left", "reveal", "toggle")
+      end,
+      desc = "Open file explorer",
+    },
+    {
+      "<Leader>e",
+      function()
+        vim.cmd.Neotree("left", "reveal", "toggle")
+      end,
+      desc = "Open file explorer",
+    },
+  },
 }
