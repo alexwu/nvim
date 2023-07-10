@@ -111,7 +111,10 @@ return {
     "Wansmer/treesj",
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = true,
+    keys = { "<space>m", "<space>j", "<space>s" },
+    opts = {
+      max_join_length = 200,
+    },
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
