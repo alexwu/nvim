@@ -45,6 +45,7 @@ return {
     },
     {
       "suketa/nvim-dap-ruby",
+      event = "VeryLazy",
       config = function()
         require("dap-ruby").setup()
       end,

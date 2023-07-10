@@ -1,12 +1,3 @@
--- local gps = require("nvim-gps")
--- local navic = require("nvim-navic")
-
--- require("nvim-gps").setup()
-
--- local function gps_fallback()
---   return not navic.is_available() and gps.is_available()
--- end
-
 local colors = {
   background = "#282a36",
   foreground = "#eff0eb",
@@ -169,7 +160,6 @@ require("lualine").setup({
         },
         separator = { right = "", left = "" },
       },
-      -- { navic.get_location, cond = navic.is_available },
     },
     lualine_x = { "filetype" },
     lualine_y = {},

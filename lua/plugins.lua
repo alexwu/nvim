@@ -290,6 +290,7 @@ return {
   },
   {
     "andymass/vim-matchup",
+    event = "VeryLazy",
     setup = function()
       vim.g.matchup_matchparen_deferred = 1
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
@@ -568,6 +569,7 @@ return {
   },
   {
     "shortcuts/no-neck-pain.nvim",
+    event = "VeryLazy",
     version = "*",
     config = function()
       require("no-neck-pain").setup({
@@ -663,6 +665,7 @@ return {
   },
   {
     "rgroli/other.nvim",
+    event = "VeryLazy",
     config = function()
       require("other-nvim").setup({
         mappings = {
