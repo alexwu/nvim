@@ -384,13 +384,6 @@ return {
     end,
   },
   {
-    "rest-nvim/rest.nvim",
-    event = "VeryLazy",
-    requires = { "nvim-lua/plenary.nvim" },
-    config = true,
-    enabled = false,
-  },
-  {
     "RRethy/vim-illuminate",
     event = "VeryLazy",
     config = function()
