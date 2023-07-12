@@ -24,6 +24,7 @@ return {
   },
   {
     "Bekaboo/dropbar.nvim",
+    enabled = vim.fn.has("nvim-0.10.0") == 1,
     config = true,
     opts = {
       general = {
@@ -147,7 +148,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = true,
+    enabled = false,
   },
   {
     "ckolkey/ts-node-action",
@@ -590,6 +591,7 @@ return {
   },
   {
     "lewis6991/satellite.nvim",
+    enabled = vim.fn.has("nvim-0.10.0") == 1,
     dependencies = { "gitsigns.nvim" },
     config = function()
       require("satellite").setup({

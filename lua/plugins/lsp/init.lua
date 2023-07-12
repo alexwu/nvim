@@ -342,38 +342,40 @@ return {
     end, { silent = true, expr = true })
 
     augroup("LspCustom", { clear = true })
-    augroup("LspAttach_inlayhints", {})
-    autocmd("LspAttach", {
-      group = "LspAttach_inlayhints",
-      callback = function(args)
-        if not (args.data and args.data.client_id) then
-          return
-        end
+    if vim.lsp.inlay_hint then
+      augroup("LspAttach_inlayhints", {})
+      autocmd("LspAttach", {
+        group = "LspAttach_inlayhints",
+        callback = function(args)
+          if not (args.data and args.data.client_id) then
+            return
+          end
 
-        local bufnr = args.buf
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
+          local bufnr = args.buf
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-        if client.server_capabilities.inlayHintProvider then
-          vim.lsp.inlay_hint(bufnr, true)
-        end
-      end,
-    })
+          if client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint(bufnr, true)
+          end
+        end,
+      })
 
-    autocmd("LspDetach", {
-      group = "LspAttach_inlayhints",
-      callback = function(args)
-        if not (args.data and args.data.client_id) then
-          return
-        end
+      autocmd("LspDetach", {
+        group = "LspAttach_inlayhints",
+        callback = function(args)
+          if not (args.data and args.data.client_id) then
+            return
+          end
 
-        local bufnr = args.buf
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
+          local bufnr = args.buf
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-        if client.server_capabilities.inlayHintProvider then
-          vim.lsp.inlay_hint(bufnr, false)
-        end
-      end,
-    })
+          if client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint(bufnr, false)
+          end
+        end,
+      })
+    end
 
     autocmd("FileType", {
       pattern = { "LspInfo", "null-ls-info" },
