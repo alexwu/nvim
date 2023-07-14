@@ -148,7 +148,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = false,
+    enabled = true,
   },
   {
     "ckolkey/ts-node-action",
@@ -199,7 +199,7 @@ return {
         height = { min = 4, max = 25 },
         width = { min = 20, max = 50 },
         spacing = 3,
-        align = "right",
+        align = "center",
       },
       defaults = {
         ["<leader>t"] = { name = "+test" },
@@ -348,7 +348,37 @@ return {
   {
     "willothy/wezterm.nvim",
     event = "VeryLazy",
-    config = true,
+    dependencies = { "mrjones2014/legendary.nvim" },
+    enabled = true,
+    config = function()
+      local w = require("wezterm")
+      w.setup({})
+
+      require("legendary").commands({
+        {
+          "Spawn",
+          function(opts)
+            local fargs = vim.F.if_nil(vim.deepcopy(opts.fargs), { "" })
+            -- table.insert(fargs, 1, "wezterm")
+            local program = opts.fargs[1]
+
+            vim.print(program)
+
+            table.remove(fargs, 1)
+            local args = fargs
+            vim.print(args)
+
+            w.spawn(program, { cwd = vim.loop.cwd(), args = args })
+          end,
+          description = "Spawn a new wezterm process",
+          unfinished = true,
+          opts = {
+            nargs = "*",
+            complete = "shellcmd",
+          },
+        },
+      })
+    end,
   },
 
   {
@@ -577,10 +607,8 @@ return {
   },
   {
     "mrjones2014/smart-splits.nvim",
-    config = function()
-      require("smart-splits").setup()
-    end,
     lazy = false,
+    opts = {},
   },
   {
     "lewis6991/satellite.nvim",
@@ -707,6 +735,16 @@ return {
     end,
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
+  },
+  {
+    "TobinPalmer/rayso.nvim",
+    cmd = { "Rayso" },
+    config = true,
+    opts = {
+      options = {
+        theme = "candy",
+      },
+    },
   },
 }
 
