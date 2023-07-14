@@ -24,16 +24,16 @@ key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
 
 -- key.map("gs", [[:%s/\<<C-R><C-W>\>\C//g<left><left>]], { modes = { "n" } })
 --
-set({ "n" }, "<C-j>", function()
-  keys.feed({ "<C-w>", "<C-j>" })
-end)
-
-set({ "n" }, "<C-h>", function()
-  keys.feed({ "<C-w>", "<C-h>" })
-end)
-
-set({ "n" }, "<C-k>", "<C-w><C-k>")
-set({ "n" }, "<C-l>", "<C-w><C-l>")
+-- set({ "n" }, "<C-j>", function()
+--   keys.feed({ "<C-w>", "<C-j>" })
+-- end)
+--
+-- set({ "n" }, "<C-h>", function()
+--   keys.feed({ "<C-w>", "<C-h>" })
+-- end)
+--
+-- set({ "n" }, "<C-k>", "<C-w><C-k>")
+-- set({ "n" }, "<C-l>", "<C-w><C-l>")
 
 key.map("<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 key.map("<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })

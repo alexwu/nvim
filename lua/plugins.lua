@@ -55,10 +55,10 @@ return {
       local commands = require("legendary").commands
 
       commands({
-        { ":FTermOpen", require("FTerm").open, description = "Open terminal", opts = { bang = true } },
-        { ":FTermClose", require("FTerm").close, description = "Close terminal", opts = { bang = true } },
-        { ":FTermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
-        { ":FTermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
+        { ":TermOpen", require("FTerm").open, description = "Open terminal", opts = { bang = true } },
+        { ":TermClose", require("FTerm").close, description = "Close terminal", opts = { bang = true } },
+        { ":TermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
+        { ":TermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
       })
 
       vim.api.nvim_create_user_command("YarnTest", function()
@@ -148,7 +148,7 @@ return {
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = true,
+    enabled = false,
   },
   {
     "ckolkey/ts-node-action",
@@ -201,8 +201,8 @@ return {
         spacing = 3,
         align = "center",
       },
-      defaults = {
-        ["<leader>t"] = { name = "+test" },
+      window = {
+        border = "single",
       },
     },
   },
@@ -235,29 +235,11 @@ return {
           pinned = true,
           open = "Neotree position=right git_status",
         },
-        -- {
-        --   title = "Neo-Tree Buffers",
-        --   ft = "neo-tree",
-        --   filter = function(buf)
-        --     return vim.b[buf].neo_tree_source == "buffers"
-        --   end,
-        --   pinned = true,
-        --   open = "Neotree position=top buffers",
-        -- },
       },
       bottom = {
         "Trouble",
         { ft = "qf", title = "QuickFix" },
       },
-      -- top = {
-      --   {
-      --     ft = "help",
-      --     -- only show help buffers
-      --     filter = function(buf)
-      --       return vim.bo[buf].buftype == "help"
-      --     end,
-      --   },
-      -- },
     },
   },
   {
@@ -712,11 +694,8 @@ return {
         },
         style = {
           border = "rounded",
-
           seperator = "|",
-
           width = 0.7,
-
           minHeight = 2,
         },
       })
@@ -739,12 +718,33 @@ return {
   {
     "TobinPalmer/rayso.nvim",
     cmd = { "Rayso" },
-    config = true,
     opts = {
       options = {
         theme = "candy",
       },
     },
+  },
+  {
+    "lewis6991/hover.nvim",
+    config = function()
+      require("hover").setup({
+        init = function()
+          require("hover.providers.lsp")
+          require("hover.providers.gh")
+          require("hover.providers.gh_user")
+          require("hover.providers.man")
+          require("hover.providers.dictionary")
+        end,
+        preview_opts = {
+          border = "rounded",
+        },
+        preview_window = false,
+        title = true,
+      })
+
+      vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+      vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+    end,
   },
 }
 

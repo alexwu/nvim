@@ -57,35 +57,12 @@ return {
           use_virtual_text = true,
           lint_events = { "BufWrite", "CursorHold" },
         },
-        -- refactor = {
-        --   smart_rename = {
-        --     enable = true,
-        --     keymaps = {
-        --       smart_rename = "gsn",
-        --     },
-        --   },
-        --   navigation = {
-        --     enable = false,
-        --     keymaps = {
-        --       goto_definition_lsp_fallback = "gd",
-        --     },
-        --   },
-        --   highlight_current_scope = { enable = false },
-        --   highlight_definitions = {
-        --     enable = false,
-        --     clear_on_cursor_move = false,
-        --   },
-        -- },
         autopairs = { enable = true },
         autotag = { enable = true },
         context_commentstring = { enable = true, enable_autocmd = false },
         matchup = {
-          enable = false,
+          enable = true,
         },
-        -- highlight_current_node = {
-        --   enable = true,
-        --   excluded_filetypes = { "help" },
-        -- },
       })
 
       require("nvim-treesitter.parsers").ft_to_lang = function(ft)

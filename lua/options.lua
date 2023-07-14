@@ -44,6 +44,7 @@ vim.o.pumheight = 10
 vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.o.fillchars = "foldclose:,foldopen:"
 vim.g.ts_highlight_lua = false
+vim.o.conceallevel = 2
 -- vim.o.splitkeep="screen"
 -- vim.opt.foldopen:remove({ "hor" })
 
