@@ -2,7 +2,8 @@ local if_nil = vim.F.if_nil
 local mk_repeatable = require("bombeelu.repeat").mk_repeatable
 local uv = vim.loop
 local fs = vim.fs
-local legendary = require("legendary")
+
+local has_legendary, legendary = pcall(require, "legendary")
 
 local a = require("plenary.async")
 
@@ -33,13 +34,23 @@ end
 ---@param callback string|function
 ---@param opts? table
 function M.set(modes, mappings, callback, opts)
+  opts = if_nil(opts, {})
   if type(mappings) == "string" then
     mappings = { mappings }
   end
 
-  vim.tbl_map(function(mapping)
-    vim.keymap.set(modes, mapping, callback, opts)
+  local maps = vim.tbl_map(function(mapping)
+    if has_legendary then
+      local description = if_nil(opts.desc, "")
+      return { mapping, callback, mode = modes, description = description, opts = opts }
+    else
+      vim.keymap.set(modes, mapping, callback, opts)
+    end
   end, mappings)
+
+  if has_legendary then
+    legendary.keymaps(maps)
+  end
 end
 
 ---@param mappings string|string[]
@@ -69,7 +80,7 @@ local function starts_with(str, start)
 end
 
 local function ends_with(str, ending)
-  return ending == "" or str:sub(- #ending) == ending
+  return ending == "" or str:sub(-#ending) == ending
 end
 
 local function needs_command_wrapping(str)

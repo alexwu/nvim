@@ -20,7 +20,7 @@ return {
       config = true,
       opts = {
         autocmd = {
-          enabled = true,
+          enabled = false,
         },
         action_kinds = { "quickfix", "refactor.rewrite" },
         ignore = {
@@ -328,6 +328,7 @@ return {
     -- end, { silent = true, desc = "Select a code action" })
 
     set("n", "K", hover, { silent = true })
+    set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
     vim.keymap.set({ "n", "i", "s" }, "<c-f>", function()
       if not require("noice.lsp").scroll(4) then

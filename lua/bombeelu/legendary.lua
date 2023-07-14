@@ -5,7 +5,7 @@ function M.setup()
     include_legendary_cmds = true,
     select_prompt = "Command Palette",
     extensions = {
-      smart_splits = true,
+      smart_splits = {},
       diffview = true,
     },
     lazy_nvim = { auto_register = true },

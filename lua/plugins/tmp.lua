@@ -1,7 +1,7 @@
 return {
   {
     "alexwu/sorbet-tools.nvim",
-    enabled = false,
+    enabled = true,
     dev = true,
     config = true,
     opts = {},

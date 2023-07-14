@@ -47,6 +47,7 @@ vim.g.ts_highlight_lua = false
 vim.o.conceallevel = 2
 -- vim.o.splitkeep="screen"
 -- vim.opt.foldopen:remove({ "hor" })
+vim.o.conceallevel = 2
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
