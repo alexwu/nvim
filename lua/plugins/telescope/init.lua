@@ -19,20 +19,6 @@ return {
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
       },
       "tsakirist/telescope-lazy.nvim",
-      {
-        "danielfalk/smart-open.nvim",
-        branch = "0.2.x",
-        config = function()
-          require("telescope").load_extension("smart_open")
-        end,
-        dependencies = {
-          "kkharji/sqlite.lua",
-          -- Only required if using match_algorithm fzf
-          { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-          -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
-          { "nvim-telescope/telescope-fzy-native.nvim" },
-        },
-      },
     },
     cond = function()
       return not vim.g.vscode
@@ -225,7 +211,6 @@ return {
       local legendary = require("legendary")
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("recent_files")
-      -- require("telescope").load_extension("fzf")
       -- require("telescope").load_extension("commander")
       -- require("telescope").load_extension("related_files")
 
@@ -251,17 +236,6 @@ return {
       --   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
       --   { desc = "Select oldfiles" }
       -- )
-      legendary.keymaps({
-        {
-          "<Leader><Leader>",
-          -- extensions.recent_files.pick,
-          function()
-            require("telescope").extensions.smart_open.smart_open({ cwd_only = true })
-          end,
-          description = "Select from recent files",
-        },
-      })
-
       -- Map a shortcut to open the picker.
       set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
       set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
@@ -307,5 +281,25 @@ return {
 
       require("telescope").load_extension("telescope-alternate")
     end,
+  },
+  {
+    "danielfalk/smart-open.nvim",
+    config = function()
+      require("telescope").load_extension("smart_open")
+      local legendary = require("legendary")
+      legendary.keymaps({
+        {
+          "<Leader><Leader>",
+          function()
+            require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })
+          end,
+          description = "Select from recent files",
+        },
+      })
+    end,
+    dependencies = {
+      "kkharji/sqlite.lua",
+      "nvim-telescope/telescope-fzf-native.nvim",
+    },
   },
 }
