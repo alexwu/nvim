@@ -156,7 +156,7 @@ return {
     dependencies = { "nvim-treesitter" },
     config = function()
       require("ts-node-action").setup({})
-      vim.keymap.set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
+      set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
     end,
   },
   {

@@ -118,7 +118,7 @@ return {
         zindex = 41,
       })
 
-      vim.keymap.set("n", "[C", function()
+      set("n", "[C", function()
         require("treesitter-context").go_to_context()
       end, { silent = true })
     end,
