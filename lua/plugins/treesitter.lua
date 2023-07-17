@@ -178,5 +178,9 @@ return {
     config = function()
       require("bombeelu.syntax-tree-surfer").setup()
     end,
+    keys = {
+      { "gnh", "<cmd>STSSwapOrHold<cr>", desc = "Holds a node, or swaps the held node" },
+      { "gnh", "<cmd>STSSwapOrHoldVisual<cr>", desc = "Holds a node, or swaps the held node" },
+    },
   },
 }
