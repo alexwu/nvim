@@ -50,15 +50,39 @@ return {
     config = function()
       require("FTerm").setup({
         border = "rounded",
+        dimensions = {
+          height = 0.95,
+          width = 0.95,
+        },
       })
 
-      local commands = require("legendary").commands
+      require("legendary").command({
+        ":Term",
+        function(o)
+          local fargs = o.fargs
+          local cmd = fargs[1]
 
-      commands({
-        { ":TermOpen", require("FTerm").open, description = "Open terminal", opts = { bang = true } },
-        { ":TermClose", require("FTerm").close, description = "Close terminal", opts = { bang = true } },
-        { ":TermExit", require("FTerm").exit, description = "Exit terminal", opts = { bang = true } },
-        { ":TermToggle", require("FTerm").toggle, description = "Toggle terminal", opts = { bang = true } },
+          if vim.tbl_isempty(fargs) or cmd == "toggle" then
+            require("FTerm").toggle()
+          elseif cmd == "open" then
+            require("FTerm").open()
+          elseif cmd == "close" then
+            require("FTerm").close()
+          elseif cmd == "exit" then
+            require("FTerm").exit()
+          end
+        end,
+        description = "Open terminal",
+        opts = {
+          bang = true,
+          nargs = "*",
+          complete = function(arglead, cmdline, _cursorpos)
+            local leading = vim.trim(arglead)
+            if vim.trim(cmdline) == "Term" and leading == "" then
+              return { "toggle", "open", "close", "exit" }
+            end
+          end,
+        },
       })
 
       vim.api.nvim_create_user_command("YarnTest", function()

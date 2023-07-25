@@ -52,7 +52,7 @@ function M.setup(opts)
 
   require("ruby").setup({
     sorbet = {
-      enable = true,
+      enable = false,
       experimental = true,
       rubyfmt_path = vim.fs.normalize("/opt/homebrew/bin/rubyfmt"),
       on_attach = on_attach,
