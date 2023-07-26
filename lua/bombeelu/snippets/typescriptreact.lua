@@ -19,6 +19,14 @@ local fmta = require("luasnip.extras.fmt").fmta
 local types = require("luasnip.util.types")
 local conds = require("luasnip.extras.expand_conditions")
 
+---@param s string
+---@return string
+local file_prefix = function(str)
+  vim.validate({ str = { str, "string" } })
+
+  return vim.split(str, ".", { plain = true })[1]
+end
+
 -- Get a list of  the property names given an `interface_declaration`
 -- treesitter *tsx* node.
 -- Ie, if the treesitter node represents:
@@ -101,4 +109,28 @@ end
 --   ),
 -- }
 
-return {}
+return {
+  s(
+    "import ...",
+    fmt(
+      [[
+      import React from "react";
+
+      const {component} = ({params}:{typename}) => {{
+        return ({render});
+      }}
+
+      export default {component};
+      ]],
+      {
+        component = f(function(_, parent)
+          return file_prefix(parent.snippet.env.TM_FILENAME)
+        end),
+
+        params = i(1),
+        typename = i(2),
+        render = i(3),
+      }
+    )
+  ),
+}, {}
