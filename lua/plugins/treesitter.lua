@@ -1,14 +1,9 @@
-local ft_to_lang = require("nvim-treesitter.parsers").ft_to_lang
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
-    -- commit = "56c63529c052a179134842c56c6df5728cc375da",
-    -- tag = "v0.9.0",
     dependencies = {
-      -- "nvim-treesitter/nvim-treesitter-refactor",
       "RRethy/nvim-treesitter-textsubjects",
       "RRethy/nvim-treesitter-endwise",
       "JoosepAlviste/nvim-ts-context-commentstring",
@@ -23,11 +18,9 @@ return {
           enable = true,
           -- enable = not vim.g.vscode,
           -- additional_vim_regex_highlighting = { "ruby" },
-          -- disable = { "lua" },
         },
         indent = {
           enable = not vim.g.vscode,
-          -- disable = { "lua" }
         },
         incremental_selection = {
           enable = true,
@@ -175,12 +168,48 @@ return {
     "ziontee113/syntax-tree-surfer",
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("bombeelu.syntax-tree-surfer").setup()
-    end,
+    opts = {},
     keys = {
-      { "gnh", "<cmd>STSSwapOrHold<cr>", desc = "Holds a node, or swaps the held node" },
-      { "gnh", "<cmd>STSSwapOrHoldVisual<cr>", desc = "Holds a node, or swaps the held node" },
+      {
+        "vD",
+        function()
+          vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
+          return "g@l"
+        end,
+        desc = "Swap treesitter node with the node below",
+        silent = true,
+        expr = true,
+      },
+      {
+        "vU",
+        function()
+          vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
+          return "g@l"
+        end,
+        desc = "Swap treesitter node with the node above",
+        silent = true,
+        expr = true,
+      },
+      {
+        "vd",
+        function()
+          vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
+          return "g@l"
+        end,
+        silent = true,
+        expr = true,
+        desc = "Swap treesitter node with the next node",
+      },
+      {
+        "vu",
+        function()
+          vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
+          return "g@l"
+        end,
+        silent = true,
+        expr = true,
+        desc = "Swap treesitter node with the previous node",
+      },
     },
   },
 }
