@@ -218,7 +218,7 @@ return {
         enable_persistent_history = true,
       })
 
-      -- set("n", { "<Leader><Leader>" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
+      set("n", { "<Leader>j" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
       set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
       -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
