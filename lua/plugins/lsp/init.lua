@@ -121,9 +121,7 @@ return {
     },
     {
       "mrshmllow/document-color.nvim",
-      config = function()
-        require("document-color").setup({})
-      end,
+      config = true,
     },
     "camilledejoye/nvim-lsp-selection-range",
   },
@@ -168,43 +166,6 @@ return {
       update_in_insert = false,
     })
 
-    -- local null_ls_token = nil
-    -- local ltex_token = nil
-    --
-    -- vim.lsp.handlers["$/progress"] = function(_, result, ctx)
-    --   local value = result.value
-    --   if not value.kind then
-    --     return
-    --   end
-    --
-    --   local client_id = ctx.client_id
-    --   local name = vim.lsp.get_client_by_id(client_id).name
-    --
-    --   if name == "null-ls" then
-    --     if result.token == null_ls_token then
-    --       return
-    --     end
-    --     if value.title == "formatting" then
-    --       null_ls_token = result.token
-    --       return
-    --     end
-    --   end
-    --
-    --   if name == "ltex" then
-    --     if result.token == ltex_token then
-    --       return
-    --     end
-    --     if value.title == "Checking document" then
-    --       ltex_token = result.token
-    --       return
-    --     end
-    --   end
-    --
-    --   vim.notify(value.message, "info", {
-    --     title = value.title,
-    --   })
-    -- end
-    --
     require("mason").setup()
     require("mason-lspconfig").setup()
 
@@ -225,8 +186,6 @@ return {
       on_attach = on_attach,
       capabilities = capabilities,
     })
-
-    -- lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
 
     local function hover()
       local filetype = detect(vim.api.nvim_buf_get_name(0))
@@ -261,13 +220,9 @@ return {
     --   group = "LspDiagnosticsConfig",
     --   callback = smart_diagnostic_hover,
     -- })
-    --
-    -- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-    --   group = "LspDiagnosticsConfig",
-    --   callback = function()
-    --     require("nvim-lightbulb").update_lightbulb({ ignore = { "null-ls" } })
-    --   end,
-    -- })
+    -- set("n", "gd", function()
+    --   vim.lsp.tagfunc(vim.fn.expand("<cword>"), "c")
+    -- end, { silent = true, desc = "Go to definition" })
 
     set("n", "gy", function()
       vim.lsp.buf.type_definition()
@@ -329,20 +284,16 @@ return {
       },
     })
 
-    -- set({ "n", "x" }, { "<Leader>a", "<C-.>" }, function()
-    --   vim.lsp.buf.code_action()
-    -- end, { silent = true, desc = "Select a code action" })
-
     set("n", "K", hover, { silent = true })
     set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
-    vim.keymap.set({ "n", "i", "s" }, "<c-f>", function()
+    set({ "n", "i", "s" }, "<c-f>", function()
       if not require("noice.lsp").scroll(4) then
         return "<c-f>"
       end
     end, { silent = true, expr = true })
 
-    vim.keymap.set({ "n", "i", "s" }, "<c-b>", function()
+    set({ "n", "i", "s" }, "<c-b>", function()
       if not require("noice.lsp").scroll(-4) then
         return "<c-b>"
       end

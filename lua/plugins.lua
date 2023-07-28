@@ -1,4 +1,6 @@
-vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+if jit.os == "OSX" then
+  vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+end
 
 return {
   { "tpope/vim-repeat", lazy = false },
