@@ -79,6 +79,7 @@ return {
               includeInlayFunctionLikeReturnTypeHints = true,
               includeInlayEnumMemberValueHints = true,
               quotePreference = "double",
+              importModuleSpecifierPreference = "non-relative",
             },
             tsserver_format_options = {
               allowIncompleteCompletions = false,
@@ -124,6 +125,7 @@ return {
         require("document-color").setup({})
       end,
     },
+    "camilledejoye/nvim-lsp-selection-range",
   },
   init = function()
     vim.g.navic_silence = true
@@ -212,14 +214,18 @@ return {
     lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
     -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
-    -- lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
-    -- lsp.sorbet.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.ruby_ls.setup({
+      cmd = { "bundle", "exec", "ruby-lsp" },
+      on_attach = on_attach,
+      capabilities = capabilities,
+    })
+
     -- lsp.shopify_theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
 
     local function hover()

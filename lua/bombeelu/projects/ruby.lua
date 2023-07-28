@@ -2,11 +2,11 @@ local Job = require("plenary.job")
 -- NOTE: By default, this should probably use whatever is attached to the buffer
 local ruby = {}
 
-function root_pattern(...)
+local function root_pattern(...)
   return vim.fs.find({ ... }, { upward = true, stop = vim.loop.os_homedir() })
 end
 
-function check_gemfile(gem)
+local function check_gemfile(gem)
   local root = root_pattern("Gemfile")
   if not root then
     return false

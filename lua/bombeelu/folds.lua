@@ -33,16 +33,19 @@ function M.setup()
 
   set(
     "n",
-    "za",
+    "zz",
     rpt(function()
-      keys.feed({ "z", "a" })
+      keys.feed({
+        "z",
+        "a",
+      })
     end),
     { desc = "Toggle fold under cursor" }
   )
 
   set(
     "n",
-    "za",
+    "zA",
     rpt(function()
       keys.feed({ "z", "A" })
     end),

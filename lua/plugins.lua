@@ -21,6 +21,30 @@ return {
         },
       })
     end,
+    enabled = false,
+  },
+  {
+    "echasnovski/mini.surround",
+    keys = {
+      { "gza", desc = "Add surrounding", mode = { "n", "v" } },
+      { "gzd", desc = "Delete surrounding" },
+      { "gzf", desc = "Find right surrounding" },
+      { "gzF", desc = "Find left surrounding" },
+      { "gzh", desc = "Highlight surrounding" },
+      { "gzr", desc = "Replace surrounding" },
+      { "gzn", desc = "Update `MiniSurround.config.n_lines`" },
+    },
+    opts = {
+      mappings = {
+        add = "gza",
+        delete = "gzd",
+        find = "gzf",
+        find_left = "gzF",
+        highlight = "gzh",
+        replace = "gzr",
+        update_n_lines = "gzn",
+      },
+    },
   },
   {
     "Bekaboo/dropbar.nvim",
@@ -377,6 +401,28 @@ return {
             w.spawn(program, { cwd = vim.loop.cwd(), args = args })
           end,
           description = "Spawn a new wezterm process",
+          unfinished = true,
+          opts = {
+            nargs = "*",
+            complete = "shellcmd",
+          },
+        },
+        {
+          "WezSplit",
+          function(opts)
+            local fargs = vim.F.if_nil(vim.deepcopy(opts.fargs), { "" })
+            -- table.insert(fargs, 1, "wezterm")
+            -- local program = opts.fargs[1]
+
+            -- vim.print(program)
+
+            -- table.remove(fargs, 1)
+            -- local args = fargs
+            -- vim.print(args)
+
+            w.split_pane.vertical({ cwd = vim.loop.cwd(), program = fargs, percent = 25 })
+          end,
+          description = "Split a new wezterm process",
           unfinished = true,
           opts = {
             nargs = "*",
@@ -768,6 +814,14 @@ return {
 
       vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
       vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+    end,
+  },
+
+  {
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async" },
+    config = function()
+      require("bombeelu.folds").setup()
     end,
   },
 }

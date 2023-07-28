@@ -21,17 +21,22 @@ end
 
 local make_capabilities = function()
   local cap = require("cmp_nvim_lsp").default_capabilities()
+  local lsp_selection_range = require("lsp-selection-range")
+
+  cap = lsp_selection_range.update_capabilities(cap)
 
   cap.textDocument.foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true,
   }
 
-  cap.textDocument.selectionRange = {
+  -- cap.textDocument.selectionRange = {
+  --   dynamicRegistration = false,
+  -- }
+
+  cap.textDocument.colorProvider = {
     dynamicRegistration = false,
   }
-
-  cap.textDocument.colorProvider = { dynamicRegistration = false }
 
   return cap
 end

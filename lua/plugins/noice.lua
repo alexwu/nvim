@@ -4,7 +4,8 @@ return {
   config = function()
     require("noice").setup({
       popupmenu = {
-        enabled = false,
+        enabled = true,
+        backend = "cmp",
       },
       notify = {
         enabled = true,

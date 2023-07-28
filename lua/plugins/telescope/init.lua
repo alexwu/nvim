@@ -209,10 +209,9 @@ return {
 
       local extensions = require("telescope").extensions
       local legendary = require("legendary")
+
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("recent_files")
-      -- require("telescope").load_extension("commander")
-      -- require("telescope").load_extension("related_files")
 
       require("neoclip").setup({
         enable_persistent_history = true,
@@ -221,22 +220,14 @@ return {
       set("n", { "<Leader>j" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
       set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
-      -- set("n", { "<D-p>", "<C-S-P>" }, lazy(extensions.commander.commander), { desc = "Select command" })
-
       set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Find files" })
       set(
         "n",
         "<Leader>F",
-        lazy(builtin.find_files, { prompt_title = "Find Files", no_ignore = true }),
+        lazy(builtin.find_files, { prompt_title = "Find All Files", no_ignore = true }),
         { desc = "Find files (no_ignore)" }
       )
-      -- set(
-      --   "n",
-      --   "<Leader><Leader>",
-      --   lazy(builtin.oldfiles, { prompt_title = "Select from recent files" }),
-      --   { desc = "Select oldfiles" }
-      -- )
-      -- Map a shortcut to open the picker.
+
       set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
       set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
       set(

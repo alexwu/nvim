@@ -19,4 +19,11 @@ return {
     lazy = false,
     priority = 1001,
   },
+  {
+    "alexwu/bombeeutils",
+    -- lazy = false,
+    dev = true,
+    branch = "dev",
+    url = "git@github.com:alexwu/bombeeutils.git"
+  },
 }

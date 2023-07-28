@@ -831,4 +831,21 @@ function M.lsp_disable(server, cond)
   end)
 end
 
+function M.flatten(t)
+  local result = {}
+  local function _tbl_flatten(_t)
+    local n = #_t
+    for i = 1, n do
+      local v = _t[i]
+      if vim.tbl_islist(v) then
+        _tbl_flatten(v)
+      elseif v then
+        table.insert(result, v)
+      end
+    end
+  end
+  _tbl_flatten(t)
+  return result
+end
+
 return M
