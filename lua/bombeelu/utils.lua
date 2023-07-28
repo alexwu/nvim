@@ -1,5 +1,4 @@
 local if_nil = vim.F.if_nil
-local mk_repeatable = require("bombeelu.repeat").mk_repeatable
 local uv = vim.loop
 local fs = vim.fs
 
@@ -73,40 +72,6 @@ function M.keymap(mappings, callback, opts)
   end, mappings)
 
   legendary.keymaps(maps)
-end
-
-local function starts_with(str, start)
-  return str:sub(1, #start) == start
-end
-
-local function ends_with(str, ending)
-  return ending == "" or str:sub(-#ending) == ending
-end
-
-local function needs_command_wrapping(str)
-  if type(str) ~= "string" then
-    return false
-  end
-
-  return not starts_with(str, ":") and not starts_with(string, "<")
-end
-
-function M.nmap(lhs, rhs, opts, copts)
-  opts = if_nil(opts, {})
-  copts = if_nil(copts, {})
-
-  local should_repeat = if_nil(copts.should_repeat, false)
-
-  if type(rhs) == "function" then
-    if should_repeat then
-      rhs = mk_repeatable(M.lazy(rhs))
-    else
-      rhs = M.lazy(rhs)
-    end
-  elseif type(rhs) == "string" then
-  end
-
-  M.set("n", lhs, rhs, opts)
 end
 
 ---@param name string
@@ -461,16 +426,17 @@ M.path = (function()
   local path_separator = is_windows and ";" or ":"
 
   local function read_async(path, callback)
-    local err, fd = a.uv.fs_open(path, "r", 438)
+    local err, fd, stat, data
+    err, fd = a.uv.fs_open(path, "r", 438)
     assert(not err, err)
 
-    local err, stat = a.uv.fs_fstat(fd)
+    err, stat = a.uv.fs_fstat(fd)
     assert(not err, err)
 
-    local err, data = a.uv.fs_read(fd, stat.size, 0)
+    err, data = a.uv.fs_read(fd, stat.size, 0)
     assert(not err, err)
 
-    local err = a.uv.fs_close(fd)
+    err = a.uv.fs_close(fd)
     assert(not err, err)
 
     return callback(data)
@@ -655,8 +621,8 @@ function M.get_root()
       end
     end
   end
-  table.sort(roots, function(a, b)
-    return #a > #b
+  table.sort(roots, function(aa, b)
+    return #aa > #b
   end)
   ---@type string?
   local root = roots[1]
