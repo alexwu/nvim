@@ -27,5 +27,3 @@ if vim.g.vscode then
 elseif vim.g.neovide then
   require("neovide")
 end
-
-require("plugins")

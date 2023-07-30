@@ -177,7 +177,6 @@ return {
     -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.teal.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })

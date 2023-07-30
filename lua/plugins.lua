@@ -28,24 +28,25 @@ return {
   {
     "echasnovski/mini.surround",
     keys = {
-      { "gza", desc = "Add surrounding", mode = { "n", "v" } },
-      { "gzd", desc = "Delete surrounding" },
+      { "ys", desc = "Add surrounding", mode = { "n", "v" } },
+      { "ds", desc = "Delete surrounding" },
+      { "cs", desc = "Replace surrounding" },
       { "gzf", desc = "Find right surrounding" },
       { "gzF", desc = "Find left surrounding" },
       { "gzh", desc = "Highlight surrounding" },
-      { "gzr", desc = "Replace surrounding" },
       { "gzn", desc = "Update `MiniSurround.config.n_lines`" },
     },
     opts = {
       mappings = {
-        add = "gza",
-        delete = "gzd",
+        add = "ys",
+        delete = "ds",
         find = "gzf",
         find_left = "gzF",
         highlight = "gzh",
-        replace = "gzr",
+        replace = "cs",
         update_n_lines = "gzn",
       },
+      search_method = "cover_or_next",
     },
   },
   {
