@@ -21,7 +21,7 @@ local function bedazzle()
 end
 
 local function prettier()
-  local node_modules = find_node_modules(vim.uv.cwd())
+  local node_modules = find_node_modules(vim.loop.cwd())
   if not node_modules then
     return defaults.prettier()
   end

@@ -189,13 +189,13 @@ M.setup = function(opts)
           ) or vim.fs.normalize("~/.config/nvim/selene.toml")
         end,
       }),
-      require("plugins.lsp.null-ls.code_actions.selene").with({
-        cwd = function(_params)
-          return vim.fs.dirname(
-            vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
-          ) or vim.fs.normalize("~/.config/nvim/selene.toml") -- fallback value
-        end,
-      }),
+      -- require("plugins.lsp.null-ls.code_actions.selene").with({
+      --   cwd = function(_params)
+      --     return vim.fs.dirname(
+      --       vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
+      --     ) or vim.fs.normalize("~/.config/nvim/selene.toml") -- fallback value
+      --   end,
+      -- }),
       null_ls.builtins.diagnostics.luacheck.with({
         condition = function(utils)
           return utils.root_has_file({ ".luacheckrc" })

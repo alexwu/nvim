@@ -21,9 +21,8 @@ return {
   },
   {
     "alexwu/bombeeutils",
-    -- lazy = false,
     dev = true,
     branch = "dev",
-    url = "git@github.com:alexwu/bombeeutils.git"
+    url = "git@github.com:alexwu/bombeeutils.git",
   },
 }

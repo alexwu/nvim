@@ -1,4 +1,8 @@
-vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+local api = vim.api
+
+if jit.os == "OSX" then
+  vim.fn.setenv("MACOSX_DEPLOYMENT_TARGET", "10.15")
+end
 
 return {
   { "tpope/vim-repeat", lazy = false },
@@ -28,10 +32,10 @@ return {
     keys = {
       { "ys", desc = "Add surrounding", mode = { "n", "v" } },
       { "ds", desc = "Delete surrounding" },
+      { "cs", desc = "Replace surrounding" },
       { "gzf", desc = "Find right surrounding" },
       { "gzF", desc = "Find left surrounding" },
       { "gzh", desc = "Highlight surrounding" },
-      { "cs", desc = "Replace surrounding" },
       { "gzn", desc = "Update `MiniSurround.config.n_lines`" },
     },
     opts = {
@@ -44,6 +48,7 @@ return {
         replace = "cs",
         update_n_lines = "gzn",
       },
+      search_method = "cover_or_next",
     },
   },
   {

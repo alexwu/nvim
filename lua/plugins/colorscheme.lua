@@ -163,7 +163,7 @@ return {
         exclude_groups = {},
       })
     end,
-    enabled = true,
+    enabled = false,
   },
   {
     "navarasu/onedark.nvim",
