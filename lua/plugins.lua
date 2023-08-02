@@ -26,22 +26,22 @@ return {
   {
     "echasnovski/mini.surround",
     keys = {
-      { "gza", desc = "Add surrounding", mode = { "n", "v" } },
-      { "gzd", desc = "Delete surrounding" },
+      { "ys", desc = "Add surrounding", mode = { "n", "v" } },
+      { "ds", desc = "Delete surrounding" },
       { "gzf", desc = "Find right surrounding" },
       { "gzF", desc = "Find left surrounding" },
       { "gzh", desc = "Highlight surrounding" },
-      { "gzr", desc = "Replace surrounding" },
+      { "cs", desc = "Replace surrounding" },
       { "gzn", desc = "Update `MiniSurround.config.n_lines`" },
     },
     opts = {
       mappings = {
-        add = "gza",
-        delete = "gzd",
+        add = "ys",
+        delete = "ds",
         find = "gzf",
         find_left = "gzF",
         highlight = "gzh",
-        replace = "gzr",
+        replace = "cs",
         update_n_lines = "gzn",
       },
     },
@@ -744,22 +744,29 @@ return {
     config = function()
       require("other-nvim").setup({
         mappings = {
-          -- builtin mappings
-          "livewire",
-          "angular",
-          "laravel",
           "rails",
           "golang",
-          -- custom mapping
           {
-            pattern = "app/javascript/(.*)/.*.ts$",
-            target = "app/javascript/(.*)/.*.test.ts$",
-            -- transformer = "lowercase",
+            pattern = "/app/javascript/(.*)/(.*).ts$",
+            target = "/app/javascript/%1/%2.test.ts",
+            context = "source",
+          },
+          {
+            pattern = "/app/javascript/(.*)/(.*).test.ts$",
+            target = "/app/javascript/%1/%2.ts",
+            context = "test",
+            transformer = "strip_test",
           },
         },
+        showMissingFiles = true,
         transformers = {
           lowercase = function(inputString)
             return inputString:lower()
+          end,
+          strip_test = function(inputString)
+            local bu = require("bombeeutils.strings")
+
+            return bu.strip_suffix(inputString, ".test")
           end,
         },
         style = {
@@ -769,6 +776,37 @@ return {
           minHeight = 2,
         },
       })
+
+      api.nvim_create_user_command("O", function(opts)
+        local fargs = opts.fargs
+        if vim.tbl_isempty(fargs) then
+          fargs = nil
+        end
+
+        require("other-nvim").open(fargs)
+      end, { nargs = "*" })
+
+      api.nvim_create_user_command("OSplit", function(opts)
+        local fargs = opts.fargs
+        if vim.tbl_isempty(fargs) then
+          fargs = nil
+        end
+        require("other-nvim").openSplit(fargs)
+      end, { nargs = "*" })
+      api.nvim_create_user_command("OVSplit", function(opts)
+        local fargs = opts.fargs
+        if vim.tbl_isempty(fargs) then
+          fargs = nil
+        end
+        require("other-nvim").openVSplit(fargs)
+      end, { nargs = "*" })
+      api.nvim_create_user_command("OClear", function(opts)
+        local fargs = opts.fargs
+        if vim.tbl_isempty(fargs) then
+          fargs = nil
+        end
+        require("other-nvim").clear(fargs)
+      end, { nargs = "*" })
     end,
   },
   {
