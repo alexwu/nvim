@@ -166,6 +166,28 @@ return {
       update_in_insert = false,
     })
 
+    vim.lsp.handlers["textDocument/diagnostic"] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
+      underline = false,
+      virtual_text = {
+        spacing = 4,
+      },
+      signs = function(namespace, bufnr)
+        return vim.b[bufnr].show_signs == true
+      end,
+      update_in_insert = false,
+    })
+
+    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+      underline = true,
+      virtual_text = {
+        spacing = 4,
+      },
+      signs = function(namespace, bufnr)
+        return vim.b[bufnr].show_signs == true
+      end,
+      update_in_insert = false,
+    })
+
     require("mason").setup()
     require("mason-lspconfig").setup()
 

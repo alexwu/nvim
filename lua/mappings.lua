@@ -39,7 +39,7 @@ set("n", "Q", lazy(vim.cmd.quit))
 
 set(
   "n",
-  { "<A-o>", "]<Space>" },
+  { "<A-o>" },
   repeatable(function()
     keys.feed({ "o", "<ESC>" })
   end),
@@ -48,7 +48,7 @@ set(
 
 set(
   "n",
-  { "<A-O>", "[<Space>" },
+  { "<A-O>" },
   repeatable(function()
     keys.feed({ "O", "<ESC>" })
   end),

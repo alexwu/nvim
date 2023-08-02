@@ -3,6 +3,7 @@ return {
   dependencies = { "kkharji/sqlite.lua" },
   config = function()
     require("bombeelu.legendary").setup()
+    require("bombeelu.scratch").setup()
   end,
   -- config = true,
   -- opts = {

@@ -15,19 +15,6 @@ return {
   },
   { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
-    "kylechui/nvim-surround",
-    event = "VeryLazy",
-    config = function()
-      require("nvim-surround").setup({
-        keymaps = {
-          visual = "Z",
-          visual_line = "gZ",
-        },
-      })
-    end,
-    enabled = false,
-  },
-  {
     "echasnovski/mini.surround",
     keys = {
       { "ys", desc = "Add surrounding", mode = { "n", "v" } },
@@ -139,21 +126,21 @@ return {
     end,
     keys = {
       {
-        "<leader>tt",
+        "<leader>tf",
         function()
           require("neotest").run.run(vim.fn.expand("%"))
         end,
         desc = "Run File",
       },
       {
-        "<leader>tT",
+        "<leader>ta",
         function()
           require("neotest").run.run(vim.loop.cwd())
         end,
         desc = "Run All Test Files",
       },
       {
-        "<leader>tr",
+        "<leader>tn",
         function()
           require("neotest").run.run()
         end,
@@ -516,7 +503,10 @@ return {
     "echasnovski/mini.nvim",
     version = false,
     config = function()
-      require("mini.bracketed").setup()
+      require("mini.bracketed").setup({
+        diagnostic = { suffix = "d", options = { float = { border = "rounded" } } },
+        treesitter = { suffix = "" },
+      })
       require("mini.splitjoin").setup()
       require("mini.colors").setup()
       -- require("mini.base16").setup({
@@ -696,6 +686,10 @@ return {
   },
   {
     "goolord/alpha-nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "danielfalk/smart-open.nvim",
+    },
     event = "VimEnter",
     opts = function() end,
     config = function()
@@ -705,7 +699,7 @@ return {
         dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
         dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dash.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-        dash.button("g", " " .. " Find text", ":Telescope live_grep <CR>"),
+        dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
         -- dash.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
         -- dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
         dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
@@ -922,14 +916,6 @@ return {
 --       "andrewferrier/debugprint.nvim",
 --       config = function()
 --         require("debugprint").setup()
---       end,
---       disable = true,
---     })
---
---     use({
---       "IndianBoy42/tree-sitter-just",
---       config = function()
---         require("tree-sitter-just").setup()
 --       end,
 --       disable = true,
 --     })
