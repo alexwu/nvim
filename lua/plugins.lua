@@ -741,31 +741,32 @@ return {
     "rgroli/other.nvim",
     event = "VeryLazy",
     config = function()
-      require("other-nvim").setup({
-        mappings = {
-          "rails",
-          "golang",
-          {
-            pattern = "/app/javascript/(.*)/(.*).ts$",
-            target = "/app/javascript/%1/%2.test.ts",
-            context = "source",
-          },
-          {
-            pattern = "/app/javascript/(.*)/(.*).test.ts$",
-            target = "/app/javascript/%1/%2.ts",
-            context = "test",
-            transformer = "strip_test",
-          },
+      local bu = require("bombeeutils")
+      local mappings = bu.F.flatten({
+        "golang",
+        require("bombeelu.other.rails"),
+        {
+          pattern = "/app/javascript/(.*)/(.*).ts$",
+          target = "/app/javascript/%1/%2.test.ts",
+          context = "source",
         },
+        {
+          pattern = "/app/javascript/(.*)/(.*).test.ts$",
+          target = "/app/javascript/%1/%2.ts",
+          context = "test",
+          transformer = "strip_test",
+        },
+      })
+
+      require("other-nvim").setup({
+        mappings = mappings,
         showMissingFiles = true,
         transformers = {
           lowercase = function(inputString)
             return inputString:lower()
           end,
           strip_test = function(inputString)
-            local bu = require("bombeeutils.strings")
-
-            return bu.strip_suffix(inputString, ".test")
+            return bu.strings.strip_suffix(inputString, ".test")
           end,
         },
         style = {
@@ -860,6 +861,11 @@ return {
     config = function()
       require("bombeelu.folds").setup()
     end,
+  },
+
+  {
+    "lewis6991/fileline.nvim",
+    lazy = false,
   },
 }
 

@@ -10,8 +10,8 @@ function M.setup()
   vim.o.foldlevelstart = 99
   vim.o.foldenable = true
 
-  vim.keymap.set("n", "zR", ufo.openAllFolds)
-  vim.keymap.set("n", "zM", ufo.closeAllFolds)
+  set("n", "zR", ufo.openAllFolds, { desc = "Open all folds" })
+  set("n", "zM", ufo.closeAllFolds, { desc = "Close all folds" })
 
   set(
     "n",
