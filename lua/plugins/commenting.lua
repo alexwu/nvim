@@ -9,4 +9,12 @@ return {
       end,
     },
   },
+  config = function(_, opts)
+    require("mini.comment").setup(opts)
+    require("which-key").register({
+      c = {
+        name = "+comment",
+      },
+    }, { prefix = "g" })
+  end,
 }
