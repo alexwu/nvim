@@ -16,6 +16,7 @@ return {
   { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
     "echasnovski/mini.surround",
+    event = "VeryLazy",
     keys = {
       { "ys", desc = "Add surrounding", mode = { "n", "v" } },
       { "ds", desc = "Delete surrounding" },
@@ -70,6 +71,7 @@ return {
           height = 0.95,
           width = 0.95,
         },
+        auto_close = false,
       })
 
       require("legendary").command({
@@ -118,6 +120,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "haydenmeade/neotest-jest",
+      "rouge8/neotest-rust",
       "olimorris/neotest-rspec",
       "antoinemadec/FixCursorHold.nvim",
     },
@@ -141,6 +144,13 @@ return {
       },
       {
         "<leader>tn",
+        function()
+          require("neotest").run.run()
+        end,
+        desc = "Run Nearest",
+      },
+      {
+        "<leader>tt",
         function()
           require("neotest").run.run()
         end,
@@ -215,6 +225,12 @@ return {
     event = { "BufRead package.json" },
     dependencies = "MunifTanjim/nui.nvim",
     config = true,
+    opts = {
+      colors = {
+        up_to_date = "#57c7ff",
+        outdated = "#FF9F43",
+      },
+    },
   },
   {
     "stevearc/dressing.nvim",
@@ -242,9 +258,59 @@ return {
         align = "center",
       },
       window = {
-        border = "single",
+        border = "rounded",
       },
     },
+  },
+  {
+    "echasnovski/mini.clue",
+    enabled = false,
+    version = false,
+    lazy = false,
+    config = function()
+      local miniclue = require("mini.clue")
+      miniclue.setup({
+        triggers = {
+          -- Leader triggers
+          { mode = "n", keys = "<Leader>" },
+          { mode = "x", keys = "<Leader>" },
+
+          -- `g` key
+          { mode = "n", keys = "g" },
+          { mode = "x", keys = "g" },
+
+          -- Marks
+          { mode = "n", keys = "'" },
+          { mode = "n", keys = "`" },
+          { mode = "x", keys = "'" },
+          { mode = "x", keys = "`" },
+
+          -- Registers
+          { mode = "n", keys = '"' },
+          { mode = "x", keys = '"' },
+          { mode = "i", keys = "<C-r>" },
+          { mode = "c", keys = "<C-r>" },
+
+          -- Window commands
+          { mode = "n", keys = "<C-w>" },
+
+          -- `z` key
+          { mode = "n", keys = "z" },
+          { mode = "x", keys = "z" },
+        },
+        window = {
+          config = {},
+          delay = 200,
+        },
+        clues = {
+          miniclue.gen_clues.g(),
+          miniclue.gen_clues.marks(),
+          miniclue.gen_clues.registers(),
+          miniclue.gen_clues.windows(),
+          miniclue.gen_clues.z(),
+        },
+      })
+    end,
   },
   {
     "folke/edgy.nvim",
@@ -277,7 +343,7 @@ return {
         },
       },
       bottom = {
-        "Trouble",
+        -- "Trouble",
         { ft = "qf", title = "QuickFix" },
       },
     },
@@ -433,6 +499,7 @@ return {
   },
   {
     "kevinhwang91/nvim-bqf",
+    enabled = false,
     event = "VeryLazy",
     config = function()
       require("bqf").setup({
@@ -459,6 +526,7 @@ return {
   },
   {
     "RRethy/vim-illuminate",
+    enabled = false,
     event = "VeryLazy",
     config = function()
       require("illuminate").configure({
@@ -822,6 +890,7 @@ return {
     end,
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
+    enabled = false,
   },
   {
     "TobinPalmer/rayso.nvim",
@@ -861,6 +930,7 @@ return {
     config = function()
       require("bombeelu.folds").setup()
     end,
+    event = "VeryLazy",
   },
 
   {
@@ -869,14 +939,6 @@ return {
   },
 }
 
---     use({
---       "andrewferrier/textobj-diagnostic.nvim",
---       config = function()
---         if not vim.g.vscode then
---           require("textobj-diagnostic").setup()
---         end
---       end,
---     })
 --
 --       use({
 --         "nanotee/sqls.nvim",

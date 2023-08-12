@@ -5,7 +5,7 @@ function M.feed(keys)
   local result
 
   if type(keys) == "table" then
-    for i, val in ipairs(keys) do
+    for _, val in ipairs(keys) do
       if string.len(val) > 1 then
         table.insert(escaped_keys, nvim.replace_termcodes(val, true, false, true))
       else

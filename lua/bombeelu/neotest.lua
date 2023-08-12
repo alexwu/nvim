@@ -1,9 +1,9 @@
-local Palette = require("bombeelu.mini-palette")
-local neotest = require("neotest")
-
 local M = {}
 
 function M.setup()
+  local Palette = require("bombeelu.mini-palette")
+  local neotest = require("neotest")
+
   neotest.setup({
     adapters = {
       -- require("neotest-rspec"),
@@ -17,6 +17,10 @@ function M.setup()
           })
         end,
       },
+      require("neotest-rust")({
+        args = { "--no-capture" },
+        dap_adapter = "lldb",
+      }),
       require("neotest-jest")({
         jestCommand = "yarn test",
         jestConfigFile = "jest.config.js",

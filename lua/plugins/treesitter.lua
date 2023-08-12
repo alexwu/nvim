@@ -66,7 +66,27 @@ return {
         maintainers = { "@IndianBoy42" },
       }
 
+      require("nvim-treesitter.parsers").get_parser_configs().nu = {
+        install_info = {
+          url = "https://github.com/nushell/tree-sitter-nu",
+          files = { "src/parser.c" },
+          branch = "main",
+        },
+        filetype = "nu",
+      }
+
+      -- NOTE: nu hightlights install snippet
+      --  let remote = "https://raw.githubusercontent.com/nushell/tree-sitter-nu/main/queries/"
+      -- let local = (
+      --     $env.XDG_DATA_HOME?
+      --     | default ($env.HOME | path join ".local" "share")
+      --     | path join "nvim" "lazy" "nvim-treesitter" "queries" "nu"
+      -- let file = "highlights.scm"
+      -- mkdir $local
+      -- http get ([$remote $file] | str join "/") | save --force ($local | path join $file)
+
       -- require("bombeelu.treesitter").init()
+      require("bombeelu.i18n-parser").setup()
     end,
   },
   {

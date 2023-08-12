@@ -1,8 +1,9 @@
 local utils = require("bombeelu.utils")
-local keys = require("bombeelu.keys")
+local bu = require("bombeeutils")
+local keys = bu.keys
 local ex = utils.ex
 local lazy = utils.lazy
-local repeatable = require("bombeelu.repeat").mk_repeatable
+local repeatable = bu.nvim.repeatable
 
 vim.g.mapleader = " "
 
@@ -28,8 +29,6 @@ set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })
 set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
 
-set({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-
 set("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open Location List" })
 set("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open Quickfix List" })
 
@@ -41,7 +40,7 @@ set(
   "n",
   { "<A-o>" },
   repeatable(function()
-    keys.feed({ "o", "<ESC>" })
+    keys.o({ esc = true })
   end),
   { desc = "Add a new line below the current line" }
 )
@@ -50,27 +49,9 @@ set(
   "n",
   { "<A-O>" },
   repeatable(function()
-    keys.feed({ "O", "<ESC>" })
+    keys.O({ esc = true })
   end),
   { desc = "Add a new line above the current line" }
-)
-
-set(
-  "n",
-  "[z",
-  repeatable(function()
-    keys.feed({ "[", "z" })
-  end),
-  { desc = "Move to the start of the current open fold" }
-)
-
-set(
-  "n",
-  "]z",
-  repeatable(function()
-    keys.feed({ "]", "z" })
-  end),
-  { desc = "Move to the end of the current open fold" }
 )
 
 local function scroll_half_page(dir, opts)

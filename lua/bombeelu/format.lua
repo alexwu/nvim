@@ -9,12 +9,23 @@ local function filename()
   return util.escape_path(util.get_current_buffer_file_path())
 end
 
-local function bedazzle()
+-- local function bedazzle()
+--   return {
+--     -- exe = vim.fs.normalize("bedazzle"),
+--     -- exe = vim.fs.normalize("~/Code/personal/bedazzle/target/release/bedazzle-cli"),
+--     exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle"),
+--     name = "Bedazzle",
+--     args = { "--stdin" },
+--     stdin = true,
+--   }
+-- end
+--
+local function rub()
   return {
     -- exe = vim.fs.normalize("bedazzle"),
     -- exe = vim.fs.normalize("~/Code/personal/bedazzle/target/release/bedazzle-cli"),
-    exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle"),
-    name = "Bedazzle",
+    exe = "rub",
+    name = "Rub",
     args = { "--stdin" },
     stdin = true,
   }
@@ -87,8 +98,8 @@ end
 require("formatter").setup({
   logging = false,
   filetype = {
-    typescript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
-    typescriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
+    typescript = { prettier },
+    typescriptreact = { prettier },
     javascript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     go = { require("formatter.filetypes.go").gofmt },
@@ -98,7 +109,7 @@ require("formatter").setup({
     jsonc = { dprint, prettier },
     html = { prettier },
     css = { prettier },
-    ruby = { rubyfmt, rufo, prettier, bedazzle },
+    ruby = { rubyfmt, rufo, prettier, rub },
     rust = {
       require("formatter.filetypes.rust").rustfmt,
     },

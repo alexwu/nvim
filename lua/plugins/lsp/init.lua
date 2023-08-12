@@ -135,7 +135,7 @@ return {
     local lazy = require("bombeelu.utils").lazy
     local lsp = require("bombeelu.lsp")
     local on_attach = require("plugins.lsp.defaults").on_attach
-    local rpt = require("bombeelu.repeat").mk_repeatable
+    local rpt = require("bombeeutils").nvim.repeatable
     local set = require("bombeelu.utils").set
 
     local augroup = nvim.create_augroup
@@ -167,24 +167,34 @@ return {
     })
 
     vim.lsp.handlers["textDocument/diagnostic"] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
-      underline = false,
       virtual_text = {
         spacing = 4,
+        severity = "error",
       },
-      signs = function(namespace, bufnr)
-        return vim.b[bufnr].show_signs == true
-      end,
+      underline = {
+        severity = "error",
+      },
+      float = {
+        show_header = false,
+        source = "always",
+      },
+      signs = true,
       update_in_insert = false,
     })
 
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      underline = true,
       virtual_text = {
         spacing = 4,
+        severity = "error",
       },
-      signs = function(namespace, bufnr)
-        return vim.b[bufnr].show_signs == true
-      end,
+      underline = {
+        severity = "error",
+      },
+      float = {
+        show_header = false,
+        source = "always",
+      },
+      signs = true,
       update_in_insert = false,
     })
 
@@ -208,6 +218,16 @@ return {
       capabilities = capabilities,
     })
 
+    -- local configs = require("lspconfig.configs")
+    -- configs.ast_grep = {
+    --   default_config = {
+    --     cmd = { "sg", "lsp" },
+    --     filetypes = { "typescript" },
+    --     single_file_support = true,
+    --     root_dir = nvim_lsp.util.root_pattern(".git", "sgconfig.yml"),
+    --   },
+    -- }
+
     local function hover()
       local filetype = detect(vim.api.nvim_buf_get_name(0))
       if vim.tbl_contains({ "vim", "help" }, filetype) then
@@ -222,20 +242,6 @@ return {
     end
 
     vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
-
-    local function smart_diagnostic_hover()
-      if vim.diagnostic.config().virtual_lines then
-        return
-      end
-
-      vim.diagnostic.open_float(nil, {
-        scope = "cursor",
-        show_header = false,
-        source = "always",
-        focusable = false,
-        border = "rounded",
-      })
-    end
 
     -- vim.api.nvim_create_autocmd("CursorHold", {
     --   group = "LspDiagnosticsConfig",

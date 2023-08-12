@@ -14,16 +14,32 @@ vim.opt.runtimepath:prepend(lazypath)
 vim.g.mapleader = " "
 require("options")
 
-require("lazy").setup("plugins", {
-  dev = {
-    path = "~/Code/neovim/plugins",
-    patterns = { "alexwu" },
-    fallback = true,
-  },
-})
-
 if vim.g.vscode then
-  require("bombeelu.vscode.mappings")
-elseif vim.g.neovide then
+  require("lazy").setup("vscode", {
+    dev = {
+      path = "~/Code/neovim/plugins",
+      patterns = { "alexwu" },
+      fallback = true,
+    },
+  })
+else
+  -- If opening from inside neovim terminal then do not load all the other plugins
+  if os.getenv("NVIM") ~= nil then
+    require("lazy").setup({
+      { "willothy/flatten.nvim", config = true },
+    })
+    return
+  else
+    require("lazy").setup("plugins", {
+      dev = {
+        path = "~/Code/neovim/plugins",
+        patterns = { "alexwu" },
+        fallback = true,
+      },
+    })
+  end
+end
+
+if vim.g.neovide then
   require("neovide")
 end

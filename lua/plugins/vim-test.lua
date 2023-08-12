@@ -18,6 +18,10 @@ return {
       require("FTerm").scratch({
         border = "rounded",
         cmd = cmd,
+        dimensions = {
+          height = 0.95,
+          width = 0.95,
+        },
       })
     end
 

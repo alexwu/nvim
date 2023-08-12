@@ -1,6 +1,5 @@
 -- https://github.com/willothy/wezterm.nvim/blob/main/lua/wezterm.lua
 
-local uv = vim.loop
 local fmt = string.format
 local legendary = require("legendary")
 
@@ -26,13 +25,15 @@ local wezterm = {
   split_pane = {},
 }
 
-local wezterm_executable = ""
+local wezterm_executable = "wezterm"
 
 ---@param args string[]
 ---@param handler fun(exit_code, signal)
 ---Exec an arbitrary command in wezterm (does not return result)
 function wezterm.exec(args, handler)
-  uv.spawn(wezterm_executable, { args = args }, handler)
+  local cmd = vim.tbl_flatten({ wezterm_executable, args })
+  -- vim.print(cmd)
+  return vim.system(cmd, { text = true }, handler):wait()
 end
 
 ---@param opts SplitOpts
@@ -43,7 +44,7 @@ end
 ---@field percent? number|nil The percentage of the pane to split (default nil)
 ---@field program string[]|nil The program to spawn in the new pane (default nil/Wezterm default)
 ---@field top_level boolean Split the window instead of the pane (default false)
-function wezterm.split_pane.vertical(opts)
+function wezterm.split_pane.vertical(opts, on_exit)
   opts = opts or {}
   local args = { "cli", "split-pane" }
   if opts.top then
@@ -70,10 +71,27 @@ function wezterm.split_pane.vertical(opts)
       table.insert(args, arg)
     end
   end
-  wezterm.exec(args, function(code)
-    if code ~= 0 then
+
+  -- local actual_cmd = vim.deepcopy(args)
+  -- table.insert(args, "zsh")
+  --
+  -- local pane_id = ""
+  --
+  -- local create_split_cmd = vim.tbl_flatten({ "wezterm", args })
+  -- vim.print(create_split_cmd)
+  -- vim
+  --   .system(create_split_cmd, { text = true }, function(obj)
+  --     pane_id = vim.split(obj.stdout, "\n")[1]
+  --   end)
+  --   :wait()
+
+  -- wezterm.exec({ "cli", "spawn", "--pane-id", pane_id, opts.program }, function(obj)
+  wezterm.exec(args, function(obj)
+    if obj.code ~= 0 then
       err("split pane")
     end
+
+    on_exit(obj)
   end)
 end
 
@@ -85,7 +103,7 @@ end
 ---@field percent? number|nil The percentage of the pane to split (default nil)
 ---@field program string[]|nil The program to spawn in the new pane (default nil/Wezterm default)
 ---@field top_level boolean Split the window instead of the pane (default false)
-function wezterm.split_pane.horizontal(opts)
+function wezterm.split_pane.horizontal(opts, on_exit)
   opts = opts or {}
   local args = { "cli", "split-pane" }
   if opts.left then
@@ -114,10 +132,12 @@ function wezterm.split_pane.horizontal(opts)
       table.insert(args, arg)
     end
   end
-  wezterm.exec(args, function(code)
-    if code ~= 0 then
+  wezterm.exec(args, function(obj)
+    if obj.code ~= 0 then
       err("split pane")
     end
+
+    on_exit(obj)
   end)
 end
 
@@ -301,9 +321,9 @@ function wezterm.setup(opts)
 
   wezterm_executable = find_wezterm()
 
-  if opts.create_commands == true then
-    wezterm.create_commands()
-  end
+  -- if opts.create_commands == false then
+  --   wezterm.create_commands()
+  -- end
 end
 
 return wezterm

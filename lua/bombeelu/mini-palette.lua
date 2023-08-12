@@ -1,7 +1,8 @@
 local Menu = require("nui.menu")
 local event = require("nui.utils.autocmd").event
+local bu = require("bombeeutils")
 local Class = require("plenary.class")
-local mk_repeatable = require("bombeelu.repeat").mk_repeatable
+local mk_repeatable = bu.nvim.repeatable
 local Renderer = require("bombeelu.mini-palette.renderer")
 
 ---@type Palette

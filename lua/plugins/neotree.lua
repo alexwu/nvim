@@ -18,6 +18,50 @@ if false then
   }
 end
 
+if false then
+  return {
+    {
+      "echasnovski/mini.files",
+      version = false,
+      -- config = function(_, opts)
+      --   local MiniFiles = require("mini.files")
+      --
+      --   MiniFiles.setup(opts)
+      --
+      --   local minifiles_toggle = function(...)
+      --     if not MiniFiles.close() then
+      --       MiniFiles.open(...)
+      --     end
+      --   end
+      -- end,
+      config = true,
+      opts = {
+
+        mappings = {
+          close = "q",
+          go_in = "l",
+          go_in_plus = "<CR>",
+          go_out = "h",
+          go_out_plus = "H",
+          reset = "<BS>",
+          reveal_cwd = "@",
+          show_help = "g?",
+          synchronize = "=",
+          trim_left = "<",
+          trim_right = ">",
+        },
+      },
+      keys = {
+        {
+          "-",
+          require("mini.files").open,
+          desc = "Open file explorer",
+        },
+      },
+    },
+  }
+end
+
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "main",
@@ -167,6 +211,7 @@ return {
           ["?"] = "show_help",
           ["<"] = "prev_source",
           [">"] = "next_source",
+          ["w"] = "noop",
         },
       },
       nesting_rules = {},
@@ -242,7 +287,6 @@ return {
 
     -- vim.cmd([[nnoremap <leader>n :NeoTreeFloatToggle <cr>]])
     -- vim.cmd([[nnoremap - <cmd>Neotree current dir=%:p:h<cr>]])
-
 
     -- key.map("-", function()
     --   vim.cmd.Neotree("current", "dir=%:p:h")

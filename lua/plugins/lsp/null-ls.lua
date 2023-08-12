@@ -175,7 +175,7 @@ M.setup = function(opts)
       null_ls.builtins.formatting.clang_format,
       null_ls.builtins.formatting.just,
       null_ls.builtins.formatting.dprint.with({
-        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "toml", "json" },
+        filetypes = { "toml" },
       }),
       null_ls.builtins.formatting.prettier.with({
         prefer_local = "node_modules/.bin",
