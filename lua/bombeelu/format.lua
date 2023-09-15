@@ -173,32 +173,32 @@ local function upper_first(str)
   return (str:gsub("^%l", string.upper))
 end
 
-local commands = require("legendary").commands
-
-nvim.create_augroup("bombeelu.format", { clear = true })
-vim.api.nvim_create_autocmd("BufEnter", {
-  group = "bombeelu.format",
-  callback = function(o)
-    local bufnr = o.buf
-    local config = require("formatter.config")
-    local formatters = config.formatters_for_filetype(detect(nvim.buf_get_name(bufnr)))
-    for _, formatter_function in ipairs(formatters) do
-      local formatter = formatter_function()
-      if formatter ~= nil then
-        local exe = formatter.exe
-        local name = vim.F.if_nil(formatter.name, formatter.exe)
-        commands({
-          {
-            string.format("%s", upper_first(name)),
-            function(opts)
-              require("formatter.format").format(exe, opts.mods, opts.line1, opts.line2)
-            end,
-            description = string.format("Format file with %s", upper_first(name)),
-            -- unfinished = true,
-            opts = { bang = true, buffer = bufnr },
-          },
-        })
-      end
-    end
-  end,
-})
+-- local commands = require("legendary").commands
+--
+-- nvim.create_augroup("bombeelu.format", { clear = true })
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   group = "bombeelu.format",
+--   callback = function(o)
+--     local bufnr = o.buf
+--     local config = require("formatter.config")
+--     local formatters = config.formatters_for_filetype(detect(nvim.buf_get_name(bufnr)))
+--     for _, formatter_function in ipairs(formatters) do
+--       local formatter = formatter_function()
+--       if formatter ~= nil then
+--         local exe = formatter.exe
+--         local name = vim.F.if_nil(formatter.name, formatter.exe)
+--         commands({
+--           {
+--             string.format("%s", upper_first(name)),
+--             function(opts)
+--               require("formatter.format").format(exe, opts.mods, opts.line1, opts.line2)
+--             end,
+--             description = string.format("Format file with %s", upper_first(name)),
+--             -- unfinished = true,
+--             opts = { bang = true, buffer = bufnr },
+--           },
+--         })
+--       end
+--     end
+--   end,
+-- })

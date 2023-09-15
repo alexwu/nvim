@@ -56,6 +56,7 @@ return {
   },
   {
     "mhartington/formatter.nvim",
+    enabled = false,
     event = "VeryLazy",
     config = function()
       require("bombeelu.format")
