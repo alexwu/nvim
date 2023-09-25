@@ -414,7 +414,7 @@ return {
   },
   {
     "ray-x/go.nvim",
-    event = "VeryLazy",
+    event = { "VeryLazy" },
     dependencies = { "ray-x/guihua.lua" },
     ft = "go",
     config = function()
@@ -937,6 +937,10 @@ return {
   {
     "lewis6991/fileline.nvim",
     lazy = false,
+  },
+  {
+    "stevearc/overseer.nvim",
+    opts = {},
   },
 }
 
