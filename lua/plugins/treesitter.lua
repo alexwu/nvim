@@ -9,7 +9,6 @@ return {
       "JoosepAlviste/nvim-ts-context-commentstring",
       "windwp/nvim-autopairs",
       "windwp/nvim-ts-autotag",
-      "nvim-treesitter/playground",
       "andymass/vim-matchup",
     },
     config = function()
@@ -37,12 +36,6 @@ return {
         endwise = {
           enable = true,
         },
-        playground = {
-          enable = true,
-          disable = {},
-          updatetime = 25,
-          persist_queries = true,
-        },
         query_linter = {
           enable = true,
           use_virtual_text = true,
@@ -50,7 +43,13 @@ return {
         },
         autopairs = { enable = true },
         autotag = { enable = true },
-        context_commentstring = { enable = true, enable_autocmd = false },
+        context_commentstring = {
+          enable = true,
+          enable_autocmd = false,
+          config = {
+            nu = "# %s",
+          },
+        },
         matchup = {
           enable = true,
         },
