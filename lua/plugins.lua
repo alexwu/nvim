@@ -41,7 +41,9 @@ return {
   },
   {
     "Bekaboo/dropbar.nvim",
-    enabled = vim.fn.has("nvim-0.10.0") == 1,
+    cond = function()
+      return vim.fn.has("nvim-0.10.0") == 1
+    end,
     config = true,
     opts = {
       general = {
@@ -53,14 +55,6 @@ return {
         end,
       },
     },
-  },
-  {
-    "mhartington/formatter.nvim",
-    enabled = false,
-    event = "VeryLazy",
-    config = function()
-      require("bombeelu.format")
-    end,
   },
   {
     "numToStr/FTerm.nvim",
@@ -728,7 +722,9 @@ return {
   },
   {
     "lewis6991/satellite.nvim",
-    enabled = vim.fn.has("nvim-0.10.0") == 1,
+    cond = function()
+      return vim.fn.has("nvim-0.10.0") == 1
+    end,
     dependencies = { "gitsigns.nvim" },
     config = function()
       require("satellite").setup({
