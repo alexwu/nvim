@@ -21,20 +21,16 @@ return {
       { "ys", desc = "Add surrounding", mode = { "n", "v" } },
       { "ds", desc = "Delete surrounding" },
       { "cs", desc = "Replace surrounding" },
-      { "gzf", desc = "Find right surrounding" },
-      { "gzF", desc = "Find left surrounding" },
-      { "gzh", desc = "Highlight surrounding" },
-      { "gzn", desc = "Update `MiniSurround.config.n_lines`" },
     },
     opts = {
       mappings = {
         add = "ys",
         delete = "ds",
-        find = "gzf",
-        find_left = "gzF",
-        highlight = "gzh",
+        find = "",
+        find_left = "",
+        highlight = "",
         replace = "cs",
-        update_n_lines = "gzn",
+        update_n_lines = "",
       },
       search_method = "cover_or_next",
     },
@@ -246,6 +242,7 @@ return {
     end,
     config = true,
     opts = {
+      operators = { gc = "Comments" },
       layout = {
         height = { min = 4, max = 25 },
         width = { min = 20, max = 50 },
@@ -310,7 +307,7 @@ return {
   {
     "folke/edgy.nvim",
     event = "VeryLazy",
-    enabled = true,
+    enabled = false,
     init = function()
       vim.opt.laststatus = 3
       vim.opt.splitkeep = "screen"
@@ -351,7 +348,7 @@ return {
 
       vim.keymap.set("n", "<leader>rn", function()
         return ":IncRename " .. vim.fn.expand("<cword>")
-      end, { expr = true })
+      end, { expr = true, desc = "Rename symbol" })
     end,
   },
   {
@@ -386,6 +383,7 @@ return {
   },
   {
     "akinsho/git-conflict.nvim",
+    enabled = false,
     event = "VeryLazy",
     config = function()
       require("git-conflict").setup({
@@ -538,30 +536,6 @@ return {
       })
     end,
   },
-  --   "otavioschwanck/ruby-toolkit.nvim",
-  --   ft = { "ruby" },
-  --   dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-treesitter/nvim-treesitter-textobjects" },
-  --   keys = {
-  --     {
-  --       "<leader>mv",
-  --       "<cmd>lua require('ruby-toolkit').extract_variable()<CR>",
-  --       desc = "Extract Variable",
-  --       mode = { "v" },
-  --     },
-  --     {
-  --       "<leader>mf",
-  --       "<cmd>lua require('ruby-toolkit').extract_to_function()<CR>",
-  --       desc = "Extract To Function",
-  --       mode = { "v" },
-  --     },
-  --     {
-  --       "<leader>mf",
-  --       "<cmd>lua require('ruby-toolkit').create_function_from_text()<CR>",
-  --       desc = "Create Function from item on cursor",
-  --     },
-  --   },
-  -- },
-
   {
     "echasnovski/mini.nvim",
     version = false,
@@ -572,26 +546,6 @@ return {
       })
       require("mini.splitjoin").setup()
       require("mini.colors").setup()
-      -- require("mini.base16").setup({
-      --   palette = {
-      --     base00 = "#282a36",
-      --     base01 = "#34353e",
-      --     base02 = "#43454f",
-      --     base03 = "#78787e",
-      --     base04 = "#a5a5a9",
-      --     base05 = "#e2e4e5",
-      --     base06 = "#eff0eb",
-      --     base07 = "#f1f1f0",
-      --     base08 = "#ff5c57",
-      --     base09 = "#ff9f43",
-      --     base0A = "#f3f99d",
-      --     base0B = "#5af78e",
-      --     base0C = "#9aedfe",
-      --     base0D = "#57c7ff",
-      --     base0E = "#ff6ac1",
-      --     base0F = "#b2643c",
-      --   },
-      -- })
     end,
   },
   {
@@ -763,8 +717,9 @@ return {
       dash.section.buttons.val = {
         dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
         dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-        dash.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
+        dash.button("r", " " .. " Recent files", [[:Telescope smart_open cwd_only=true match_algorithm=fzf <CR>]]),
         dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
+        dash.button("r", " " .. " Run task", ":OverseerRun<CR>"),
         -- dash.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
         -- dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
         dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
@@ -816,10 +771,19 @@ return {
           context = "source",
         },
         {
+          pattern = "/app/javascript/(.*)/(.*).tsx$",
+          target = "/app/javascript/%1/%2.test.tsx",
+          context = "source",
+        },
+        {
           pattern = "/app/javascript/(.*)/(.*).test.ts$",
           target = "/app/javascript/%1/%2.ts",
           context = "test",
-          transformer = "strip_test",
+        },
+        {
+          pattern = "/app/javascript/(.*)/(.*).test.tsx$",
+          target = "/app/javascript/%1/%2.tsx",
+          context = "test",
         },
       })
 
@@ -832,6 +796,25 @@ return {
           end,
           strip_test = function(inputString)
             return bu.strings.strip_suffix(inputString, ".test")
+          end,
+        },
+        hooks = {
+          filePickerBeforeShow = function(files)
+            if vim.iter(files):any(function(entry)
+              return entry.exists
+            end) then
+              return vim
+                .iter(files)
+                :filter(
+                  ---@param entry table (filename (string), context (string), exists (boolean))
+                  function(entry)
+                    return entry.exists
+                  end
+                )
+                :totable()
+            end
+
+            return files
           end,
         },
         style = {
@@ -876,6 +859,7 @@ return {
   },
   {
     "abecodes/tabout.nvim",
+    enabled = false,
     config = function()
       require("tabout").setup({
         tabouts = {
@@ -887,7 +871,6 @@ return {
     end,
     event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
-    enabled = false,
   },
   {
     "TobinPalmer/rayso.nvim",
@@ -900,6 +883,7 @@ return {
   },
   {
     "lewis6991/hover.nvim",
+    enabled = false,
     config = function()
       require("hover").setup({
         init = function()
@@ -936,7 +920,15 @@ return {
   },
   {
     "stevearc/overseer.nvim",
+    config = true,
     opts = {},
+    keys = {
+      {
+        "<leader>o",
+        ":OverseerRun<CR>",
+        desc = "Run task",
+      },
+    },
   },
 }
 
