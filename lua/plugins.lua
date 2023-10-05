@@ -431,6 +431,9 @@ return {
     event = "VeryLazy",
     dependencies = { "mrjones2014/legendary.nvim" },
     enabled = true,
+    cond = function()
+      return vim.fn.executable("wezterm") ~= 0
+    end,
     config = function()
       local w = require("wezterm")
       w.setup({})
@@ -931,52 +934,3 @@ return {
     },
   },
 }
-
---
---       use({
---         "nanotee/sqls.nvim",
---         cond = function()
---           return not vim.g.vscode
---         end,
---       })
---
---
---     use({
---       "gennaro-tedesco/nvim-jqx",
---       ft = { "json" },
---       cond = function()
---         return not vim.g.vscode
---       end,
---     })
---
---     --       use({
---     --         "~/Projects/neovim/spectacle.nvim",
---     --         dependencies = {
---     --           "nvim-lua/plenary.nvim",
---     --           "nvim-telescope/telescope.nvim",
---     --           "MunifTanjim/nui.nvim",
---     --         },
---     --         config = function()
---     --           require("spectacle").setup({
---     --             runners = {},
---     --             ft = {
---     --               javascript = { "jest" },
---     --               javascriptreact = { "jest" },
---     --               lua = { "vusted" },
---     --               typescript = { "jest" },
---     --               typescriptreact = { "jest" },
---     --               ruby = { "rspec" },
---     --             },
---     --           })
---
---     --           require("telescope").load_extension("spectacle")
---     --         end,
---     --         disable = true,
---     --       })
---     use({
---       "andrewferrier/debugprint.nvim",
---       config = function()
---         require("debugprint").setup()
---       end,
---       disable = true,
---     })
