@@ -265,33 +265,23 @@ return {
       })
     end, { silent = true, desc = "Show diagnostics on current line" })
 
-    set(
-      "n",
-      "]d",
-      rpt(function()
-        vim.diagnostic.goto_next({
-          float = {
-            border = "rounded",
-            focusable = false,
-          },
-        })
-      end),
-      { silent = true, desc = "Go to next diagnostic" }
-    )
+    set("n", "]d", function()
+      vim.diagnostic.goto_next({
+        float = {
+          border = "rounded",
+          focusable = false,
+        },
+      })
+    end, { silent = true, desc = "Go to next diagnostic" })
 
-    set(
-      "n",
-      "[d",
-      rpt(function()
-        vim.diagnostic.goto_prev({
-          float = {
-            border = "rounded",
-            focusable = false,
-          },
-        })
-      end),
-      { silent = true, desc = "Go to previous diagnostic" }
-    )
+    set("n", "[d", function()
+      vim.diagnostic.goto_prev({
+        float = {
+          border = "rounded",
+          focusable = false,
+        },
+      })
+    end, { silent = true, desc = "Go to previous diagnostic" })
 
     local legendary = require("legendary")
     legendary.keymaps({
