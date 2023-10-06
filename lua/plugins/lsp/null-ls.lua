@@ -182,13 +182,13 @@ M.setup = function(opts)
       }),
       null_ls.builtins.formatting.rustywind,
       null_ls.builtins.diagnostics.zsh,
-      null_ls.builtins.diagnostics.selene.with({
-        cwd = function(_params)
-          return vim.fs.dirname(
-            vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
-          ) or vim.fs.normalize("~/.config/nvim/selene.toml")
-        end,
-      }),
+      -- null_ls.builtins.diagnostics.selene.with({
+      --   cwd = function(_params)
+      --     return vim.fs.dirname(
+      --       vim.fs.find({ "selene.toml" }, { upward = true, path = vim.api.nvim_buf_get_name(0) })[1]
+      --     ) or vim.fs.normalize("~/.config/nvim/selene.toml")
+      --   end,
+      -- }),
       -- require("plugins.lsp.null-ls.code_actions.selene").with({
       --   cwd = function(_params)
       --     return vim.fs.dirname(
