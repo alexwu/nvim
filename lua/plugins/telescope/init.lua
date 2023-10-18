@@ -261,19 +261,6 @@ return {
     end,
   },
   {
-    "otavioschwanck/telescope-alternate",
-    event = "VeryLazy",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    config = function()
-      require("telescope-alternate").setup({
-        presets = { "rails", "rspec" },
-        open_only_one_with = "current_pane",
-      })
-
-      require("telescope").load_extension("telescope-alternate")
-    end,
-  },
-  {
     "danielfalk/smart-open.nvim",
     config = function()
       require("telescope").load_extension("smart_open")
