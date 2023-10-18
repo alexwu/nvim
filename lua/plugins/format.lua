@@ -31,6 +31,7 @@ return {
         graphql = { "prettier" },
         json = { "prettier" },
         jsonc = { "prettier" },
+        just = { "just" },
         html = { "prettier" },
         css = { "prettier" },
         javascript = { "prettier" },
@@ -42,12 +43,6 @@ return {
         zig = { "zigfmt" },
       },
       formatters = {
-        rubyfmt = {
-          command = "rubyfmt",
-          stdin = true,
-          -- cwd = require("conform.util").root_file({ "Gemfile" }),
-          require_cwd = false,
-        },
         rub = {
           command = "rub",
           args = { "--stdin" },
@@ -59,6 +54,7 @@ return {
     },
     config = function(_, opts)
       require("conform").setup(opts)
+      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
       key.map({ "<F8>", "<Leader>y", "gq" }, function()
         require("conform").format({

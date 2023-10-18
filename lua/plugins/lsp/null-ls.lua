@@ -171,15 +171,15 @@ M.setup = function(opts)
   null_ls.setup({
     debug = true,
     sources = {
-      null_ls.builtins.formatting.black,
-      null_ls.builtins.formatting.clang_format,
-      null_ls.builtins.formatting.just,
+      -- null_ls.builtins.formatting.black,
+      -- null_ls.builtins.formatting.clang_format,
+      -- null_ls.builtins.formatting.just,
       null_ls.builtins.formatting.dprint.with({
         filetypes = { "toml" },
       }),
-      null_ls.builtins.formatting.prettier.with({
-        prefer_local = "node_modules/.bin",
-      }),
+      -- null_ls.builtins.formatting.prettier.with({
+      --   prefer_local = "node_modules/.bin",
+      -- }),
       null_ls.builtins.formatting.rustywind,
       null_ls.builtins.diagnostics.zsh,
       -- null_ls.builtins.diagnostics.selene.with({
@@ -201,10 +201,10 @@ M.setup = function(opts)
           return utils.root_has_file({ ".luacheckrc" })
         end,
       }),
-      null_ls.builtins.formatting.stylua,
+      -- null_ls.builtins.formatting.stylua,
       null_ls.builtins.diagnostics.dotenv_linter,
       null_ls.builtins.formatting.erb_format,
-      null_ls.builtins.formatting.rubyfmt,
+      -- null_ls.builtins.formatting.rubyfmt,
       -- require("typescript.extensions.null-ls.code-actions"),
       -- null_ls.builtins.code_actions.gitsigns,
     },
