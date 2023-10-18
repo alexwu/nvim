@@ -4,6 +4,8 @@ name = "neovim"
 
 [vim]
 any = true
+[jit]
+any = true
 [nvim]
 any = true
 [keymap]

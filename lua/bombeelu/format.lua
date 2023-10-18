@@ -9,12 +9,23 @@ local function filename()
   return util.escape_path(util.get_current_buffer_file_path())
 end
 
-local function bedazzle()
+-- local function bedazzle()
+--   return {
+--     -- exe = vim.fs.normalize("bedazzle"),
+--     -- exe = vim.fs.normalize("~/Code/personal/bedazzle/target/release/bedazzle-cli"),
+--     exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle"),
+--     name = "Bedazzle",
+--     args = { "--stdin" },
+--     stdin = true,
+--   }
+-- end
+--
+local function rub()
   return {
-    exe = vim.fs.normalize("bedazzle"),
+    -- exe = vim.fs.normalize("bedazzle"),
     -- exe = vim.fs.normalize("~/Code/personal/bedazzle/target/release/bedazzle-cli"),
-    -- exe = vim.fs.normalize("~/Code/personal/formatters/bedazzle/target/debug/bedazzle-cli"),
-    name = "Bedazzle",
+    exe = "rub",
+    name = "Rub",
     args = { "--stdin" },
     stdin = true,
   }
@@ -87,8 +98,8 @@ end
 require("formatter").setup({
   logging = false,
   filetype = {
-    typescript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
-    typescriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
+    typescript = { prettier },
+    typescriptreact = { prettier },
     javascript = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     javascriptreact = { dprint, require("formatter.filetypes.typescript").denofmt, prettier },
     go = { require("formatter.filetypes.go").gofmt },
@@ -98,7 +109,7 @@ require("formatter").setup({
     jsonc = { dprint, prettier },
     html = { prettier },
     css = { prettier },
-    ruby = { rubyfmt, rufo, prettier, bedazzle },
+    ruby = { rubyfmt, rufo, prettier, rub },
     rust = {
       require("formatter.filetypes.rust").rustfmt,
     },
@@ -119,7 +130,7 @@ local function format()
     vim.lsp.buf.format({
       async = true,
       filter = function(client)
-        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "lua_ls"
       end,
     })
   else
@@ -136,16 +147,16 @@ local function format_range()
   if use_lsp(true) then
     vim.lsp.buf.range_formatting({
       filter = function(client)
-        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "sumneko_lua"
+        return client.name ~= "tsserver" and client.name ~= "jsonls" and client.name ~= "lua_ls"
       end,
     })
   else
   end
 end
 
-set({ "n" }, { "<F8>", "<Leader>y", "gq" }, lazy(format), { silent = true, desc = "Format" })
-set({ "i" }, { "<F8>" }, lazy(format), { silent = true, desc = "Format" })
-set({ "v" }, { "<F8>", "<Leader>y" }, lazy(format_range), { silent = true, desc = "Format range" })
+key.map({ "<F8>", "<Leader>y", "gq" }, lazy(format), { silent = true, desc = "Format", modes = { "n" } })
+key.map({ "<F8>" }, lazy(format), { silent = true, desc = "Format", modes = { "i" } })
+-- key.map({ "<F8>", "<Leader>y" }, lazy(format_range), { silent = true, desc = "Format range", modes = "v" })
 
 vim.cmd([[
 function! s:formatter_complete(...)
@@ -162,22 +173,32 @@ local function upper_first(str)
   return (str:gsub("^%l", string.upper))
 end
 
-nvim.create_augroup("bombeelu.format", { clear = true })
-vim.api.nvim_create_autocmd("BufEnter", {
-  group = "bombeelu.format",
-  callback = function(o)
-    local bufnr = o.buf
-    local config = require("formatter.config")
-    local formatters = config.formatters_for_filetype(detect(nvim.buf_get_name(bufnr)))
-    for _, formatter_function in ipairs(formatters) do
-      local formatter = formatter_function()
-      if formatter ~= nil then
-        local exe = formatter.exe
-        local name = vim.F.if_nil(formatter.name, formatter.exe)
-        vim.api.nvim_buf_create_user_command(bufnr, upper_first(name), function(opts)
-          require("formatter.format").format(exe, opts.mods, opts.line1, opts.line2)
-        end, { range = "%", bar = true })
-      end
-    end
-  end,
-})
+-- local commands = require("legendary").commands
+--
+-- nvim.create_augroup("bombeelu.format", { clear = true })
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   group = "bombeelu.format",
+--   callback = function(o)
+--     local bufnr = o.buf
+--     local config = require("formatter.config")
+--     local formatters = config.formatters_for_filetype(detect(nvim.buf_get_name(bufnr)))
+--     for _, formatter_function in ipairs(formatters) do
+--       local formatter = formatter_function()
+--       if formatter ~= nil then
+--         local exe = formatter.exe
+--         local name = vim.F.if_nil(formatter.name, formatter.exe)
+--         commands({
+--           {
+--             string.format("%s", upper_first(name)),
+--             function(opts)
+--               require("formatter.format").format(exe, opts.mods, opts.line1, opts.line2)
+--             end,
+--             description = string.format("Format file with %s", upper_first(name)),
+--             -- unfinished = true,
+--             opts = { bang = true, buffer = bufnr },
+--           },
+--         })
+--       end
+--     end
+--   end,
+-- })

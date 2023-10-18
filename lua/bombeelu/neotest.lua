@@ -1,12 +1,26 @@
-local Palette = require("bombeelu.mini-palette")
-local neotest = require("neotest")
-
 local M = {}
 
 function M.setup()
+  local Palette = require("bombeelu.mini-palette")
+  local neotest = require("neotest")
+
   neotest.setup({
     adapters = {
-      require("neotest-rspec"),
+      -- require("neotest-rspec"),
+      ["neotest-rspec"] = {
+        -- NOTE: By default neotest-rspec uses the system wide rspec gem instead of the one through bundler
+        rspec_cmd = function()
+          return vim.tbl_flatten({
+            "bundle",
+            "exec",
+            "rspec",
+          })
+        end,
+      },
+      require("neotest-rust")({
+        args = { "--no-capture" },
+        dap_adapter = "lldb",
+      }),
       require("neotest-jest")({
         jestCommand = "yarn test",
         jestConfigFile = "jest.config.js",
@@ -36,20 +50,25 @@ function M.setup()
       final_child_indent = " ",
     },
     status = { virtual_text = false },
+    output = { open_on_run = true },
+    quickfix = {
+      open = function()
+        vim.cmd("Trouble quickfix")
+      end,
+    },
   })
+
+  local wk = require("which-key")
+  wk.register({
+    t = {
+      name = "+test",
+    },
+  }, { prefix = "<Leader>" })
 
   nvim.create_user_command("TestSummary", function()
     neotest.summary.toggle()
   end, {})
 
-  -- nvim.create_user_command("TestRun", function()
-  --   neotest.run.run()
-  -- end, {})
-  --
-  -- nvim.create_user_command("TestRunFile", function()
-  --   neotest.run.run(vim.fn.expand("%"))
-  -- end, {})
-  --
   -- nvim.create_user_command("TestAttach", function()
   --   neotest.run.attach()
   -- end, {})
@@ -57,10 +76,6 @@ function M.setup()
   nvim.create_user_command("TestStop", function()
     neotest.run.stop()
   end, {})
-
-  -- nvim.create_user_command("TestDebug", function()
-  --   neotest.run.run({ strategy = "dap" })
-  -- end, {})
 
   local commands = {
     -- {
@@ -113,6 +128,35 @@ function M.setup()
     },
   }
 
+  -- nvim.create_user_command("TestDebug", function()
+  --   neotest.run.run({ strategy = "dap" })
+  -- end, {})
+
+  nvim.create_user_command("Test", function(opts)
+    local args = opts.fargs
+
+    if vim.tbl_isempty(args) then
+      Palette(commands, {
+        prompt = "Select a command:",
+      }):run()
+    elseif args[1] == "summary" then
+      neotest.summary.toggle()
+    elseif args[1] == "nearest" then
+      neotest.run.run()
+    elseif args[1] == "file" then
+      neotest.run.run(vim.fn.expand("%"))
+    elseif args[1] == "last" then
+      neotest.run.run_last()
+    else
+      vim.notify("Unknown command: " .. args[1], vim.log.levels.ERROR)
+    end
+  end, {
+    nargs = "?",
+    complete = function()
+      return { "nearest", "file", "summry", "last" }
+    end,
+  })
+
   key.map("[t", function()
     require("neotest").jump.prev()
   end, { modes = "n", desc = "Move to previous test" })
@@ -121,11 +165,11 @@ function M.setup()
     require("neotest").jump.next()
   end, { modes = "n", desc = "Move to next test" })
 
-  key.map({ "<C-t>", "<Leader>t" }, function()
-    Palette(commands, {
-      prompt = "Select a command:",
-    }):run()
-  end, { modes = "n" })
+  -- key.map({ "<Leader>t" }, function()
+  --   Palette(commands, {
+  --     prompt = "Select a command:",
+  --   }):run()
+  -- end, { modes = "n" })
 end
 
 return M

@@ -1,12 +1,11 @@
 local utils = require("bombeelu.utils")
-local keys = require("bombeelu.keys")
+local bu = require("bombeeutils")
+local keys = bu.keys
 local ex = utils.ex
 local lazy = utils.lazy
-local repeatable = require("bombeelu.repeat").mk_repeatable
+local repeatable = bu.nvim.repeatable
 
 vim.g.mapleader = " "
-
-set("n", "S", "<Nop>")
 
 key.map(
   { "j", "<Down>" },
@@ -22,63 +21,37 @@ key.map(
 key.map({ "<" }, "<gv", { modes = "x" })
 key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
 
-key.map("gs", [[:%s/\<<C-R><C-W>\>\C//g<left><left>]], { modes = { "n" } })
-
--- set({ "n" }, "<C-j>", "<C-w><C-j>")
--- set({ "n" }, "<C-h>", "<C-w><C-h>")
--- set({ "n" }, "<C-k>", "<C-w><C-k>")
--- set({ "n" }, "<C-l>", "<C-w><C-l>")
-
-set({ "x" }, "<C-j>", "5gj", { desc = "Move down 5 display lines" })
-set({ "x" }, "<C-k>", "5gk", { desc = "Move up 5 display lines" })
-set({ "x" }, "<C-h>", "5h", { desc = "Move left 5 columns" })
-set({ "x" }, "<C-l>", "5l", { desc = "Move right 5 columns" })
-
-set({ "i" }, "<C-j>", "<Down>", { desc = "Move down a  line" })
-set({ "i" }, "<C-k>", "<Up>", { desc = "Move up a line" })
-set({ "i" }, "<C-h>", "<Left>", { desc = "Move left a column" })
-set({ "i" }, "<C-l>", "<Right>", { desc = "Move right a column" })
+key.map("<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+key.map("<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })
 set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
 
-set("n", "tt", lazy(vim.cmd.tabnew), { desc = "Create a new tab" })
-set("n", "tq", lazy(vim.cmd.tabclose), { desc = "Close the current tab" })
+set("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open Location List" })
+set("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open Quickfix List" })
+
+set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 
 set("n", "Q", lazy(vim.cmd.quit))
 
 set(
   "n",
-  { "<A-o>", "]<Space>" },
+  { "<A-o>" },
   repeatable(function()
-    keys.feed({ "o", "<ESC>" })
-  end)
+    keys.o({ esc = true })
+  end),
+  { desc = "Add a new line below the current line" }
 )
 
 set(
   "n",
-  { "<A-O>", "[<Space>" },
+  { "<A-O>" },
   repeatable(function()
-    keys.feed({ "O", "<ESC>" })
-  end)
-)
-
-set(
-  "n",
-  "[z",
-  repeatable(function()
-    keys.feed({ "[", "z" })
-  end, { desc = "Move to the start of the current open fold" })
-)
-
-set(
-  "n",
-  "]z",
-  repeatable(function()
-    keys.feed({ "]", "z" })
-  end, { desc = "Move to the end of the current open fold" })
+    keys.O({ esc = true })
+  end),
+  { desc = "Add a new line above the current line" }
 )
 
 local function scroll_half_page(dir, opts)
@@ -100,8 +73,8 @@ end
 
 set("n", "<C-d>", function()
   scroll_half_page("down")
-end)
+end, { desc = "Scroll down half page" })
 
 set("n", "<C-u>", function()
   scroll_half_page("up")
-end)
+end, { desc = "Scroll up half page" })

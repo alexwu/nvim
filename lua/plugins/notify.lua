@@ -55,19 +55,25 @@ local stages = function()
     end,
   }
 end
-
-vim.notify = require("notify")
-require("notify").setup({
-  timeout = 50,
-  stages = stages(),
-  background_colour = "Normal",
-  render = "minimal",
-  on_open = nil,
-  icons = {
-    ERROR = "",
-    WARN = "",
-    INFO = "",
-    DEBUG = "",
-    TRACE = "✎",
-  },
-})
+return {
+  "rcarriga/nvim-notify",
+  event = "VeryLazy",
+  config = function()
+    -- vim.notify = require("notify")
+    require("notify").setup({
+      timeout = 100,
+      fps = 120,
+      stages = stages(),
+      background_colour = "Normal",
+      render = "minimal",
+      on_open = nil,
+      icons = {
+        ERROR = "",
+        WARN = "",
+        INFO = "",
+        DEBUG = "",
+        TRACE = "✎",
+      },
+    })
+  end,
+}

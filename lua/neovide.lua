@@ -7,7 +7,6 @@ vim.g.neovide_remember_window_size = true
 --
 -- set({ "n", "x" }, "<D-v>", [["*p]], { desc = "Paste from system clipboard" })
 -- set({ "i", "c" }, "<D-v>", [[<C-r>*]], { desc = "Paste from system clipboard" })
---
 -- set({ "n", "x" }, "<D-c>", [["*y]], { desc = "Copy from system clipboard" })
 
 vim.cmd([[

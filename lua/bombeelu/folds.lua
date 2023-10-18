@@ -10,8 +10,8 @@ function M.setup()
   vim.o.foldlevelstart = 99
   vim.o.foldenable = true
 
-  vim.keymap.set("n", "zR", ufo.openAllFolds)
-  vim.keymap.set("n", "zM", ufo.closeAllFolds)
+  set("n", "zR", ufo.openAllFolds, { desc = "Open all folds" })
+  set("n", "zM", ufo.closeAllFolds, { desc = "Close all folds" })
 
   set(
     "n",
@@ -33,16 +33,19 @@ function M.setup()
 
   set(
     "n",
-    "za",
+    "zz",
     rpt(function()
-      keys.feed({ "z", "a" })
+      keys.feed({
+        "z",
+        "a",
+      })
     end),
     { desc = "Toggle fold under cursor" }
   )
 
   set(
     "n",
-    "za",
+    "zA",
     rpt(function()
       keys.feed({ "z", "A" })
     end),

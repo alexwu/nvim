@@ -11,6 +11,7 @@ vim.filetype.add({
     [".zimrc"] = "zsh",
     ["private_dot_zimrc"] = "zsh",
     Justfile = "just",
+    justfile = "just",
   },
   pattern = {
     [".env.*"] = function(path, bufnr, ext)

@@ -1,37 +1,45 @@
-local has_plenary, _ = pcall(require, "plenary")
-if has_plenary then
-  require("globals")
-  require("bombeelu.nvim")
-  require("bombeelu.autocmd")
-  require("bombeelu.commands")
-  require("options")
-  require("mappings")
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "--single-branch",
+    "https://github.com/folke/lazy.nvim.git",
+    lazypath,
+  })
 end
+vim.opt.runtimepath:prepend(lazypath)
+
+vim.g.mapleader = " "
+require("options")
 
 if vim.g.vscode then
-  require("bombeelu.vscode.mappings")
-elseif vim.g.neovide then
-  require("neovide")
+  require("lazy").setup("vscode", {
+    dev = {
+      path = "~/Code/neovim/plugins",
+      patterns = { "alexwu" },
+      fallback = true,
+    },
+  })
 else
-  local has_impatient, _ = pcall(require, "impatient")
-  if has_impatient then
-    require("impatient")
+  -- If opening from inside neovim terminal then do not load all the other plugins
+  if os.getenv("NVIM") ~= nil then
+    require("lazy").setup({
+      { "willothy/flatten.nvim", config = true },
+    })
+    return
+  else
+    require("lazy").setup("plugins", {
+      dev = {
+        path = "~/Code/neovim/plugins",
+        patterns = { "alexwu" },
+        fallback = true,
+      },
+    })
   end
 end
 
-require("plugins")
-
-if vim.g.neovide or vim.fn.has("gui_vimr") == 1 or vim.g.vscode or vim.g.goneovim then
-  -- require("snazzy").setup({ theme = "dark", transparent = false })
-  vim.cmd("colorscheme snazzy")
-else
-  vim.cmd("colorscheme snazzy")
-  -- require("snazzy").setup({ theme = "dark", transparent = vim.env.TERM ~= "xterm-kitty" })
-end
-
-if not vim.g.vscode then
-  require("bombeelu.pin").setup()
-  require("bombeelu.visual-surround").setup()
-  require("bombeelu.refactoring").setup()
-  require("bombeelu.just").setup()
+if vim.g.neovide then
+  require("neovide")
 end

@@ -1,12 +1,3 @@
-local gps = require("nvim-gps")
-local navic = require("nvim-navic")
-
-require("nvim-gps").setup()
-
-local function gps_fallback()
-  return not navic.is_available() and gps.is_available()
-end
-
 local colors = {
   background = "#282a36",
   foreground = "#eff0eb",
@@ -62,13 +53,20 @@ require("lualine").setup({
     theme = snazzy(),
     disabled_filetypes = {
       statusline = {},
-      winbar = { "toggleterm" },
+      winbar = { "neo-tree" },
     },
     component_separators = "|",
     section_separators = { left = "", right = "" },
     globalstatus = true,
   },
-  extensions = { "fzf", "fugitive", "nvim-tree", "quickfix", "toggleterm" },
+  extensions = {
+    "fzf",
+    "fugitive",
+    "quickfix",
+    "neo-tree",
+    "lazy",
+    "trouble",
+  },
   sections = {
     lualine_a = {
       {
@@ -109,8 +107,35 @@ require("lualine").setup({
         update_in_insert = false,
         always_visible = false,
       },
+      {
+        "filetype",
+        icon_only = true,
+        separator = "",
+        padding = { left = 1, right = 0 },
+      },
+      { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
     },
-    lualine_x = {},
+    lualine_x = {
+      {
+        require("noice").api.status.message.get_hl,
+        cond = require("noice").api.status.message.has,
+      },
+      {
+        require("noice").api.status.command.get,
+        cond = require("noice").api.status.command.has,
+        color = { fg = "#ff9e64" },
+      },
+      {
+        require("noice").api.status.mode.get,
+        cond = require("noice").api.status.mode.has,
+        color = { fg = "#ff9e64" },
+      },
+      {
+        require("noice").api.status.search.get,
+        cond = require("noice").api.status.search.has,
+        color = { fg = "#ff9e64" },
+      },
+    },
     lualine_y = {},
     lualine_z = { { "location", separator = { right = "", left = "" } } },
   },
@@ -135,8 +160,6 @@ require("lualine").setup({
         },
         separator = { right = "", left = "" },
       },
-      { navic.get_location, cond = navic.is_available },
-      { gps.get_location, cond = gps_fallback },
     },
     lualine_x = { "filetype" },
     lualine_y = {},

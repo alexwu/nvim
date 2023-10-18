@@ -32,7 +32,6 @@ function M.setup()
   require("nvim-dap-virtual-text").setup()
   require("dap-vscode-js").setup({
     -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-    -- debugger_path = vim.fs.normalize("~/.local/share/nvim/site/pack/packer/start/nvim-dap-vscode-js"), -- Path to vscode-js-debug installation.
     adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" }, -- which adapters to register in nvim-dap
   })
 

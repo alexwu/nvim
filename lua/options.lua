@@ -4,12 +4,11 @@ vim.o.autoindent = true
 vim.o.ch = 2
 vim.o.confirm = true
 vim.o.ignorecase = true
-vim.o.lazyredraw = true
 vim.o.backspace = "indent,eol,start"
 vim.o.cmdheight = 1
 vim.o.cursorline = true
 vim.o.directory = "~/.vim-tmp/,~/.tmp/,~/tmp/,/var/tmp/,/tmp"
-vim.o.mouse = "a"
+vim.o.mouse = "nvi"
 vim.o.mousemodel = "popup_setpos"
 vim.o.updatetime = 250
 vim.o.hlsearch = true
@@ -30,7 +29,7 @@ vim.o.ruler = true
 vim.o.scrolloff = 5
 vim.o.shiftwidth = 2
 vim.o.showcmd = true
-vim.o.signcolumn = "yes"
+vim.o.signcolumn = "yes:1"
 vim.o.smartcase = true
 vim.o.smarttab = true
 vim.o.softtabstop = 2
@@ -44,7 +43,11 @@ vim.o.timeoutlen = 500
 vim.o.pumheight = 10
 vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.o.fillchars = "foldclose:,foldopen:"
+vim.g.ts_highlight_lua = false
+vim.o.conceallevel = 2
+-- vim.o.splitkeep="screen"
 -- vim.opt.foldopen:remove({ "hor" })
+vim.o.conceallevel = 2
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -53,6 +56,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
   end,
 })
+
+vim.cmd([[
+  aunmenu PopUp.How-to\ disable\ mouse
+  aunmenu PopUp.-1-
+]])
 
 -- disable python 2
 vim.g.loaded_python_provider = 0
