@@ -13,7 +13,6 @@ return {
       "nvim-tree/nvim-web-devicons",
       "kkharji/sqlite.lua",
       "AckslD/nvim-neoclip.lua",
-      "smartpde/telescope-recent-files",
       {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
@@ -188,9 +187,6 @@ return {
             load_session = true,
           },
           commander = {},
-          recent_files = {
-            only_cwd = true,
-          },
           lazy = {
             theme = "ivy",
             show_icon = true,
@@ -211,7 +207,6 @@ return {
       local legendary = require("legendary")
 
       require("telescope").load_extension("fzf")
-      require("telescope").load_extension("recent_files")
 
       require("neoclip").setup({
         enable_persistent_history = true,
