@@ -1,9 +1,9 @@
 return {
   "akinsho/toggleterm.nvim",
+  event = "VeryLazy",
   cond = function()
     return not vim.g.vscode
   end,
-  enabled = false,
   config = function()
     local set = vim.keymap.set
     local Terminal = require("toggleterm.terminal").Terminal
@@ -61,11 +61,5 @@ return {
         enabled = true,
       },
     })
-
-    vim.cmd([[
-  if has('nvim')
-    let $GIT_EDITOR = "nvim --server $NVIM --remote"
-  endif
-   ]])
   end,
 }

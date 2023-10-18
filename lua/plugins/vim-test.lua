@@ -39,7 +39,39 @@ return {
       let g:test#custom_strategies = {'fterm': function('FTermStrategy')}
     ]])
 
-    vim.api.nvim_set_var("test#strategy", "fterm")
+    _G.toggleterm_strategy = function(cmd)
+      require("toggleterm.terminal").Terminal
+        :new({
+          cmd = cmd,
+          close_on_exit = false,
+          hidden = false,
+          direction = "float",
+          float_opts = {
+            border = "rounded",
+            width = vim.fn.round(0.9 * vim.o.columns),
+            height = vim.fn.round(0.9 * vim.o.lines),
+            winblend = 15,
+            highlights = { border = "FloatBorder", background = "Normal" },
+          },
+          on_open = function(term)
+            enter_terminal_normal_mode()
+            vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+          end,
+        })
+        :toggle()
+    end
+
+    vim.cmd([[
+      function! ToggletermStrategy(cmd)
+        let g:cmd = a:cmd . "\n"
+        lua toggleterm_strategy(vim.g.cmd)
+      endfunction
+
+      let g:test#custom_strategies = {'custom_toggleterm': function('ToggletermStrategy')}
+]])
+
+
+    vim.api.nvim_set_var("test#strategy", "custom_toggleterm")
     vim.api.nvim_set_var("test#ruby#rspec#executable", "bundle exec rspec")
     vim.api.nvim_set_var("test#ruby#rspec#patterns", "_spec.rb")
     vim.api.nvim_set_var("test#ruby#rspec#options", {
