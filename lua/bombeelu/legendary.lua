@@ -7,8 +7,8 @@ function M.setup()
     extensions = {
       smart_splits = {},
       diffview = true,
+      lazy_nvim = true,
     },
-    lazy_nvim = { auto_register = true },
   })
 
   require("legendary").keymaps({
