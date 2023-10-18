@@ -213,7 +213,7 @@ return {
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.ruby_ls.setup({
-      cmd = { "bundle", "exec", "ruby-lsp" },
+      cmd = { "ruby-lsp" },
       on_attach = on_attach,
       capabilities = capabilities,
     })
