@@ -8,37 +8,13 @@ return {
   "vim-test/vim-test",
   dependencies = {
     "numToStr/FTerm.nvim",
-    {
-      "akinsho/toggleterm.nvim",
-      version = "*",
-      opts = {},
-    },
+    "akinsho/toggleterm.nvim",
   },
   cond = function()
     return not vim.g.vscode
   end,
   cmd = { "TestFile", "TestNearest" },
   config = function()
-    _G.fterm_strategy = function(cmd)
-      require("FTerm").scratch({
-        border = "rounded",
-        cmd = cmd,
-        dimensions = {
-          height = 0.95,
-          width = 0.95,
-        },
-      })
-    end
-
-    vim.cmd([[
-      function! FTermStrategy(cmd)
-        let g:cmd = a:cmd . "\n"
-        lua fterm_strategy(vim.g.cmd)
-      endfunction
-
-      let g:test#custom_strategies = {'fterm': function('FTermStrategy')}
-    ]])
-
     _G.toggleterm_strategy = function(cmd)
       require("toggleterm.terminal").Terminal
         :new({
@@ -69,7 +45,6 @@ return {
 
       let g:test#custom_strategies = {'custom_toggleterm': function('ToggletermStrategy')}
 ]])
-
 
     vim.api.nvim_set_var("test#strategy", "custom_toggleterm")
     vim.api.nvim_set_var("test#ruby#rspec#executable", "bundle exec rspec")
