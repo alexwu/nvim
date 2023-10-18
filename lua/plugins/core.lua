@@ -20,7 +20,7 @@ return {
         -- require("bombeelu.pin").setup()
         require("bombeelu.visual-surround").setup()
         -- require("bombeelu.refactoring").setup()
-        require("bombeelu.just").setup()
+        -- require("bombeelu.just").setup()
       end
     end,
     lazy = false,

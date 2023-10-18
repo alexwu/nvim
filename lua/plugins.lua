@@ -53,58 +53,6 @@ return {
     },
   },
   {
-    "numToStr/FTerm.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("FTerm").setup({
-        border = "rounded",
-        dimensions = {
-          height = 0.95,
-          width = 0.95,
-        },
-        auto_close = false,
-      })
-
-      require("legendary").command({
-        ":Term",
-        function(o)
-          local fargs = o.fargs
-          local cmd = fargs[1]
-
-          if vim.tbl_isempty(fargs) or cmd == "toggle" then
-            require("FTerm").toggle()
-          elseif cmd == "open" then
-            require("FTerm").open()
-          elseif cmd == "close" then
-            require("FTerm").close()
-          elseif cmd == "exit" then
-            require("FTerm").exit()
-          end
-        end,
-        description = "Open terminal",
-        opts = {
-          bang = true,
-          nargs = "*",
-          complete = function(arglead, cmdline, _cursorpos)
-            local leading = vim.trim(arglead)
-            if vim.trim(cmdline) == "Term" and leading == "" then
-              return { "toggle", "open", "close", "exit" }
-            end
-          end,
-        },
-      })
-
-      vim.api.nvim_create_user_command("YarnTest", function()
-        require("FTerm").run({ "yarn", "test" })
-      end, { bang = true })
-
-      key.map({ [[<C-\>]], [[<C-`>]] }, require("FTerm").toggle, { desc = "Toggle terminal", modes = { "n" } })
-
-      vim.keymap.set("t", [[<C-\>]], require("FTerm").toggle, { desc = "Toggle terminal" })
-      vim.keymap.set("t", [[<C-`>]], require("FTerm").toggle, { desc = "Toggle terminal" })
-    end,
-  },
-  {
     "nvim-neotest/neotest",
     event = "VeryLazy",
     dependencies = {

@@ -1,6 +1,7 @@
 return {
   "akinsho/toggleterm.nvim",
   event = "VeryLazy",
+  dependencies = { "mrjones2014/legendary.nvim" },
   cond = function()
     return not vim.g.vscode
   end,
@@ -59,6 +60,31 @@ return {
       end,
       winbar = {
         enabled = true,
+      },
+    })
+
+    require("legendary").command({
+      ":Term",
+      function(o)
+        local fargs = o.fargs
+        local cmd = fargs[1]
+
+        if vim.tbl_isempty(fargs) or cmd == "toggle" then
+          require("toggleterm").toggle()
+        elseif cmd == "select" then
+          vim.cmd.TermSelect()
+        end
+      end,
+      description = "Open terminal",
+      opts = {
+        bang = true,
+        nargs = "*",
+        complete = function(arglead, cmdline, _cursorpos)
+          local leading = vim.trim(arglead)
+          if vim.trim(cmdline) == "Term" and leading == "" then
+            return { "toggle", "select" }
+          end
+        end,
       },
     })
   end,
