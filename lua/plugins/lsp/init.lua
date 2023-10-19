@@ -212,11 +212,11 @@ return {
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.ruby_ls.setup({
-      cmd = { "ruby-lsp" },
-      on_attach = on_attach,
-      capabilities = capabilities,
-    })
+    -- lsp.ruby_ls.setup({
+    --   cmd = { "ruby-lsp" },
+    --   on_attach = on_attach,
+    --   capabilities = capabilities,
+    -- })
 
     -- local configs = require("lspconfig.configs")
     -- configs.ast_grep = {
