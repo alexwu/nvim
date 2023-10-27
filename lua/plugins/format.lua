@@ -1,9 +1,8 @@
-local function upper_first(str)
-  return (str:gsub("^%l", string.upper))
-end
+local bu = require("bombeeutils")
 
 local function build_command(formatter)
-  local cmd = upper_first(formatter.name)
+  local cmd = bu.format_command(formatter.name)
+
   return {
     cmd,
     function(o)
@@ -26,15 +25,15 @@ return {
         c = { "clang_format" },
         cmake = { "cmake_format" },
         cpp = { "clang_format" },
-        erb = { "erb_format" },
+        css = { "prettier" },
+        eruby = { "erb_format" },
         go = { "gofmt" },
         graphql = { "prettier" },
+        html = { "prettier" },
+        javascript = { "prettier" },
         json = { "prettier" },
         jsonc = { "prettier" },
         just = { "just" },
-        html = { "prettier" },
-        css = { "prettier" },
-        javascript = { "prettier" },
         lua = { "stylua" },
         python = { "black" },
         ruby = { "rubyfmt" },

@@ -29,7 +29,6 @@ return {
   {
     "alexwu/bombeeutils",
     dev = true,
-    branch = "dev",
     url = "git@github.com:alexwu/bombeeutils.git",
   },
 }
