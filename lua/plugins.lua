@@ -666,13 +666,16 @@ return {
       local dash = require("alpha.themes.dashboard")
 
       dash.section.buttons.val = {
-        dash.button("<space>", " " .. " Recent files", [[:Telescope smart_open cwd_only=true match_algorithm=fzf <CR>]]),
+        dash.button(
+          "<space>",
+          " " .. " Recent files",
+          [[:Telescope smart_open cwd_only=true match_algorithm=fzf <CR>]]
+        ),
         dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
         dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
         dash.button("r", " " .. " Run task", ":OverseerRun<CR>"),
-        -- dash.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
-        -- dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
+        dash.button("c", " " .. " Config", [[:lua require("bombeelu.pickers").config_files() <CR>]]),
         dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dash.button("q", " " .. " Quit", ":qa<CR>"),
       }
