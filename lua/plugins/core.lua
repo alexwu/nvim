@@ -27,9 +27,10 @@ return {
     priority = 1001,
   },
   {
-    "alexwu/bombeeutils",
+    "alexwu/bu",
     dev = true,
-    branch = "dev",
-    url = "git@github.com:alexwu/bombeeutils.git",
+    build = "just build",
+    branch = "fuzzy",
+    url = "git@github.com:alexwu/bu.git",
   },
 }

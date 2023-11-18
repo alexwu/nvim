@@ -215,7 +215,6 @@ return {
       set("n", { "<Leader>j" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
       set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
-      set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Find files" })
       set(
         "n",
         "<Leader>F",

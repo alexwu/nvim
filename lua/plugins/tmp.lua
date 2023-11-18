@@ -10,7 +10,30 @@ return {
     dependencies = {
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
-      { "alexwu/bombeeutils", url = "git@github.com:alexwu/bombeeutils.git" },
+      { "alexwu/bu", url = "git@github.com:alexwu/bu.git" },
+    },
+  },
+  -- {
+  --   "alexwu/chezmoi.nvim",
+  --   dev = true,
+  --   config = true,
+  --   opts = {},
+  --   enabled = false,
+  -- },
+  {
+    "alexwu/nucleo.nvim",
+    dependencies = { "runiq/neovim-throttle-debounce" },
+    dev = true,
+    config = true,
+    opts = {},
+    keys = {
+      {
+        "<leader>f",
+        function()
+          require("nucleo").find()
+        end,
+        desc = "Fuzzy find files",
+      },
     },
   },
 }

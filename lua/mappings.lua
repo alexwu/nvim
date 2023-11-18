@@ -1,5 +1,5 @@
 local utils = require("bombeelu.utils")
-local bu = require("bombeeutils")
+local bu = require("bu")
 local keys = bu.keys
 local ex = utils.ex
 local lazy = utils.lazy

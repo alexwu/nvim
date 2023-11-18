@@ -135,7 +135,7 @@ return {
     local lazy = require("bombeelu.utils").lazy
     local lsp = require("bombeelu.lsp")
     local on_attach = require("plugins.lsp.defaults").on_attach
-    local rpt = require("bombeeutils").nvim.repeatable
+    local rpt = require("bu").nvim.repeatable
     local set = require("bombeelu.utils").set
 
     local augroup = nvim.create_augroup
@@ -330,7 +330,7 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint(bufnr, true)
+            vim.lsp.inlay_hint.enable(bufnr, true)
           end
         end,
       })
@@ -346,7 +346,7 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint(bufnr, false)
+            vim.lsp.inlay_hint.enable(bufnr, false)
           end
         end,
       })

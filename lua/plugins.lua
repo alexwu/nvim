@@ -667,7 +667,8 @@ return {
 
       dash.section.buttons.val = {
         dash.button("<space>", " " .. " Recent files", [[:Telescope smart_open cwd_only=true match_algorithm=fzf <CR>]]),
-        dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        -- dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        dash.button("f", " " .. " Find file", [[:lua require("nucleo").find() <CR>]]),
         dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
         dash.button("r", " " .. " Run task", ":OverseerRun<CR>"),
@@ -712,7 +713,7 @@ return {
     "rgroli/other.nvim",
     event = "VeryLazy",
     config = function()
-      local bu = require("bombeeutils")
+      local bu = require("bu")
       local mappings = bu.F.flatten({
         "golang",
         require("bombeelu.other.rails"),

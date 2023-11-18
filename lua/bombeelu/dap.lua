@@ -1,5 +1,3 @@
-local Palette = require("bombeelu.mini-palette")
-
 local M = {}
 
 function M.setup()
