@@ -38,26 +38,6 @@ return {
     "williamboman/mason-lspconfig.nvim",
     "folke/neodev.nvim",
     {
-      "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-      config = function()
-        require("lsp_lines").setup()
-        vim.diagnostic.config({ virtual_lines = false })
-
-        vim.keymap.set("n", "<Leader>L", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
-      end,
-    },
-    {
-      "jose-elias-alvarez/typescript.nvim",
-      ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact" },
-      enabled = false,
-      cond = function()
-        return not vim.g.vscode
-      end,
-      config = function()
-        require("bombeelu.lsp").typescript.setup()
-      end,
-    },
-    {
       "pmizio/typescript-tools.nvim",
       dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
       cond = function()
@@ -119,10 +99,6 @@ return {
         })
       end,
     },
-    {
-      "mrshmllow/document-color.nvim",
-      config = true,
-    },
     "camilledejoye/nvim-lsp-selection-range",
   },
   init = function()
@@ -135,7 +111,7 @@ return {
     local lazy = require("bombeelu.utils").lazy
     local lsp = require("bombeelu.lsp")
     local on_attach = require("plugins.lsp.defaults").on_attach
-    local rpt = require("bombeeutils").nvim.repeatable
+    local rpt = require("bu").nvim.repeatable
     local set = require("bombeelu.utils").set
 
     local augroup = nvim.create_augroup
@@ -212,8 +188,12 @@ return {
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
-    -- lsp.ruby_ls.setup({
-    --   cmd = { "ruby-lsp" },
+    lsp.ruby_ls.setup({
+      cmd = { "ruby-lsp" },
+      on_attach = on_attach,
+      capabilities = capabilities,
+    })
+    -- lsp.syntax_tree.setup({
     --   on_attach = on_attach,
     --   capabilities = capabilities,
     -- })
@@ -330,7 +310,7 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint(bufnr, true)
+            vim.lsp.inlay_hint.enable(bufnr, true)
           end
         end,
       })
@@ -346,7 +326,7 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint(bufnr, false)
+            vim.lsp.inlay_hint.enable(bufnr, false)
           end
         end,
       })

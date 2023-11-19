@@ -147,40 +147,6 @@ require("lualine").setup({
     lualine_y = {},
     lualine_z = {},
   },
-  winbar = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {
-      {
-        "filename",
-        path = 0,
-        color = {
-          fg = "#3a3d4d",
-          bg = colors.foreground,
-        },
-        separator = { right = "", left = "" },
-      },
-    },
-    lualine_x = { "filetype" },
-    lualine_y = {},
-    lualine_z = {},
-  },
-  inactive_winbar = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {
-      {
-        "filename",
-        path = 0,
-        color = {
-          fg = colors.lightgray,
-          bg = colors.darkgray,
-        },
-        separator = { right = "" },
-      },
-    },
-    lualine_x = {},
-    lualine_y = {},
-    lualine_z = {},
-  },
+  winbar = {},
+  inactive_winbar = {},
 })

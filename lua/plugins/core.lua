@@ -27,8 +27,9 @@ return {
     priority = 1001,
   },
   {
-    "alexwu/bombeeutils",
+    "alexwu/bu",
     dev = true,
-    url = "git@github.com:alexwu/bombeeutils.git",
+    build = "just release",
+    url = "git@github.com:alexwu/bu.git",
   },
 }

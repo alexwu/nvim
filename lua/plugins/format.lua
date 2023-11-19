@@ -1,4 +1,4 @@
-local bu = require("bombeeutils")
+local bu = require("bu")
 
 local function build_command(formatter)
   local cmd = bu.format_command(formatter.name)
@@ -20,8 +20,23 @@ end
 return {
   {
     "stevearc/conform.nvim",
+    lazy = false,
+    keys = {
+      { "<leader>y" },
+      { "<F8>" },
+      { "gq" },
+      {
+        "<leader>cF",
+        function()
+          require("conform").format({ formatters = { "injected" } })
+        end,
+        mode = { "n", "v" },
+        desc = "Format Injected Langs",
+      },
+    },
     opts = {
       formatters_by_ft = {
+        ["markdown.mdx"] = { "prettier" },
         c = { "clang_format" },
         cmake = { "cmake_format" },
         cpp = { "clang_format" },
@@ -29,24 +44,31 @@ return {
         eruby = { "erb_format" },
         go = { "gofmt" },
         graphql = { "prettier" },
+        handlebars = { "prettier" },
         html = { "prettier" },
         javascript = { "prettier" },
         json = { "prettier" },
         jsonc = { "prettier" },
         just = { "just" },
+        less = { "prettier" },
         lua = { "stylua" },
+        markdown = { "prettier" },
         python = { "black" },
-        ruby = { "rubyfmt" },
+        ruby = { { "rubyfmt", "syntax_tree" } },
+        rust = { "rustfmt" },
+        scss = { "prettier" },
+        toml = { "taplo" },
         typescript = { "prettier" },
         typescriptreact = { "prettier" },
+        vue = { "prettier" },
+        yaml = { "prettier" },
         zig = { "zigfmt" },
       },
       formatters = {
-        rub = {
-          command = "rub",
-          args = { "--stdin" },
+        syntax_tree = {
+          command = "stree",
+          args = { "format" },
           stdin = true,
-          -- cwd = require("conform.util").root_file({ "Gemfile" }),
           require_cwd = false,
         },
       },

@@ -203,7 +203,6 @@ return {
         },
       })
 
-      local extensions = require("telescope").extensions
       local legendary = require("legendary")
 
       require("telescope").load_extension("fzf")
@@ -212,10 +211,9 @@ return {
         enable_persistent_history = true,
       })
 
-      set("n", { "<Leader>j" }, lazy(builtin.jumplist), { desc = "Select from the jumplist" })
       set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
-      set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Find files" })
+      -- set("n", "<Leader>f", lazy(builtin.find_files, { prompt_title = "Find Files" }), { desc = "Find files" })
       set(
         "n",
         "<Leader>F",
@@ -253,6 +251,16 @@ return {
       })
 
       vim.cmd([[autocmd User TelescopePreviewerLoaded setlocal wrap]])
+
+      legendary.commands({
+        {
+          ":Config",
+          function()
+            require("bombeelu.pickers").config_files()
+          end,
+          description = "Select from nvim config files",
+        },
+      })
     end,
   },
   {

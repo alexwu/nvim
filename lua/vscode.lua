@@ -96,7 +96,7 @@ return {
   {
     "nvim-lua/plenary.nvim",
     dependencies = {
-      { "alexwu/bombeeutils", url = "git@github.com:alexwu/bombeeutils.git" },
+      { "alexwu/bu", url = "git@github.com:alexwu/bu.git" },
     },
     config = function()
       -- require("plenary.filetype").add_file("extras")
@@ -112,10 +112,10 @@ return {
     priority = 1001,
   },
   {
-    "alexwu/bombeeutils",
+    "alexwu/bu",
     dev = true,
     branch = "dev",
-    url = "git@github.com:alexwu/bombeeutils.git",
+    url = "git@github.com:alexwu/bu.git",
     lazy = false,
   },
   {

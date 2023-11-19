@@ -72,7 +72,7 @@ return {
         function()
           require("neotest").run.run(vim.fn.expand("%"))
         end,
-        desc = "Run File",
+        desc = "Run all tests in file",
       },
       {
         "<leader>ta",
@@ -202,6 +202,7 @@ return {
       },
     },
   },
+  { "echasnovski/mini.align", version = false, opts = {}, config = true },
   {
     "echasnovski/mini.clue",
     enabled = false,
@@ -671,7 +672,7 @@ return {
           " " .. " Recent files",
           [[:Telescope smart_open cwd_only=true match_algorithm=fzf <CR>]]
         ),
-        dash.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        dash.button("f", " " .. " Find file", [[:lua require("nucleo").find() <CR>]]),
         dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
         dash.button("r", " " .. " Run task", ":OverseerRun<CR>"),
@@ -699,23 +700,13 @@ return {
       end
 
       require("alpha").setup(dash.opts)
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "LazyVimStarted",
-        callback = function()
-          local stats = require("lazy").stats()
-          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          dash.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
-          pcall(vim.cmd.AlphaRedraw)
-        end,
-      })
     end,
   },
   {
     "rgroli/other.nvim",
     event = "VeryLazy",
     config = function()
-      local bu = require("bombeeutils")
+      local bu = require("bu")
       local mappings = bu.F.flatten({
         "golang",
         require("bombeelu.other.rails"),
@@ -871,17 +862,5 @@ return {
   {
     "lewis6991/fileline.nvim",
     lazy = false,
-  },
-  {
-    "stevearc/overseer.nvim",
-    config = true,
-    opts = {},
-    keys = {
-      {
-        "<leader>o",
-        ":OverseerRun<CR>",
-        desc = "Run task",
-      },
-    },
   },
 }

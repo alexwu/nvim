@@ -45,6 +45,8 @@ vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.o.fillchars = "foldclose:,foldopen:"
 vim.g.ts_highlight_lua = false
 vim.o.conceallevel = 2
+vim.o.grepformat = "%f:%l:%c:%m"
+vim.o.grepprg = "rg --vimgrep"
 -- vim.o.splitkeep="screen"
 -- vim.opt.foldopen:remove({ "hor" })
 vim.o.conceallevel = 2
