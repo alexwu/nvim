@@ -6,7 +6,6 @@ return {
     dependencies = {
       "RRethy/nvim-treesitter-textsubjects",
       "RRethy/nvim-treesitter-endwise",
-      "JoosepAlviste/nvim-ts-context-commentstring",
       "windwp/nvim-autopairs",
       "windwp/nvim-ts-autotag",
       "andymass/vim-matchup",
@@ -43,13 +42,6 @@ return {
         },
         autopairs = { enable = true },
         autotag = { enable = true },
-        context_commentstring = {
-          enable = true,
-          enable_autocmd = false,
-          config = {
-            nu = "# %s",
-          },
-        },
         matchup = {
           enable = true,
         },
