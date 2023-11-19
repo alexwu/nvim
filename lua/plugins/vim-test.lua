@@ -13,6 +13,22 @@ return {
     return not vim.g.vscode
   end,
   cmd = { "TestFile", "TestNearest" },
+  keys = {
+    {
+      "<leader>tF",
+      function()
+        vim.cmd.TestFile()
+      end,
+      desc = "Run all tests in file (vim-test)",
+    },
+    {
+      "<leader>tN",
+      function()
+        vim.cmd.TestNearest()
+      end,
+      desc = "Run nearest test (vim-test)",
+    },
+  },
   config = function()
     _G.toggleterm_strategy = function(cmd)
       require("toggleterm.terminal").Terminal
