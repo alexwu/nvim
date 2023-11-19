@@ -14,7 +14,7 @@ return {
     },
   },
   {
-    "alexwu/nucleo",
+    "alexwu/nucleo.nvim",
     dependencies = { "runiq/neovim-throttle-debounce" },
     dev = true,
     config = true,
@@ -25,7 +25,7 @@ return {
         function()
           require("nucleo").find()
         end,
-        desc = "Fuzzy find file",
+        desc = "Fuzzy find files",
       },
     },
   },
