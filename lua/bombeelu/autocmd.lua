@@ -37,21 +37,27 @@ nvim.create_autocmd({ "BufEnter" }, {
   end,
 })
 
--- TODO: Try and be smart about this -- I don't like how jarring it is
--- nvim.create_autocmd({ "WinLeave" }, {
---   pattern = "*",
---   group = "bombeelu.autocmd",
---   callback = function(o)
---     vim.wo[0].foldcolumn = "0"
---   end,
--- })
---
--- nvim.create_autocmd({ "WinEnter" }, {
---   pattern = "*",
---   group = "bombeelu.autocmd",
---   callback = function(o)
---     if vim.wo[0].foldcolumn == "0" then
---       vim.wo[0].foldcolumn = "1"
---     end
---   end,
--- })
+-- Credit: https://github.com/LazyVim/LazyVim/blob/68ff818a5bb7549f90b05e412b76fe448f605ffb/lua/lazyvim/config/autocmds.lua#L52
+nvim.create_autocmd("FileType", {
+  group = "bombeelu.autocmd",
+  pattern = {
+    "PlenaryTestPopup",
+    "help",
+    "lspinfo",
+    "man",
+    "notify",
+    "qf",
+    "query",
+    "spectre_panel",
+    "startuptime",
+    "tsplayground",
+    "neotest-output",
+    "checkhealth",
+    "neotest-summary",
+    "neotest-output-panel",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+  end,
+})
