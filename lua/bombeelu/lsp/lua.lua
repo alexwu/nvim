@@ -12,7 +12,7 @@ function lua.setup(opts)
     library = {
       vimruntime = true,
       types = true,
-      plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim", "neotest" },
+      plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim", "neotest", "bu", "nui.nvim", "legendary.nvim" },
     },
     runtime_path = false,
   })

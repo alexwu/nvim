@@ -1,0 +1,26 @@
+{
+  "neodev": {
+    "library": {
+      "enabled": true,
+      "plugins": [
+        "nvim-treesitter",
+        "plenary.nvim",
+        "telescope.nvim",
+        "neotest",
+        "bu",
+        "nui.nvim",
+        "legendary.nvim",
+        "neoconf.nvim",
+        "nvim-lspconfig",
+        "nvim-treesitter"
+      ]
+    }
+  },
+  "neoconf": {
+    "plugins": {
+      "lua_ls": {
+        "enabled": true
+      }
+    }
+  }
+}

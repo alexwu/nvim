@@ -2,14 +2,8 @@ local utils = require("bombeelu.utils")
 local lazy = utils.lazy
 local set = utils.set
 local ex = utils.ex
+local augroup = bu.nvim.augroup
 
----@param name string
----@return integer
-local function augroup(name)
-  return vim.api.nvim_create_augroup("bombeelu." .. name, { clear = true })
-end
-
--- nvim.create_augroup("bombeelu.autocmd", { clear = true })
 nvim.create_autocmd("FileType", {
   pattern = "qf",
   group = augroup("quickfix"),
