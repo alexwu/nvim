@@ -15,27 +15,6 @@ function lua.setup(opts)
       plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim", "neotest" },
     },
     runtime_path = false,
-    -- lspconfig = {
-    --   root_dir = function(fname)
-    --     local root_pattern = lspconfig.util.root_pattern(".git", "*.rockspec")(fname)
-    --
-    --     if fname == vim.loop.os_homedir() then
-    --       return nil
-    --     end
-    --
-    --     return root_pattern or fname
-    --   end,
-    --   settings = {
-    --     Lua = {
-    --       semantic = { enable = true },
-    --       diagnostics = { enable = false },
-    --       completion = { autoRequire = false },
-    --       hint = {
-    --         enable = true,
-    --       },
-    --     },
-    --   },
-    -- },
   })
 
   lspconfig.lua_ls.setup({
@@ -52,8 +31,8 @@ function lua.setup(opts)
     end,
     settings = {
       Lua = {
-        semantic = { enable = true },
-        diagnostics = { enable = false },
+        semantic = { enable = false },
+        diagnostics = { enable = true },
         completion = { autoRequire = false },
         hint = {
           enable = true,
