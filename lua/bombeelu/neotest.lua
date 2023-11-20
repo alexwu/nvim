@@ -1,12 +1,10 @@
 local M = {}
 
 function M.setup()
-  local Palette = require("bombeelu.mini-palette")
   local neotest = require("neotest")
 
   neotest.setup({
     adapters = {
-      -- require("neotest-rspec"),
       ["neotest-rspec"] = {
         -- NOTE: By default neotest-rspec uses the system wide rspec gem instead of the one through bundler
         rspec_cmd = function()
@@ -135,14 +133,10 @@ function M.setup()
   nvim.create_user_command("Test", function(opts)
     local args = opts.fargs
 
-    if vim.tbl_isempty(args) then
-      Palette(commands, {
-        prompt = "Select a command:",
-      }):run()
+    if vim.tbl_isempty(args) or args[1] == "nearest" then
+      neotest.run.run()
     elseif args[1] == "summary" then
       neotest.summary.toggle()
-    elseif args[1] == "nearest" then
-      neotest.run.run()
     elseif args[1] == "file" then
       neotest.run.run(vim.fn.expand("%"))
     elseif args[1] == "last" then
@@ -164,12 +158,6 @@ function M.setup()
   key.map("]t", function()
     require("neotest").jump.next()
   end, { modes = "n", desc = "Move to next test" })
-
-  -- key.map({ "<Leader>t" }, function()
-  --   Palette(commands, {
-  --     prompt = "Select a command:",
-  --   }):run()
-  -- end, { modes = "n" })
 end
 
 return M
