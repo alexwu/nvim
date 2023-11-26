@@ -203,8 +203,6 @@ return {
         },
       })
 
-      local legendary = require("legendary")
-
       require("telescope").load_extension("fzf")
 
       require("neoclip").setup({
@@ -250,16 +248,6 @@ return {
       })
 
       vim.cmd([[autocmd User TelescopePreviewerLoaded setlocal wrap]])
-
-      legendary.commands({
-        {
-          ":Config",
-          function()
-            require("bombeelu.pickers").config_files()
-          end,
-          description = "Select from nvim config files",
-        },
-      })
     end,
   },
   {

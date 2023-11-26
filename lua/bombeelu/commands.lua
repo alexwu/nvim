@@ -1,14 +1,13 @@
-local ok, plenary = pcall(require, "plenary")
-if not ok then
-  return
-end
-
 local notify_ok, notify = pcall(require, "notify")
 if not notify_ok then
   return
 end
 
-local Job = require("plenary.job")
+local ok, Job = pcall(require, "plenary.job")
+if not ok then
+  return
+end
+
 local chezmoi_apply = function()
   vim.cmd.wall()
 
@@ -55,3 +54,19 @@ end, { nargs = 1 })
 nvim.create_user_command("Qa", "qa", {})
 nvim.create_user_command("Wq", "wq", {})
 nvim.create_user_command("W", "w", {})
+
+local has_legendary, legendary = pcall(require, "legendary")
+
+if not has_legendary then
+  return
+end
+
+legendary.commands({
+  {
+    ":Config",
+    function()
+      require("bombeelu.pickers").config_files()
+    end,
+    description = "Select from nvim config files",
+  },
+})
