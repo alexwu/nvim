@@ -1,5 +1,6 @@
 return {
   "folke/todo-comments.nvim",
+  event = "VeryLazy",
   enabled = true,
   cond = function()
     return not vim.g.vscode

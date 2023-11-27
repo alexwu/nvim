@@ -5,8 +5,7 @@ function M.setup()
 
   neotest.setup({
     adapters = {
-      ["neotest-rspec"] = {
-        -- NOTE: By default neotest-rspec uses the system wide rspec gem instead of the one through bundler
+      require("neotest-rspec")({
         rspec_cmd = function()
           return vim.tbl_flatten({
             "bundle",
@@ -14,7 +13,7 @@ function M.setup()
             "rspec",
           })
         end,
-      },
+      }),
       require("neotest-rust")({
         args = { "--no-capture" },
         dap_adapter = "lldb",
@@ -53,6 +52,9 @@ function M.setup()
       open = function()
         vim.cmd("Trouble quickfix")
       end,
+    },
+    watch = {
+      enabled = false,
     },
   })
 

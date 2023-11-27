@@ -2,6 +2,7 @@ local tree_width = require("utils").tree_width
 
 return {
   "beauwilliams/focus.nvim",
+  enabled = false,
   cond = function()
     return not vim.g.vscode
   end,

@@ -83,11 +83,81 @@ return {
   {
     "Wansmer/treesj",
     event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    keys = { "<space>m", "<space>j", "<space>s" },
+    dependencies = { "mrjones2014/legendary.nvim", "echasnovski/mini.splitjoin" },
     opts = {
-      max_join_length = 200,
+      ---@type number If line after join will be longer than max value, node will not be formatted
+      max_join_length = 1000,
+      ---@type boolean Use default keymaps (<space>m - toggle, <space>j - join, <space>s - split)
+      use_default_keymaps = false,
+      ---@type boolean Node with syntax error will not be formatted
+      check_syntax_error = true,
+      ---@type 'hold'|'start'|'end'
+      cursor_behavior = "hold",
+      ---@type boolean Notify about possible problems or not
+      notify = true,
+      ---@type boolean Use `dot` for repeat action
+      dot_repeat = true,
+      ---@type nil|function Callback for treesj error handler. func (err_text, level, ...other_text)
+      on_error = nil,
+      ---@type table Presets for languages
     },
+    config = function(_, opts)
+      local tsj = require("treesj")
+
+      local legendary = require("legendary")
+      require("treesj").setup(opts)
+
+      local langs = require("treesj.langs")["presets"]
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = "*",
+        callback = function()
+          if langs[vim.bo.filetype] then
+            -- vim.keymap.set("n", "gS", tsj.split, o)
+            -- vim.keymap.set("n", "gJ", tsj.join, o)
+            --
+            legendary.keymaps({
+              {
+                "gS",
+                function()
+                  tsj.split()
+                end,
+                description = "Split lines (treesj)",
+                opts = { buffer = true },
+              },
+              {
+                "gJ",
+                function()
+                  tsj.join()
+                end,
+                description = "Join lines (treesj)",
+                opts = { buffer = true },
+              },
+            })
+          else
+            -- vim.keymap.set("n", "gS", require("mini.splitjoin").split, o)
+            -- vim.keymap.set("n", "gJ", require("mini.splitjoin").join, o)
+            legendary.keymaps({
+              {
+                "gS",
+                function()
+                  require("mini.splitjoin").split()
+                end,
+                description = "Split lines (fallback)",
+                opts = { buffer = true },
+              },
+              {
+                "gJ",
+                function()
+                  require("mini.splitjoin").join()
+                end,
+                description = "Join lines (fallback)",
+                opts = { buffer = true },
+              },
+            })
+          end
+        end,
+      })
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
@@ -217,6 +287,7 @@ return {
   },
   {
     "JoosepAlviste/nvim-ts-context-commentstring",
+    event = "VeryLazy",
     opts = {
       enable = true,
       enable_autocmd = false,

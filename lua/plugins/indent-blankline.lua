@@ -11,6 +11,7 @@ return {
         enabled = true,
         show_start = false,
       },
+      exclude = { filetypes = { "dashboard" } },
     },
     event = "VeryLazy",
   },

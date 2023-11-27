@@ -24,6 +24,7 @@ end
 
 return {
   "nvim-lualine/lualine.nvim",
+  event = "VeryLazy",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
     -- { "SmiteshP/nvim-gps", dependencies = "nvim-treesitter/nvim-treesitter" },

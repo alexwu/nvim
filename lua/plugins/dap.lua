@@ -12,11 +12,6 @@ return {
     end,
   },
   {
-    "microsoft/vscode-js-debug",
-    event = "VeryLazy",
-    build = "npm install --legacy-peer-deps && npm run compile",
-  },
-  {
     "nvim-telescope/telescope-dap.nvim",
     event = "VeryLazy",
     dependencies = { "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap" },
@@ -26,7 +21,10 @@ return {
   },
   {
     "jay-babu/mason-nvim-dap.nvim",
-    dependencies = "mason.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+    },
     cmd = { "DapInstall", "DapUninstall" },
     opts = {
       -- Makes a best effort to setup the various debuggers with

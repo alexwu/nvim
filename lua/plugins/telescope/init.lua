@@ -7,6 +7,7 @@ local autocmd = vim.api.nvim_create_autocmd
 return {
   {
     "nvim-telescope/telescope.nvim",
+    event = "VeryLazy",
     dependencies = {
       "mrjones2014/legendary.nvim",
       "nvim-lua/plenary.nvim",
@@ -264,6 +265,7 @@ return {
   },
   {
     "danielfalk/smart-open.nvim",
+    event = "VeryLazy",
     config = function()
       require("telescope").load_extension("smart_open")
       local legendary = require("legendary")

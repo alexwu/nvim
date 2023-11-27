@@ -48,33 +48,36 @@ return {
           --   green1 = "#73daca",
           --   green2 = "#41a6b5",
           --   red1 = "#db4b4b",
-          colors.fg = "#eff0eb"
-          colors.fg_dark = "#eff0eb"
-          colors.bg = "#282a36"
-          colors.bg_dark = "#282a36"
-          colors.red = "#ff5c57"
-          colors.orange = "#FF9F43"
-          colors.yellow = "#f3f99d"
-          colors.green = "#8AFF80"
-          colors.green1 = "#5af78e"
-          colors.green2 = "#ccff88"
-          colors.teal = "#19f9d8"
-          colors.blue = "#57c7ff"
-          colors.purple = "#A39DF9"
-          colors.magenta = "#ff6ac1"
-          colors.magenta2 = "#ff007c"
-          colors.cyan = "#9aedfe"
-          colors.git = {
-            delete = "#3a0603",
-            change = "#434805",
-            add = "#00331a",
-          }
-          colors.gitSigns = {
-            add = colors.green1,
-            change = colors.yellow,
-            delete = colors.red,
-          }
-          colors.comment = "#606580"
+          if true then
+            colors.fg = "#eff0eb"
+            colors.fg_dark = "#eff0eb"
+            colors.bg = "#282a36"
+            colors.bg_dark = "#282a36"
+            colors.red = "#ff5c57"
+            colors.orange = "#FF9F43"
+            colors.yellow = "#f3f99d"
+            -- colors.green = "#8AFF80"
+            colors.green = "#5af78e"
+            colors.green1 = "#5af78e"
+            colors.green2 = "#ccff88"
+            colors.teal = "#19f9d8"
+            colors.blue = "#57c7ff"
+            colors.purple = "#A39DF9"
+            colors.magenta = "#ff6ac1"
+            colors.magenta2 = "#ff007c"
+            colors.cyan = "#9aedfe"
+            colors.git = {
+              delete = "#3a0603",
+              change = "#434805",
+              add = "#00331a",
+            }
+            colors.gitSigns = {
+              add = colors.green1,
+              change = colors.yellow,
+              delete = colors.red,
+            }
+            colors.comment = "#606580"
+          end
 
           --           _blue: '#45A9F9'
           -- _light-blue: '#6FC1FF'

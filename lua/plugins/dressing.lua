@@ -28,7 +28,10 @@ return {
             -- }
             return {
               backend = "telescope",
-              telescope = require("telescope.themes").get_cursor({ initial_mode = "insert" }),
+              telescope = require("telescope.themes").get_cursor({
+                initial_mode = "insert",
+                layout_config = { wdith = 0.8 },
+              }),
             }
           end
         end,

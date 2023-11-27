@@ -4,6 +4,7 @@ local keys = bu.keys
 local ex = utils.ex
 local lazy = utils.lazy
 local repeatable = bu.nvim.repeatable
+local api = vim.api
 
 vim.g.mapleader = " "
 
@@ -54,20 +55,25 @@ set(
   { desc = "Add a new line above the current line" }
 )
 
+---@class ScrollHalfPageOpts
+---@field bufnr? number
+
+---@param dir "up" | "down"
+---@param opts? ScrollHalfPageOpts
 local function scroll_half_page(dir, opts)
   opts = vim.F.if_nil(opts, {})
-  local bufnr = vim.F.if_nil(opts.bufnr, nvim.get_current_buf())
-  local line_count = nvim.buf_line_count(bufnr)
-  local height = nvim.win_get_height(0)
+  local bufnr = vim.F.if_nil(opts.bufnr, api.nvim_get_current_buf())
+  local line_count = api.nvim_buf_line_count(bufnr)
+  local height = api.nvim_win_get_height(0)
   local half_height = math.floor(height / 2)
-  local row, col = unpack(nvim.win_get_cursor(0))
+  local row, col = unpack(api.nvim_win_get_cursor(0))
 
   if dir == "down" then
     local next_pos = math.min(line_count, row + half_height)
-    nvim.win_set_cursor(0, { next_pos, col })
+    api.nvim_win_set_cursor(0, { next_pos, col })
   else
     local next_pos = math.max(1, row - half_height)
-    nvim.win_set_cursor(0, { next_pos, col })
+    api.nvim_win_set_cursor(0, { next_pos, col })
   end
 end
 

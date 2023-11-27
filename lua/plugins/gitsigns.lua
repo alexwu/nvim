@@ -1,6 +1,7 @@
 return {
   {
     "chrisgrieser/nvim-tinygit",
+    event = "VeryLazy",
     dependencies = { "stevearc/dressing.nvim" },
     config = function()
       require("legendary").command({
@@ -181,6 +182,19 @@ return {
           map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Inner Git hunk" })
         end,
       })
+    end,
+  },
+  {
+    "topaxi/gh-actions.nvim",
+    cmd = "GhActions",
+    keys = {
+      { "<leader>gh", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
+    },
+    -- build = "make",
+    dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
+    opts = {},
+    config = function(_, opts)
+      require("gh-actions").setup(opts)
     end,
   },
 }

@@ -127,6 +127,14 @@ return {
     end
 
     cmp.setup({
+      -- enabled = function()
+      --   local disabled = false
+      --   disabled = disabled or (vim.api.nvim_buf_get_option(0, "buftype") == "prompt")
+      --   disabled = disabled or (vim.api.nvim_buf_get_option(0, "filetype") == "nucleo")
+      --   disabled = disabled or (vim.fn.reg_recording() ~= "")
+      --   disabled = disabled or (vim.fn.reg_executing() ~= "")
+      --   return not disabled
+      -- end,
       sources = cmp.config.sources({
         {
           name = "nvim_lsp",
@@ -297,11 +305,15 @@ return {
     })
 
     nvim.create_autocmd("FileType", {
-      pattern = "TelescopePrompt",
+      pattern = { "TelescopePrompt", "nucleo" },
       group = "bombeelu.cmp",
       callback = function()
         require("cmp").setup.buffer({ enabled = false })
       end,
     })
+
+    -- cmp.setup.filetype({ "TelescopePrompt", "nucleo" }, {
+    --   sources = {},
+    -- })
   end,
 }

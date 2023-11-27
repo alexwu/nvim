@@ -6,7 +6,7 @@ return {
       -- Event to trigger linters
       events = { "BufWritePost", "BufReadPost", "InsertLeave" },
       linters_by_ft = {
-        ruby = { "rubocop" },
+        -- ruby = { "rubocop" },
         lua = { "selene" },
         -- fish = { "fish" },
         -- Use the "*" filetype to run linters on all filetypes.
@@ -19,8 +19,6 @@ return {
       ---@type table<string,table>
       linters = {
         selene = {
-          -- `condition` is another LazyVim extension that allows you to
-          -- dynamically enable/disable linters based on the context.
           condition = function(ctx)
             return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
           end,

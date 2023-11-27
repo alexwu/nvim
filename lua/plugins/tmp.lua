@@ -1,6 +1,7 @@
 return {
   {
     "alexwu/sorbet-tools.nvim",
+    event = "VeryLazy",
     enabled = function()
       return not vim.g.vscode
     end,
@@ -15,7 +16,9 @@ return {
   },
   {
     "alexwu/nucleo.nvim",
+    event = "VeryLazy",
     dependencies = { "runiq/neovim-throttle-debounce" },
+    url = "git@github.com:alexwu/nucleo.nvim.git",
     dev = true,
     config = true,
     opts = {},

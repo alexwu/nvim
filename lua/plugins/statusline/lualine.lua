@@ -52,7 +52,11 @@ require("lualine").setup({
   options = {
     theme = snazzy(),
     disabled_filetypes = {
-      statusline = {},
+      statusline = {
+        "dashboard",
+        "alpha",
+        "starter",
+      },
       winbar = { "neo-tree" },
     },
     component_separators = "|",
@@ -116,24 +120,74 @@ require("lualine").setup({
       { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
     },
     lualine_x = {
+      -- {
+      --   require("noice").api.status.message.get_hl,
+      --   cond = require("noice").api.status.message.has,
+      -- },
+      -- {
+      --   require("noice").api.status.command.get,
+      --   cond = require("noice").api.status.command.has,
+      --   color = { fg = "#ff9e64" },
+      -- },
+      -- {
+      --   require("noice").api.status.mode.get,
+      --   cond = require("noice").api.status.mode.has,
+      --   color = { fg = "#ff9e64" },
+      -- },
+      -- {
+      --   require("noice").api.status.search.get,
+      --   cond = require("noice").api.status.search.has,
+      --   color = { fg = "#ff9e64" },
+      -- },
       {
-        require("noice").api.status.message.get_hl,
-        cond = require("noice").api.status.message.has,
-      },
-      {
-        require("noice").api.status.command.get,
-        cond = require("noice").api.status.command.has,
+        function()
+          return require("noice").api.status.command.get()
+        end,
+        cond = function()
+          return package.loaded["noice"] and require("noice").api.status.command.has()
+        end,
         color = { fg = "#ff9e64" },
       },
       {
-        require("noice").api.status.mode.get,
-        cond = require("noice").api.status.mode.has,
+        function()
+          return require("noice").api.status.mode.get()
+        end,
+        cond = function()
+          return package.loaded["noice"] and require("noice").api.status.mode.has()
+        end,
         color = { fg = "#ff9e64" },
       },
       {
-        require("noice").api.status.search.get,
-        cond = require("noice").api.status.search.has,
+        function()
+          return "  " .. require("dap").status()
+        end,
+        cond = function()
+          return package.loaded["dap"] and require("dap").status() ~= ""
+        end,
         color = { fg = "#ff9e64" },
+      },
+      {
+        require("lazy.status").updates,
+        cond = require("lazy.status").has_updates,
+        color = { fg = "#ff9e64" },
+      },
+      {
+        "diff",
+        symbols = {
+          added = " ",
+          modified = " ",
+          removed = " ",
+        },
+        source = function()
+          local gitsigns = vim.b.gitsigns_status_dict
+          if gitsigns then
+            return {
+              added = gitsigns.added,
+              modified = gitsigns.changed,
+              removed = gitsigns.removed,
+            }
+          end
+        end,
       },
     },
     lualine_y = {},

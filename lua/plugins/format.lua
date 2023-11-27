@@ -65,6 +65,13 @@ return {
         zig = { "zigfmt" },
       },
       formatters = {
+        rub = {
+          command = "rub",
+          args = { "--stdin" },
+          stdin = true,
+          -- cwd = require("conform.util").root_file({ "Gemfile" }),
+          require_cwd = false,
+        },
         syntax_tree = {
           command = "stree",
           args = { "format" },

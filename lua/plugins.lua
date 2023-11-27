@@ -202,7 +202,7 @@ return {
       },
     },
   },
-  { "echasnovski/mini.align", version = false, opts = {}, config = true },
+  { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true },
   {
     "echasnovski/mini.clue",
     enabled = false,
@@ -440,6 +440,39 @@ return {
     "folke/trouble.nvim",
     event = "VeryLazy",
     requires = "nvim-tree/nvim-web-devicons",
+    keys = {
+      {
+        "[q",
+        function()
+          if require("trouble").is_open() then
+            require("trouble").previous({ skip_groups = true, jump = true })
+          else
+            local ok, err = pcall(vim.cmd.cprev)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = "Previous trouble/quickfix item",
+      },
+      {
+        "]q",
+        function()
+          if require("trouble").is_open() then
+            require("trouble").next({ skip_groups = true, jump = true })
+          else
+            local ok, err = pcall(vim.cmd.cnext)
+            if not ok then
+              vim.notify(err, vim.log.levels.ERROR)
+            end
+          end
+        end,
+        desc = "Next trouble/quickfix item",
+      },
+    },
+    opts = {
+      use_diagnostic_signs = true,
+    },
     config = true,
   },
   {
@@ -490,11 +523,13 @@ return {
   },
   {
     "echasnovski/mini.nvim",
+    event = "VeryLazy",
     version = false,
     config = function()
       require("mini.bracketed").setup({
         diagnostic = { suffix = "d", options = { float = { border = "rounded" } } },
         treesitter = { suffix = "" },
+        quickfix = { suffix = "" },
       })
       require("mini.splitjoin").setup()
       require("mini.colors").setup()
@@ -502,10 +537,6 @@ return {
   },
   {
     "echasnovski/mini.ai",
-    -- keys = {
-    --   { "a", mode = { "x", "o" } },
-    --   { "i", mode = { "x", "o" } },
-    -- },
     event = "VeryLazy",
     dependencies = { "nvim-treesitter-textobjects" },
     opts = function()
@@ -586,28 +617,6 @@ return {
     end,
   },
   {
-    "cshuaimin/ssr.nvim",
-    module = "ssr",
-    config = function()
-      require("ssr").setup({
-        border = "rounded",
-        min_width = 50,
-        min_height = 5,
-        max_width = 120,
-        max_height = 25,
-        keymaps = {
-          close = "q",
-          next_match = "n",
-          prev_match = "N",
-          replace_confirm = "<cr>",
-          replace_all = "<leader><cr>",
-        },
-      })
-      vim.api.nvim_create_user_command("SSR", require("ssr").open, { bang = true })
-    end,
-    enabled = false,
-  },
-  {
     "shortcuts/no-neck-pain.nvim",
     event = "VeryLazy",
     version = "*",
@@ -627,18 +636,6 @@ return {
     opts = {},
   },
   {
-    "lewis6991/satellite.nvim",
-    cond = function()
-      return vim.fn.has("nvim-0.10.0") == 1
-    end,
-    dependencies = { "gitsigns.nvim" },
-    config = function()
-      require("satellite").setup({
-        current_only = true,
-      })
-    end,
-  },
-  {
     "johmsalas/text-case.nvim",
     event = "VeryLazy",
     dependencies = { "nvim-telescope/telescope.nvim" },
@@ -654,49 +651,6 @@ return {
     "Civitasv/cmake-tools.nvim",
     event = "VeryLazy",
     config = true,
-  },
-  {
-    "goolord/alpha-nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "danielfalk/smart-open.nvim",
-    },
-    event = "VimEnter",
-    opts = function() end,
-    config = function()
-      local dash = require("alpha.themes.dashboard")
-
-      dash.section.buttons.val = {
-        dash.button("<space>", " " .. " Recent files", [[:Telescope smart_open cwd_only=true match_algorithm=fzf <CR>]]),
-        dash.button("f", " " .. " Find file", [[:lua require("nucleo").find() <CR>]]),
-        dash.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-        dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
-        dash.button("r", " " .. " Run task", ":OverseerRun<CR>"),
-        dash.button("c", " " .. " Config", [[:lua require("bombeelu.pickers").config_files() <CR>]]),
-        dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
-        dash.button("q", " " .. " Quit", ":qa<CR>"),
-      }
-      for _, button in ipairs(dash.section.buttons.val) do
-        button.opts.hl = "AlphaButtons"
-        button.opts.hl_shortcut = "AlphaShortcut"
-      end
-      dash.section.header.opts.hl = "AlphaHeader"
-      dash.section.buttons.opts.hl = "AlphaButtons"
-      dash.section.footer.opts.hl = "AlphaFooter"
-      dash.opts.layout[1].val = 8
-      -- close Lazy and re-open when the dashboard is ready
-      if vim.o.filetype == "lazy" then
-        vim.cmd.close()
-        vim.api.nvim_create_autocmd("User", {
-          pattern = "AlphaReady",
-          callback = function()
-            require("lazy").show()
-          end,
-        })
-      end
-
-      require("alpha").setup(dash.opts)
-    end,
   },
   {
     "rgroli/other.nvim",
@@ -799,21 +753,6 @@ return {
     end,
   },
   {
-    "abecodes/tabout.nvim",
-    enabled = false,
-    config = function()
-      require("tabout").setup({
-        tabouts = {
-          { open = "'", close = "'" },
-          { open = '"', close = '"' },
-          { open = "`", close = "`" },
-        },
-      })
-    end,
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
-  },
-  {
     "TobinPalmer/rayso.nvim",
     cmd = { "Rayso" },
     opts = {
@@ -845,18 +784,12 @@ return {
       vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
     end,
   },
-
-  {
-    "kevinhwang91/nvim-ufo",
-    dependencies = { "kevinhwang91/promise-async" },
-    config = function()
-      require("bombeelu.folds").setup()
-    end,
-    event = "VeryLazy",
-  },
-
   {
     "lewis6991/fileline.nvim",
     lazy = false,
+  },
+  {
+    "stevearc/stickybuf.nvim",
+    opts = {},
   },
 }

@@ -89,12 +89,12 @@ end
 --- NOTE: Remove when upstreamed: https://github.com/neovim/neovim/pull/13896/files
 --- Get the region between two marks and the start and end positions for the region
 ---
---@param mark1 Name of mark starting the region
---@param mark2 Name of mark ending the region
---@param options Table containing the adjustment function, register type and selection mode
---@return region region between the two marks, as returned by |vim.region|
---@return start (row,col) tuple denoting the start of the region
---@return finish (row,col) tuple denoting the end of the region
+---@param mark1 string Name of mark starting the region
+---@param mark2 string Name of mark ending the region
+---@param options table Table containing the adjustment function, register type and selection mode
+---@return table|nil region between the two marks, as returned by |vim.region|
+---@return table|nil (row,col) tuple denoting the start of the region
+---@return table|nil (row,col) tuple denoting the end of the region
 function M.get_marked_region(mark1, mark2, options)
   options = if_nil(options, {})
   local bufnr = 0
@@ -113,7 +113,7 @@ function M.get_marked_region(mark1, mark2, options)
 
   -- Return if start or finish are invalid
   if start[2] < 0 or finish[1] < start[1] then
-    return
+    return nil, nil, nil
   end
 
   local region = vim.region(bufnr, start, finish, regtype, selection)
@@ -795,23 +795,6 @@ function M.lsp_disable(server, cond)
       config.enabled = false
     end
   end)
-end
-
-function M.flatten(t)
-  local result = {}
-  local function _tbl_flatten(_t)
-    local n = #_t
-    for i = 1, n do
-      local v = _t[i]
-      if vim.tbl_islist(v) then
-        _tbl_flatten(v)
-      elseif v then
-        table.insert(result, v)
-      end
-    end
-  end
-  _tbl_flatten(t)
-  return result
 end
 
 return M

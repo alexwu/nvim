@@ -47,10 +47,20 @@ vim.g.ts_highlight_lua = false
 vim.o.conceallevel = 2
 vim.o.grepformat = "%f:%l:%c:%m"
 vim.o.grepprg = "rg --vimgrep"
--- vim.o.splitkeep="screen"
+vim.opt.splitkeep = "screen"
 -- vim.opt.foldopen:remove({ "hor" })
 vim.o.conceallevel = 2
 vim.o.smoothscroll = vim.fn.has("nvim-0.10.0") == 1
+
+-- Folding
+vim.o.foldenable = true
+vim.opt.foldlevel = 99
+vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+vim.o.foldcolumn = "1"
 
 vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {

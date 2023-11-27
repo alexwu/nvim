@@ -12,7 +12,17 @@ function lua.setup(opts)
     library = {
       vimruntime = true,
       types = true,
-      plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim", "neotest", "bu", "nui.nvim", "legendary.nvim" },
+      plugins = {
+        "nvim-treesitter",
+        "plenary.nvim",
+        "telescope.nvim",
+        "neotest",
+        "bu",
+        "nui.nvim",
+        "legendary.nvim",
+        "noice.nvim",
+        "legendary.nvim",
+      },
     },
     runtime_path = false,
   })
@@ -31,8 +41,11 @@ function lua.setup(opts)
     end,
     settings = {
       Lua = {
-        semantic = { enable = false },
-        diagnostics = { enable = true },
+        semantic = { enable = true },
+        diagnostics = {
+          enable = true,
+          globals = { "vim" },
+        },
         completion = { autoRequire = false },
         hint = {
           enable = true,

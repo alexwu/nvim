@@ -1,4 +1,6 @@
 -- the following is from here: https://github.com/norcalli/nvim.lua/blob/master/lua/nvim.lua
+
+---@class NvimHelper
 _G.nvim = setmetatable({
   buf = {
     line = vim.api.nvim_get_current_line,
