@@ -3,6 +3,7 @@ vim.filetype.add({
     rbi = "ruby",
   },
   filename = {
+    [".cargo/config"] = "toml",
     [".git/config"] = "gitconfig",
     ["dot_gitconfig"] = "gitconfig",
     ["dot_config/git/ignore"] = "gitconfig",
@@ -16,6 +17,9 @@ vim.filetype.add({
   pattern = {
     [".env.*"] = function(path, bufnr, ext)
       return "sh"
+    end,
+    ["*.js.es6"] = function()
+      return "javascript"
     end,
   },
 })
