@@ -94,10 +94,14 @@ local chezmoi_apply = function()
     args = { "apply" },
     cwd = vim.loop.cwd(),
     on_stderr = function(_, data)
-      notify(data, "error")
+      if data then
+        notify(data, "error")
+      end
     end,
     on_stdout = function(_, return_val)
-      notify(return_val)
+      if return_val then
+        notify(return_val)
+      end
     end,
     on_exit = function(_, _)
       notify("chezmoi apply: successful")
