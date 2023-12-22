@@ -31,6 +31,7 @@ function M.setup()
           )
         end,
       }),
+      require("neotest-vitest"),
     },
     icons = {
       passed = " ✔",

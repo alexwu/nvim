@@ -26,11 +26,12 @@ return {
 
       dash.section.buttons.val = {
         -- stylua: ignore
-        dash.button("<space>", " " .. " Recent files", [[:lua require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })<CR>]]),
-        dash.button("f", " " .. " Find file", [[:lua require("nucleo").find()<CR>]]),
-        dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
-        dash.button("r", " " .. " Run task", [[:lua require("overseer").run_template()<CR>]]),
+        -- dash.button("<space>", "󰈮 " .. " Recent files", [[:lua require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })<CR>]]),
+        dash.button("f", "󰈞 " .. " Find file", [[:lua require("nucleo.sources").find_files()<CR>]]),
+        dash.button("/", " " .. " Find text", ":Telescope live_grep <CR>"),
+        dash.button("r", " " .. " Run task", [[:lua require("overseer").run_template()<CR>]]),
         dash.button("c", " " .. " Config", [[:lua require("bombeelu.pickers").config_files() <CR>]]),
+        dash.button("?", " " .. " Keymaps", [[:lua require("which-key").show()<CR>]]),
         dash.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dash.button("q", " " .. " Quit", ":qa<CR>"),
       }

@@ -153,6 +153,7 @@ function wezterm.set_tab_title(title, id)
   else
     table.insert(args, title)
   end
+
   wezterm.exec(args, function(code, _signal)
     if code ~= 0 then
       err("set tab title to '" .. title .. (id == nil and "'" or "' for tab " .. id))

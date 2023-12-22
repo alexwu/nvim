@@ -22,6 +22,7 @@ function lua.setup(opts)
         "legendary.nvim",
         "noice.nvim",
         "legendary.nvim",
+        "flash.nvim",
       },
     },
     runtime_path = false,
@@ -44,7 +45,10 @@ function lua.setup(opts)
         semantic = { enable = true },
         diagnostics = {
           enable = true,
-          globals = { "vim" },
+          globals = { "vim", "nvim" },
+          unusedLocalExclude = {
+            items = { "^_" },
+          },
         },
         completion = { autoRequire = false },
         hint = {
