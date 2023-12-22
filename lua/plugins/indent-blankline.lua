@@ -8,28 +8,58 @@ return {
     main = "ibl",
     opts = {
       scope = {
-        enabled = true,
+        enabled = false,
         show_start = false,
       },
-      exclude = { filetypes = { "dashboard" } },
+      exclude = {
+        filetypes = {
+          "help",
+          "alpha",
+          "dashboard",
+          "neo-tree",
+          "Trouble",
+          "trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
+          "FZF",
+        },
+      },
     },
     event = "VeryLazy",
   },
-  -- {
-  --   "lukas-reineke/indent-blankline.nvim",
-  --   event = "VeryLazy",
-  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
-  --   config = function()
-  --     require("indent_blankline").setup({
-  --       use_treesitter = true,
-  --       show_current_context = true,
-  --       show_current_context_start = false,
-  --       context_highlight = "Label",
-  --       show_first_indent_level = false,
-  --       buftype_exclude = { "help", "fzf", "lspinfo", "NvimTree", "nofile" },
-  --       filetype_exclude = { "help", "fzf", "lspinfo", "NvimTree", "windline" },
-  --       char = "▏",
-  --     })
-  --   end,
-  -- },
+  {
+    "echasnovski/mini.indentscope",
+    version = false,
+    event = "VeryLazy",
+    opts = {
+      -- symbol = "▏",
+      symbol = "│",
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "help",
+          "alpha",
+          "dashboard",
+          "neo-tree",
+          "Trouble",
+          "trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
+          "FZF",
+          "noice",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
+  },
 }
