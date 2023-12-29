@@ -64,6 +64,7 @@ return {
         function()
           require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
         end,
+        desc = "Jump forward",
       },
       {
         "S",
@@ -73,6 +74,15 @@ return {
             search = { forward = false, wrap = false, multi_window = false },
           })
         end,
+        desc = "Jump backward",
+      },
+      {
+        "gst",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Jump to Treesitter node",
       },
       {
         "gsd",
@@ -89,6 +99,7 @@ return {
             end,
           })
         end,
+        desc = "Jump to diagnostic",
       },
     },
   },

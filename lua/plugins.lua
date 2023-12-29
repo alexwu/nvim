@@ -61,6 +61,7 @@ return {
       "haydenmeade/neotest-jest",
       "rouge8/neotest-rust",
       "olimorris/neotest-rspec",
+      "marilari88/neotest-vitest",
       "antoinemadec/FixCursorHold.nvim",
     },
     config = function()
@@ -145,7 +146,7 @@ return {
     dependencies = { "nvim-treesitter" },
     config = function()
       require("ts-node-action").setup({})
-      set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
+      -- set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
     end,
   },
   {
@@ -760,29 +761,6 @@ return {
         theme = "candy",
       },
     },
-  },
-  {
-    "lewis6991/hover.nvim",
-    enabled = false,
-    config = function()
-      require("hover").setup({
-        init = function()
-          require("hover.providers.lsp")
-          require("hover.providers.gh")
-          require("hover.providers.gh_user")
-          require("hover.providers.man")
-          require("hover.providers.dictionary")
-        end,
-        preview_opts = {
-          border = "rounded",
-        },
-        preview_window = false,
-        title = true,
-      })
-
-      vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
-      vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
-    end,
   },
   {
     "lewis6991/fileline.nvim",

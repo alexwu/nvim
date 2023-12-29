@@ -100,6 +100,11 @@ return {
       end,
     },
     "camilledejoye/nvim-lsp-selection-range",
+    {
+      "aznhe21/actions-preview.nvim",
+      config = true,
+      opts = {},
+    },
   },
   init = function()
     vim.g.navic_silence = true
@@ -114,27 +119,24 @@ return {
     local rpt = require("bu").nvim.repeatable
     local set = require("bombeelu.utils").set
 
+    local Methods = vim.lsp.protocol.Methods
+
     local augroup = nvim.create_augroup
     local autocmd = nvim.create_autocmd
-
-    local signs = {
-      Error = " ✘",
-      Warn = " ",
-      Hint = " ",
-      Info = " ",
-    }
-
-    for name, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. name
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-    end
 
     vim.diagnostic.config({
       virtual_text = false,
       underline = {
         severity = "error",
       },
-      signs = true,
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = " ✘",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.HINT] = " ",
+          [vim.diagnostic.severity.INFO] = " ",
+        },
+      },
       float = {
         show_header = false,
         source = "always",
@@ -142,7 +144,7 @@ return {
       update_in_insert = false,
     })
 
-    vim.lsp.handlers["textDocument/diagnostic"] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
+    vim.lsp.handlers[Methods.textDocument_diagnostic] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
       virtual_text = {
         spacing = 4,
         severity = "error",
@@ -158,7 +160,7 @@ return {
       update_in_insert = false,
     })
 
-    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    vim.lsp.handlers[Methods.textDocument_publishDiagnostics] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
       virtual_text = {
         spacing = 4,
         severity = "error",

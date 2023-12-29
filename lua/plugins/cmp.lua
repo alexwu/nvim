@@ -13,7 +13,7 @@ return {
     "onsails/lspkind-nvim",
     { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip" } },
     {
-      "doxnit/cmp-luasnip-choice",
+      "L3MON4D3/cmp-luasnip-choice",
       config = function()
         require("cmp_luasnip_choice").setup({
           auto_open = true,
@@ -93,7 +93,7 @@ return {
     local tab_prev = function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
+      elseif luasnip.locally_jumpable(-1) then
         luasnip.jump(-1)
       else
         fallback()

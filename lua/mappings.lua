@@ -22,8 +22,8 @@ key.map(
 key.map({ "<" }, "<gv", { modes = "x" })
 key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
 
-key.map("<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
-key.map("<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+key.map("<leader>bb", "<cmd>e #<cr>", { desc = "Switch to other Buffer" })
+key.map("<leader>`", "<cmd>e #<cr>", { desc = "Switch to other Buffer" })
 
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })

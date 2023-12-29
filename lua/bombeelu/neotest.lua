@@ -31,6 +31,7 @@ function M.setup()
           )
         end,
       }),
+      require("neotest-vitest"),
     },
     icons = {
       passed = " ✔",
@@ -143,13 +144,17 @@ function M.setup()
       neotest.run.run(vim.fn.expand("%"))
     elseif args[1] == "last" then
       neotest.run.run_last()
+    elseif args[1] == "output" then
+      neotest.output.open({ enter = true })
+    elseif args[1] == "output_panel" then
+      neotest.output_panel.toggle()
     else
       vim.notify("Unknown command: " .. args[1], vim.log.levels.ERROR)
     end
   end, {
     nargs = "?",
     complete = function()
-      return { "nearest", "file", "summry", "last" }
+      return { "nearest", "file", "summary", "last", "output", "output_panel" }
     end,
   })
 

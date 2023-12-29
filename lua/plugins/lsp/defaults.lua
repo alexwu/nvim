@@ -14,39 +14,39 @@ function M.on_attach(client, bufnr)
   legendary.keymap({
     "<Leader>a",
     function()
-      vim.lsp.buf.code_action()
+      require("actions-preview").code_actions()
     end,
     modes = { "n", "x" },
     opts = { silent = true, desc = "Select a code action", buffer = bufnr },
   })
-
-  if client.supports_method(methods.textDocument_codeLens) then
-    legendary.keymap({
-      "<leader>cl",
-      vim.lsp.codelens.run,
-      modes = { "n" },
-      opts = { desc = "Run CodeLens", buffer = bufnr },
-    })
-
-    local codelens_group = vim.api.nvim_create_augroup("bombeelu/codelens", { clear = false })
-    vim.api.nvim_create_autocmd("InsertEnter", {
-      group = codelens_group,
-      desc = "Disable CodeLens in insert mode",
-      buffer = bufnr,
-      callback = function()
-        vim.lsp.codelens.clear(nil, bufnr)
-      end,
-    })
-    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-      group = codelens_group,
-      desc = "Refresh CodeLens",
-      buffer = bufnr,
-      callback = vim.lsp.codelens.refresh,
-    })
-
-    -- Initial CodeLens display.
-    vim.lsp.codelens.refresh()
-  end
+  --
+  -- if client.supports_method(methods.textDocument_codeLens) then
+  --   legendary.keymap({
+  --     "<leader>cl",
+  --     vim.lsp.codelens.run,
+  --     modes = { "n" },
+  --     opts = { desc = "Run CodeLens", buffer = bufnr },
+  --   })
+  --
+  --   local codelens_group = vim.api.nvim_create_augroup("bombeelu/codelens", { clear = false })
+  --   vim.api.nvim_create_autocmd("InsertEnter", {
+  --     group = codelens_group,
+  --     desc = "Disable CodeLens in insert mode",
+  --     buffer = bufnr,
+  --     callback = function()
+  --       vim.lsp.codelens.clear(nil, bufnr)
+  --     end,
+  --   })
+  --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+  --     group = codelens_group,
+  --     desc = "Refresh CodeLens",
+  --     buffer = bufnr,
+  --     callback = vim.lsp.codelens.refresh,
+  --   })
+  --
+  --   -- Initial CodeLens display.
+  --   vim.lsp.codelens.refresh()
+  -- end
 end
 
 local make_capabilities = function()
