@@ -766,8 +766,4 @@ return {
     "lewis6991/fileline.nvim",
     lazy = false,
   },
-  {
-    "stevearc/stickybuf.nvim",
-    opts = {},
-  },
 }
