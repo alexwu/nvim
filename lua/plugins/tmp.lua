@@ -26,9 +26,37 @@ return {
       {
         "<leader>f",
         function()
-          require("nucleo").find()
+          require("nucleo.sources").find_files()
         end,
-        desc = "Fuzzy find files",
+        desc = "Find files",
+      },
+      {
+        "<leader>F",
+        function()
+          require("nucleo.sources").find_files({ git_ignore = false, ignore = false })
+        end,
+        desc = "Find files (no git_ignore)",
+      },
+      {
+        "<leader>gs",
+        function()
+          require("nucleo.sources").git_status()
+        end,
+        desc = "Find files by git status",
+      },
+      {
+        "<leader>d",
+        function()
+          require("nucleo.sources").diagnostics({ scope = "document" })
+        end,
+        desc = "Find document diagnostics",
+      },
+      {
+        "<leader>D",
+        function()
+          require("nucleo.sources").diagnostics({ scope = "workspace" })
+        end,
+        desc = "Find workspace diagnostics",
       },
     },
   },
