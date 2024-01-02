@@ -45,7 +45,7 @@ return {
       general = {
         enable = function(buf, win)
           return not vim.api.nvim_win_get_config(win).zindex
-            and vim.bo[buf].buftype == ""
+            and (vim.bo[buf].buftype == "" or vim.bo[buf].buftype == "terminal")
             and vim.api.nvim_buf_get_name(buf) ~= ""
             and not vim.wo[win].diff
         end,
@@ -647,7 +647,6 @@ return {
       vim.api.nvim_set_keymap("v", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
     end,
   },
-
   {
     "Civitasv/cmake-tools.nvim",
     event = "VeryLazy",
