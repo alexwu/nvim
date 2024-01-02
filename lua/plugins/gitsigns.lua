@@ -4,12 +4,21 @@ return {
     event = "VeryLazy",
     dependencies = { "stevearc/dressing.nvim" },
     config = function()
-      require("legendary").command({
-        ":Commit",
-        function(_o)
-          require("tinygit").smartCommit({ push = false })
-        end,
-        description = "Commit staged changes or all diffs",
+      require("legendary").commands({
+        {
+          ":Commit",
+          function()
+            require("tinygit").smartCommit({ pushIfClean = false })
+          end,
+          description = "Commit staged changes or all diffs",
+        },
+        {
+          ":Push",
+          function()
+            require("tinygit").push()
+          end,
+          description = "Push committed files",
+        },
       })
     end,
   },
