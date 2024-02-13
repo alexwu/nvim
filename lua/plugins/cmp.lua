@@ -33,6 +33,7 @@ return {
       cond = function()
         return not vim.g.vscode
       end,
+      enabled = false,
     },
 
     {
@@ -49,6 +50,7 @@ return {
       cond = function()
         return not vim.g.vscode
       end,
+      enabled = false,
     },
     {
       "roobert/tailwindcss-colorizer-cmp.nvim",
@@ -159,7 +161,7 @@ return {
             end,
           },
         },
-        { name = "copilot" },
+        -- { name = "copilot" },
         { name = "cmp_tabnine" },
         { name = "path" },
       }),
@@ -170,7 +172,7 @@ return {
         compare.score,
         require("cmp_tabnine.compare"),
         -- require("copilot_cmp.comparators").prioritize,
-        require("copilot_cmp.comparators").score,
+        -- require("copilot_cmp.comparators").score,
         compare.recently_used,
         compare.scopes,
         compare.kind,

@@ -45,6 +45,13 @@ return {
         desc = "Find files by git status",
       },
       {
+        "<leader>gh",
+        function()
+          require("nucleo.sources").git_hunks()
+        end,
+        desc = "Find git hunks",
+      },
+      {
         "<leader>d",
         function()
           require("nucleo.sources").diagnostics({ scope = "document" })

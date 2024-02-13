@@ -4,6 +4,35 @@ return {
     event = "VeryLazy",
     dependencies = { "stevearc/dressing.nvim" },
     config = function()
+      require("tinygit").setup({
+        commitMsg = {
+          mediumLen = 50,
+          maxLen = 72,
+          emptyFillIn = "chore", ---@type string|false
+          commitPreview = true,
+          conventionalCommits = {
+            enforce = false, -- disallow commit messages without a keyword
+            keywords = {
+              "fix",
+              "feat",
+              "chore",
+              "docs",
+              "refactor",
+              "build",
+              "test",
+              "perf",
+              "style",
+              "revert",
+              "ci",
+              "break",
+              "improv",
+              "custom",
+            },
+          },
+          spellcheck = true,
+          openReferencedIssue = false,
+        },
+      })
       require("legendary").commands({
         {
           ":Commit",
@@ -163,9 +192,16 @@ return {
               description = "Preview Git hunk",
               opts = { desc = "Preview Git hunk", buffer = bufnr },
             },
+            {
+              "gsdh",
+              function()
+                gs.diffthis()
+              end,
+              description = "Git diff",
+              opts = { desc = "Git diff", buffer = bufnr },
+            },
           })
 
-          -- keymap({ "gssh", gs.stage_hunk, description = "Stage hunk", opts = { desc = "Stage Git hunk", buffer = bufnr } })
           -- map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
           -- keymap({ "gsrh", gs.reset_hunk, description = "Reset Git hunk", mode = { "n", "v" }, opts = { buffer = bufnr } })
           -- keymap({
@@ -199,7 +235,6 @@ return {
     keys = {
       { "<leader>gh", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
     },
-    -- build = "make",
     dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
     opts = {},
     config = function(_, opts)
@@ -207,3 +242,4 @@ return {
     end,
   },
 }
+

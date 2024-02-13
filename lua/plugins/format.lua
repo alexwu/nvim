@@ -110,10 +110,13 @@ return {
         group = "bombeelu.format2",
         callback = function(args)
           local bufnr = args.buf
-          local formatters = require("conform").list_formatters(bufnr)
+          local formatters = vim.iter(require("conform").list_formatters_for_buffer(bufnr)):flatten():totable()
 
           local formatter_commands = vim
             .iter(formatters)
+            :map(function(name)
+              return require("conform").get_formatter_info(name, bufnr)
+            end)
             :filter(function(formatter)
               return formatter.available
             end)

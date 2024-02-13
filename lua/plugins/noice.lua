@@ -2,6 +2,16 @@ return {
   "folke/noice.nvim",
   event = "VimEnter",
   opts = {
+    routes = {
+      {
+        filter = {
+          event = "msg_show",
+          kind = "",
+          find = "written",
+        },
+        opts = { skip = true },
+      },
+    },
     popupmenu = {
       enabled = true,
       backend = "cmp",

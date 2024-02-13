@@ -51,6 +51,6 @@ return {
       },
     })
 
-    vim.api.nvim_create_user_command("Diff", "DiffviewOpen origin/master", {})
+    vim.keymap.set("ca", "Diff", "DiffviewOpen", {})
   end,
 }
