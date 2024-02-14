@@ -42,7 +42,6 @@ vim.o.termguicolors = true
 vim.o.timeoutlen = 500
 vim.o.pumheight = 10
 vim.o.guifont = "FiraCode Nerd Font:h14"
-vim.o.fillchars = "foldclose:,foldopen:"
 vim.g.ts_highlight_lua = false
 vim.o.conceallevel = 2
 vim.o.grepformat = "%f:%l:%c:%m"
@@ -56,10 +55,12 @@ vim.o.smoothscroll = vim.fn.has("nvim-0.10.0") == 1
 -- Folding
 vim.o.foldenable = true
 vim.opt.foldlevel = 99
-vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+vim.o.foldtext = ""
+vim.o.fillchars = "foldclose:,foldopen:,fold: "
 
 vim.o.foldcolumn = "1"
 

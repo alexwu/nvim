@@ -99,19 +99,46 @@ return {
           end
 
           -- Actions
-          local keymap = require("legendary").keymap
           local keymaps = require("legendary").keymaps
-
+          --     map('v', '<leader>hs', function() gs.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end)
+          --     map('v', '<leader>hr', function() gs.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end)
+          --     map('n', '<leader>hS', gs.stage_buffer)
+          --     map('n', '<leader>hu', gs.undo_stage_hunk)
+          --     map('n', '<leader>hR', gs.reset_buffer)
+          --     map('n', '<leader>hp', gs.preview_hunk)
+          --     map('n', '<leader>hb', function() gs.blame_line{full=true} end)
+          --     map('n', '<leader>tb', gs.toggle_current_line_blame)
+          --     map('n', '<leader>hd', gs.diffthis)
+          --     map('n', '<leader>hD', function() gs.diffthis('~') end)
+          --     map('n', '<leader>td', gs.toggle_deleted)
+          --
+          --     -- Text object
+          --     map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
           keymaps({
             {
               "gssh",
               gs.stage_hunk,
-              -- itemgroup = "Git",
+              description = "Stage hunk",
+              opts = { desc = "Stage Git hunk", buffer = bufnr },
+            },
+            {
+              "<leader>hs",
+              gs.stage_hunk,
               description = "Stage hunk",
               opts = { desc = "Stage Git hunk", buffer = bufnr },
             },
             {
               "gsrh",
+              gs.reset_hunk,
+              -- itemgroup = "Git",
+              description = "Reset Git hunk",
+              mode = { "n", "v" },
+              opts = {
+                buffer = bufnr,
+              },
+            },
+            {
+              "<leader>hr",
               gs.reset_hunk,
               -- itemgroup = "Git",
               description = "Reset Git hunk",
@@ -129,9 +156,24 @@ return {
               opts = { buffer = bufnr },
             },
             {
+              "<leader>hu",
+              gs.undo_stage_hunk,
+              -- itemgroup = "Git",
+              description = "Undo stage Git hunk",
+              mode = { "n" },
+              opts = { buffer = bufnr },
+            },
+            {
               "gssb",
               gs.stage_buffer,
               -- itemgroup = "Git",
+              description = "Stage Git buffer",
+              mode = { "n" },
+              opts = { buffer = bufnr },
+            },
+            {
+              "<leader>hS",
+              gs.stage_buffer,
               description = "Stage Git buffer",
               mode = { "n" },
               opts = { buffer = bufnr },
@@ -200,6 +242,12 @@ return {
               description = "Git diff",
               opts = { desc = "Git diff", buffer = bufnr },
             },
+            {
+              "ghD",
+              function()
+                gs.diffthis("~")
+              end,
+            },
           })
 
           -- map({ "n", "v" }, "gsrh", gs.reset_hunk, { desc = "Reset Git hunk" })
@@ -233,7 +281,7 @@ return {
     "topaxi/gh-actions.nvim",
     cmd = "GhActions",
     keys = {
-      { "<leader>gh", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
+      { "<leader>ga", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
     },
     dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
     opts = {},
@@ -242,4 +290,3 @@ return {
     end,
   },
 }
-

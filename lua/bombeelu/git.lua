@@ -18,6 +18,8 @@ function M.git(fargs)
     M.commit()
   elseif cmd == "stage" then
     M.stage("hunk")
+  elseif cmd == "push" then
+    require("tinygit").push()
   end
 end
 
