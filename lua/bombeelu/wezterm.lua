@@ -31,7 +31,7 @@ local wezterm_executable = "wezterm"
 ---@param handler fun(exit_code, signal)
 ---Exec an arbitrary command in wezterm (does not return result)
 function wezterm.exec(args, handler)
-  local cmd = vim.tbl_flatten({ wezterm_executable, args })
+  local cmd = vim.iter({ wezterm_executable, args }):flatten():totable()
   -- vim.print(cmd)
   return vim.system(cmd, { text = true }, handler):wait()
 end

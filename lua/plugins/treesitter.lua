@@ -13,7 +13,6 @@ return {
     end,
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "RRethy/nvim-treesitter-textsubjects",
       "RRethy/nvim-treesitter-endwise",
       "windwp/nvim-autopairs",
       "windwp/nvim-ts-autotag",
@@ -39,14 +38,8 @@ return {
           enable = true,
           keymaps = {
             init_selection = "<CR>",
-          },
-        },
-        textsubjects = {
-          enable = true,
-          prev_selection = "<BS>",
-          keymaps = {
-            ["<CR>"] = "textsubjects-smart",
-            [";"] = "textsubjects-container-outer",
+            node_incremental = "<CR>",
+            node_decremental = "<BS>",
           },
         },
         endwise = {
@@ -232,19 +225,6 @@ return {
         },
       })
     end,
-  },
-  {
-    "aarondiel/spread.nvim",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      local spread = require("spread")
-      local default_options = { silent = true, noremap = true }
-
-      vim.keymap.set("n", "gS", spread.out, default_options)
-      vim.keymap.set("n", "gJ", spread.combine, default_options)
-    end,
-    enabled = false,
   },
   {
     "windwp/nvim-ts-autotag",

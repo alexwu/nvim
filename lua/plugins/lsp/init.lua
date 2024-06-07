@@ -36,7 +36,21 @@ return {
     "stevearc/dressing.nvim",
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
-    "folke/neodev.nvim",
+    {
+      "folke/lazydev.nvim",
+      ft = "lua", -- only load on lua files
+      opts = {
+        library = {
+          -- Library items can be absolute paths
+          -- "~/projects/my-awesome-lib",
+          -- Or relative, which means they will be resolved as a plugin
+          -- "LazyVim",
+          -- When relative, you can also provide a path to the library in the plugin dir
+          "luvit-meta/library", -- see below
+        },
+      },
+    },
+    { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
     {
       "pmizio/typescript-tools.nvim",
       dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -70,6 +84,14 @@ return {
       end,
     },
     {
+      "dmmulroy/ts-error-translator.nvim",
+      opts = {},
+      config = true,
+      cond = function()
+        return not vim.g.vscode
+      end,
+    },
+    {
       "dmmulroy/tsc.nvim",
       config = true,
     },
@@ -82,6 +104,7 @@ return {
     },
     {
       "zbirenbaum/neodim",
+      enabled = true,
       event = "LspAttach",
       config = function()
         require("neodim").setup({
@@ -103,6 +126,14 @@ return {
     {
       "aznhe21/actions-preview.nvim",
       config = true,
+      opts = {},
+    },
+    {
+      "luckasRanarison/tailwind-tools.nvim",
+      dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+        "hrsh7th/nvim-cmp",
+      },
       opts = {},
     },
   },
@@ -160,21 +191,22 @@ return {
       update_in_insert = false,
     })
 
-    vim.lsp.handlers[Methods.textDocument_publishDiagnostics] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = {
-        spacing = 4,
-        severity = "error",
-      },
-      underline = {
-        severity = "error",
-      },
-      float = {
-        show_header = false,
-        source = "always",
-      },
-      signs = true,
-      update_in_insert = false,
-    })
+    vim.lsp.handlers[Methods.textDocument_publishDiagnostics] =
+      vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = {
+          spacing = 4,
+          severity = "error",
+        },
+        underline = {
+          severity = "error",
+        },
+        float = {
+          show_header = false,
+          source = "always",
+        },
+        signs = true,
+        update_in_insert = false,
+      })
 
     require("mason").setup()
     require("mason-lspconfig").setup()
@@ -185,16 +217,26 @@ return {
     lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
     -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.tailwindcss.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        classAttributes = { "class", "className", "class:list", "classList", "ngClass", "classes" },
+      },
+    })
     lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.ruby_ls.setup({
+    lsp.ruby_lsp.setup({
       cmd = { "ruby-lsp" },
       on_attach = on_attach,
       capabilities = capabilities,
     })
+    require("lspconfig").biome.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
+    lsp.sourcekit.setup({ on_attach = on_attach, capabilities = capabilities })
+
     -- lsp.syntax_tree.setup({
     --   on_attach = on_attach,
     --   capabilities = capabilities,
@@ -312,7 +354,9 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(bufnr, true)
+            vim.lsp.inlay_hint.enable(true, {
+              bufnr = bufnr,
+            })
           end
         end,
       })
@@ -328,7 +372,9 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
           if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(bufnr, false)
+            vim.lsp.inlay_hint.enable(false, {
+              bufnr = bufnr,
+            })
           end
         end,
       })

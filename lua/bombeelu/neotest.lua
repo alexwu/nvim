@@ -7,11 +7,14 @@ function M.setup()
     adapters = {
       require("neotest-rspec")({
         rspec_cmd = function()
-          return vim.tbl_flatten({
-            "bundle",
-            "exec",
-            "rspec",
-          })
+          return vim
+            .iter({
+              "bundle",
+              "exec",
+              "rspec",
+            })
+            :flatten()
+            :totable()
         end,
       }),
       require("neotest-rust")({

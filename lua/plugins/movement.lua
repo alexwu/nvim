@@ -1,34 +1,59 @@
 return {
   {
-    "chrisgrieser/nvim-spider",
+    "backdround/neowords.nvim",
     event = "VeryLazy",
-    opts = {
-      skipInsignificantPunctuation = true,
-    },
     keys = {
       {
         "w",
-        "<cmd>lua require('spider').motion('w')<CR>",
+        function()
+          local neowords = require("neowords")
+          local p = neowords.pattern_presets
+
+          local subword_hops =
+            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
+          subword_hops.forward_start()
+        end,
         mode = { "n", "o", "x" },
-        desc = "Spider-w",
+        desc = "",
       },
       {
         "e",
-        "<cmd>lua require('spider').motion('e')<CR>",
+        function()
+          local neowords = require("neowords")
+          local p = neowords.pattern_presets
+
+          local subword_hops =
+            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
+          subword_hops.forward_end()
+        end,
         mode = { "n", "o", "x" },
-        desc = "Spider-e",
+        desc = "",
       },
       {
         "b",
-        "<cmd>lua require('spider').motion('b')<CR>",
+        function()
+          local neowords = require("neowords")
+          local p = neowords.pattern_presets
+
+          local subword_hops =
+            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
+          subword_hops.backward_start()
+        end,
         mode = { "n", "o", "x" },
-        desc = "Spider-b",
+        desc = "",
       },
       {
         "ge",
-        "<cmd>lua require('spider').motion('ge')<CR>",
+        function()
+          local neowords = require("neowords")
+          local p = neowords.pattern_presets
+
+          local subword_hops =
+            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
+          subword_hops.backward_end()
+        end,
         mode = { "n", "o", "x" },
-        desc = "Spider-ge",
+        desc = "",
       },
     },
   },
@@ -84,6 +109,14 @@ return {
         end,
         desc = "Jump to Treesitter node",
       },
+      -- {
+      --   "<CR>",
+      --   mode = { "n", "x" },
+      --   function()
+      --     require("flash").treesitter()
+      --   end,
+      --   desc = "Jump to Treesitter node",
+      -- },
       {
         "gsd",
         function()

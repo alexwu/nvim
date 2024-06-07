@@ -56,6 +56,7 @@ return {
     "nvim-neotest/neotest",
     event = "VeryLazy",
     dependencies = {
+      "nvim-neotest/nvim-nio",
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "haydenmeade/neotest-jest",
@@ -153,9 +154,8 @@ return {
     "saecki/crates.nvim",
     event = { "BufRead Cargo.toml" },
     dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("crates").setup()
-    end,
+    opts = {},
+    config = true,
     cond = function()
       return not vim.g.vscode
     end,
@@ -255,42 +255,6 @@ return {
     end,
   },
   {
-    "folke/edgy.nvim",
-    event = "VeryLazy",
-    enabled = false,
-    init = function()
-      vim.opt.laststatus = 3
-      vim.opt.splitkeep = "screen"
-    end,
-    opts = {
-      exit_when_last = true,
-      left = {
-        -- Neo-tree filesystem always takes half the screen height
-        {
-          title = "Neo-Tree",
-          ft = "neo-tree",
-          filter = function(buf)
-            return vim.b[buf].neo_tree_source == "filesystem" and vim.b[buf].neo_tree_position ~= "current"
-          end,
-          size = { height = 0.5 },
-        },
-        {
-          title = "Neo-Tree Git",
-          ft = "neo-tree",
-          filter = function(buf)
-            return vim.b[buf].neo_tree_source == "git_status"
-          end,
-          pinned = true,
-          open = "Neotree position=right git_status",
-        },
-      },
-      bottom = {
-        -- "Trouble",
-        { ft = "qf", title = "QuickFix" },
-      },
-    },
-  },
-  {
     "smjonas/inc-rename.nvim",
     event = "VeryLazy",
     config = function()
@@ -302,19 +266,9 @@ return {
     end,
   },
   {
-    "simrat39/rust-tools.nvim",
-    ft = "rust",
-    event = "VeryLazy",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "hrsh7th/nvim-cmp",
-      "nvim-lua/popup.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    config = function()
-      require("bombeelu.lsp").rust.setup()
-    end,
+    "mrcjkb/rustaceanvim",
+    version = "^4",
+    ft = { "rust" },
     cond = function()
       return not vim.g.vscode
     end,
@@ -368,9 +322,8 @@ return {
   },
   {
     "lewis6991/spaceless.nvim",
-    config = function()
-      require("spaceless").setup()
-    end,
+    opts = {},
+    config = true,
     cond = function()
       return not vim.g.vscode
     end,
@@ -661,23 +614,23 @@ return {
         "golang",
         require("bombeelu.other.rails"),
         {
-          pattern = "/app/javascript/(.*)/(.*).ts$",
-          target = "/app/javascript/%1/%2.test.ts",
+          pattern = "(.*)/(.*).ts$",
+          target = "%1/%2.test.ts",
           context = "source",
         },
         {
-          pattern = "/app/javascript/(.*)/(.*).tsx$",
-          target = "/app/javascript/%1/%2.test.tsx",
+          pattern = "(.*)/(.*).tsx$",
+          target = "%1/%2.test.tsx",
           context = "source",
         },
         {
-          pattern = "/app/javascript/(.*)/(.*).test.ts$",
-          target = "/app/javascript/%1/%2.ts",
+          pattern = "(.*)/(.*).test.ts$",
+          target = "%1/%2.ts",
           context = "test",
         },
         {
-          pattern = "/app/javascript/(.*)/(.*).test.tsx$",
-          target = "/app/javascript/%1/%2.tsx",
+          pattern = "(.*)/(.*).test.tsx$",
+          target = "%1/%2.tsx",
           context = "test",
         },
       })
@@ -764,5 +717,27 @@ return {
   {
     "lewis6991/fileline.nvim",
     lazy = false,
+  },
+  {
+    "wojciech-kulik/xcodebuild.nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-treesitter/nvim-treesitter", -- (optional) for Quick tests support (required Swift parser)
+    },
+    config = function()
+      require("xcodebuild").setup({})
+    end,
+  },
+  {
+    "David-Kunz/gen.nvim",
+    opts = {
+      model = "llama3", -- The default model to use.
+      display_mode = "float", -- The display mode. Can be "float" or "split".
+      show_prompt = true, -- Shows the prompt submitted to Ollama.
+      show_model = true, -- Displays which model you are using at the beginning of your chat session.
+      no_auto_close = false, -- Never closes the window automatically.
+      debug = false, -- Prints errors and the command which is run.
+    },
   },
 }
