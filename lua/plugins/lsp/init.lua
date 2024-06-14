@@ -311,8 +311,8 @@ return {
           local bufnr = args.buf
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(bufnr, true)
+          if client and client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
           end
         end,
       })
@@ -327,8 +327,8 @@ return {
           local bufnr = args.buf
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(bufnr, false)
+          if client and client.server_capabilities.inlayHintProvider then
+            vim.lsp.inlay_hint.enable(false, { bufner = bufnr })
           end
         end,
       })
