@@ -46,22 +46,25 @@ return {
         graphql = { "prettier" },
         handlebars = { "prettier" },
         html = { "prettier" },
-        javascript = { "prettier" },
-        json = { "prettier" },
+        javascript = { { "biome", "prettier" } },
+        javascriptreact = { { "biome", "prettier" } },
+        json = { { "biome", "prettier" } },
         jsonc = { "prettier" },
         just = { "just" },
         less = { "prettier" },
         lua = { "stylua" },
         markdown = { "prettier" },
-        python = { "black" },
+        python = { "ruff" },
+        query = { "query_fmt" },
         ruby = { { "rubyfmt", "syntax_tree" } },
         rust = { "rustfmt" },
         scss = { "prettier" },
         toml = { "taplo" },
-        typescript = { "prettier" },
-        typescriptreact = { "prettier" },
+        typescript = { { "biome", "prettier" } },
+        typescriptreact = { { "biome", "prettier" } },
         vue = { "prettier" },
         yaml = { "prettier" },
+        swift = { "swiftformat" },
         zig = { "zigfmt" },
       },
       formatters = {
@@ -76,6 +79,12 @@ return {
           command = "stree",
           args = { "format" },
           stdin = true,
+          require_cwd = false,
+        },
+        query_fmt = {
+          command = "query-fmt",
+          args = { "$FILENAME" },
+          stdin = false,
           require_cwd = false,
         },
       },
@@ -103,10 +112,13 @@ return {
         group = "bombeelu.format2",
         callback = function(args)
           local bufnr = args.buf
-          local formatters = require("conform").list_formatters(bufnr)
+          local formatters = vim.iter(require("conform").list_formatters_for_buffer(bufnr)):flatten():totable()
 
           local formatter_commands = vim
             .iter(formatters)
+            :map(function(name)
+              return require("conform").get_formatter_info(name, bufnr)
+            end)
             :filter(function(formatter)
               return formatter.available
             end)
@@ -116,6 +128,18 @@ return {
           require("legendary").commands(formatter_commands)
         end,
       })
+
+      vim.api.nvim_create_user_command("Format", function(args)
+        local range = nil
+        if args.count ~= -1 then
+          local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+          range = {
+            start = { args.line1, 0 },
+            ["end"] = { args.line2, end_line:len() },
+          }
+        end
+        require("conform").format({ async = true, lsp_fallback = true, range = range })
+      end, { range = true })
     end,
   },
 }

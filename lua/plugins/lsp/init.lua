@@ -36,37 +36,70 @@ return {
     "stevearc/dressing.nvim",
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
-    "folke/neodev.nvim",
     {
-      "pmizio/typescript-tools.nvim",
-      dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+      "folke/lazydev.nvim",
+      ft = "lua", -- only load on lua files
+      opts = {
+        library = {
+          -- Library items can be absolute paths
+          -- "~/projects/my-awesome-lib",
+          -- Or relative, which means they will be resolved as a plugin
+          -- "LazyVim",
+          -- When relative, you can also provide a path to the library in the plugin dir
+          "luvit-meta/library", -- see below
+        },
+      },
+    },
+    { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
+    {
+      "yioneko/nvim-vtsls",
+      config = function()
+        require("lspconfig.configs").vtsls = require("vtsls").lspconfig
+      end,
+      keys = {
+        {
+          "gD",
+          function()
+            require("vtsls").commands.goto_source_definition(0)
+          end,
+          desc = "Goto Source Definition",
+        },
+        {
+          "<leader>co",
+          function()
+            require("vtsls").commands.organize_imports(0)
+          end,
+          desc = "Organize Imports",
+        },
+        {
+          "<leader>cM",
+          function()
+            require("vtsls").commands.add_missing_imports(0)
+          end,
+          desc = "Add missing imports",
+        },
+        {
+          "<leader>cu",
+          function()
+            require("vtsls").commands.remove_unused_imports(0)
+          end,
+          desc = "Remove unused imports",
+        },
+        {
+          "<leader>cU",
+          function()
+            require("vtsls").commands.remove_unused(0)
+          end,
+          desc = "Remove unused",
+        },
+      },
+    },
+    {
+      "dmmulroy/ts-error-translator.nvim",
+      opts = {},
+      config = true,
       cond = function()
         return not vim.g.vscode
-      end,
-      opts = {},
-      config = function()
-        require("typescript-tools").setup({
-          on_attach = require("plugins.lsp.defaults").on_attach,
-          capabilities = require("plugins.lsp.defaults").capabilities,
-          settings = {
-            tsserver_file_preferences = {
-              includeInlayParameterNameHints = "none",
-              includeCompletionsForModuleExports = true,
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = false,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-              quotePreference = "double",
-              importModuleSpecifierPreference = "non-relative",
-            },
-            tsserver_format_options = {
-              allowIncompleteCompletions = false,
-              allowRenameOfImportPath = true,
-            },
-          },
-        })
       end,
     },
     {
@@ -82,6 +115,7 @@ return {
     },
     {
       "zbirenbaum/neodim",
+      enabled = true,
       event = "LspAttach",
       config = function()
         require("neodim").setup({
@@ -105,10 +139,15 @@ return {
       config = true,
       opts = {},
     },
+    {
+      "luckasRanarison/tailwind-tools.nvim",
+      dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+        "hrsh7th/nvim-cmp",
+      },
+      opts = {},
+    },
   },
-  init = function()
-    vim.g.navic_silence = true
-  end,
   config = function()
     local capabilities = require("plugins.lsp.defaults").capabilities
     local detect = require("plenary.filetype").detect
@@ -116,7 +155,6 @@ return {
     local lazy = require("bombeelu.utils").lazy
     local lsp = require("bombeelu.lsp")
     local on_attach = require("plugins.lsp.defaults").on_attach
-    local rpt = require("bu").nvim.repeatable
     local set = require("bombeelu.utils").set
 
     local Methods = vim.lsp.protocol.Methods
@@ -160,21 +198,22 @@ return {
       update_in_insert = false,
     })
 
-    vim.lsp.handlers[Methods.textDocument_publishDiagnostics] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = {
-        spacing = 4,
-        severity = "error",
-      },
-      underline = {
-        severity = "error",
-      },
-      float = {
-        show_header = false,
-        source = "always",
-      },
-      signs = true,
-      update_in_insert = false,
-    })
+    vim.lsp.handlers[Methods.textDocument_publishDiagnostics] =
+      vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = {
+          spacing = 4,
+          severity = "error",
+        },
+        underline = {
+          severity = "error",
+        },
+        float = {
+          show_header = false,
+          source = "always",
+        },
+        signs = true,
+        update_in_insert = false,
+      })
 
     require("mason").setup()
     require("mason-lspconfig").setup()
@@ -185,33 +224,81 @@ return {
     lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
     -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.tailwindcss.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.tailwindcss.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        classAttributes = { "class", "className", "class:list", "classList", "ngClass", "classes" },
+      },
+    })
     lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
     lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
-    lsp.ruby_ls.setup({
+
+    local function add_ruby_deps_command(client, bufnr)
+      vim.api.nvim_buf_create_user_command(bufnr, "ShowRubyDeps", function(opts)
+        local params = vim.lsp.util.make_text_document_params()
+        local showAll = opts.args == "all"
+
+        client.request("rubyLsp/workspace/dependencies", params, function(error, result)
+          if error then
+            print("Error showing deps: " .. error)
+            return
+          end
+
+          local qf_list = {}
+          for _, item in ipairs(result) do
+            if showAll or item.dependency then
+              table.insert(qf_list, {
+                text = string.format("%s (%s) - %s", item.name, item.version, item.dependency),
+                filename = item.path,
+              })
+            end
+          end
+
+          vim.fn.setqflist(qf_list)
+          vim.cmd("copen")
+        end, bufnr)
+      end, {
+        nargs = "?",
+        complete = function()
+          return { "all" }
+        end,
+      })
+    end
+
+    lsp.ruby_lsp.setup({
       cmd = { "ruby-lsp" },
-      on_attach = on_attach,
+      on_attach = function(client, buffer)
+        on_attach(client, buffer)
+        add_ruby_deps_command(client, buffer)
+      end,
       capabilities = capabilities,
     })
-    -- lsp.syntax_tree.setup({
-    --   on_attach = on_attach,
-    --   capabilities = capabilities,
-    -- })
+    lsp.biome.setup({ on_attach = on_attach, capabilities = capabilities })
+    lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
+    lsp.sourcekit.setup({ on_attach = on_attach, capabilities = capabilities })
 
-    -- local configs = require("lspconfig.configs")
-    -- configs.ast_grep = {
-    --   default_config = {
-    --     cmd = { "sg", "lsp" },
-    --     filetypes = { "typescript" },
-    --     single_file_support = true,
-    --     root_dir = nvim_lsp.util.root_pattern(".git", "sgconfig.yml"),
-    --   },
-    -- }
+    lsp.vtsls.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        typescript = {
+          inlayHints = {
+            parameterNames = { enabled = "literals" },
+            parameterTypes = { enabled = true },
+            variableTypes = { enabled = true },
+            propertyDeclarationTypes = { enabled = true },
+            functionLikeReturnTypes = { enabled = true },
+            enumMemberValues = { enabled = true },
+          },
+        },
+      },
+    })
 
     local function hover()
-      local filetype = detect(vim.api.nvim_buf_get_name(0))
+      local filetype = detect(vim.api.nvim_buf_get_name(0), {})
       if vim.tbl_contains({ "vim", "help" }, filetype) then
         vim.cmd("h " .. vim.fn.expand("<cword>"))
       elseif vim.tbl_contains({ "man" }, filetype) then
@@ -224,14 +311,6 @@ return {
     end
 
     vim.api.nvim_create_augroup("LspDiagnosticsConfig", { clear = true })
-
-    -- vim.api.nvim_create_autocmd("CursorHold", {
-    --   group = "LspDiagnosticsConfig",
-    --   callback = smart_diagnostic_hover,
-    -- })
-    -- set("n", "gd", function()
-    --   vim.lsp.tagfunc(vim.fn.expand("<cword>"), "c")
-    -- end, { silent = true, desc = "Go to definition" })
 
     set("n", "gy", function()
       vim.lsp.buf.type_definition()
@@ -269,7 +348,7 @@ return {
     legendary.keymaps({
       {
         "[D",
-        rpt(function()
+        function()
           vim.diagnostic.goto_prev({
             severity = vim.diagnostic.severity.ERROR,
             float = {
@@ -277,7 +356,7 @@ return {
               focusable = false,
             },
           })
-        end),
+        end,
         description = "Go to previous error",
         { silent = true, desc = "Go to previous error" },
       },
@@ -298,42 +377,9 @@ return {
       end
     end, { silent = true, expr = true })
 
+    require("bombeelu.lsp.inlay_hints").setup()
+
     augroup("LspCustom", { clear = true })
-    if vim.lsp.inlay_hint then
-      augroup("LspAttach_inlayhints", {})
-      autocmd("LspAttach", {
-        group = "LspAttach_inlayhints",
-        callback = function(args)
-          if not (args.data and args.data.client_id) then
-            return
-          end
-
-          local bufnr = args.buf
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-          if client and client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-          end
-        end,
-      })
-
-      autocmd("LspDetach", {
-        group = "LspAttach_inlayhints",
-        callback = function(args)
-          if not (args.data and args.data.client_id) then
-            return
-          end
-
-          local bufnr = args.buf
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-          if client and client.server_capabilities.inlayHintProvider then
-            vim.lsp.inlay_hint.enable(false, { bufner = bufnr })
-          end
-        end,
-      })
-    end
-
     autocmd("FileType", {
       pattern = { "LspInfo", "null-ls-info" },
       group = "LspCustom",

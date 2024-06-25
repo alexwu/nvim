@@ -8,26 +8,6 @@ function lua.setup(opts)
   local on_attach = vim.F.if_nil(o.on_attach, defaults.on_attach)
   local capabilities = vim.F.if_nil(o.capabilities, defaults.capabilities)
 
-  require("neodev").setup({
-    library = {
-      vimruntime = true,
-      types = true,
-      plugins = {
-        "nvim-treesitter",
-        "plenary.nvim",
-        "telescope.nvim",
-        "neotest",
-        "bu",
-        "nui.nvim",
-        "legendary.nvim",
-        "noice.nvim",
-        "legendary.nvim",
-        "flash.nvim",
-      },
-    },
-    runtime_path = false,
-  })
-
   lspconfig.lua_ls.setup({
     on_attach = on_attach,
     capabilities = capabilities,

@@ -65,6 +65,7 @@ return {
         function()
           require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
         end,
+        desc = "Jump forward",
       },
       {
         "S",
@@ -74,6 +75,7 @@ return {
             search = { forward = false, wrap = false, multi_window = false },
           })
         end,
+        desc = "Jump backward",
       },
       {
         "gsd",
@@ -90,6 +92,7 @@ return {
             end,
           })
         end,
+        desc = "Jump to diagnostic",
       },
     },
   },

@@ -7,7 +7,7 @@ function graphql.setup(opts)
   lspconfig.graphql.setup({
     on_attach = opts.on_attach,
     capabilities = opts.capabilities,
-    root_dir = root_pattern(".git", "graphql.config.ts"),
+    root_dir = root_pattern("graphql.config.ts"),
   })
 end
 

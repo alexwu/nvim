@@ -369,7 +369,7 @@ M.path = (function()
   end
 
   local function path_join(...)
-    return table.concat(vim.tbl_flatten({ ... }), "/")
+    return table.concat(vim.iter({ ... }):flatten():totable(), "/")
   end
 
   -- Traverse the path calling cb along the way.
@@ -490,7 +490,7 @@ function M.search_ancestors(startpath, func)
 end
 
 function M.root_pattern(...)
-  local patterns = vim.tbl_flatten({ ... })
+  local patterns = vim.iter({ ... }):flatten():totable()
   local function matcher(path)
     for _, pattern in ipairs(patterns) do
       for _, p in ipairs(vim.fn.glob(M.path.join(path, pattern), true, true)) do
@@ -550,7 +550,7 @@ end
 
 local Util = require("lazy.core.util")
 
-M.root_patterns = { ".git", "lua" }
+M._root_patterns = { ".git", "lua" }
 
 ---@param on_attach fun(client, buffer)
 function M.on_attach(on_attach)
@@ -629,7 +629,7 @@ function M.get_root()
   if not root then
     path = path and vim.fs.dirname(path) or vim.loop.cwd()
     ---@type string?
-    root = vim.fs.find(M.root_patterns, { path = path, upward = true })[1]
+    root = vim.fs.find(M._root_patterns, { path = path, upward = true })[1]
     root = root and vim.fs.dirname(root) or vim.loop.cwd()
   end
   ---@cast root string
@@ -727,14 +727,12 @@ function M.toggle(option, silent, values)
   end
 end
 
-local enabled = true
 function M.toggle_diagnostics()
-  enabled = not enabled
-  if enabled then
-    vim.diagnostic.enable()
+  if vim.diagnostic.is_enabled({ bufnr = 0 }) then
+    vim.diagnostic.enable(true)
     Util.info("Enabled diagnostics", { title = "Diagnostics" })
   else
-    vim.diagnostic.disable()
+    vim.diagnostic.enable(false)
     Util.warn("Disabled diagnostics", { title = "Diagnostics" })
   end
 end
@@ -795,6 +793,27 @@ function M.lsp_disable(server, cond)
       config.enabled = false
     end
   end)
+end
+
+-- Credit:  https://github.com/LazyVim/LazyVim/blob/2a7ba6d09ce85fa752c25e68ca5287e24b8cee75/lua/lazyvim/util/lsp.lua#L344
+---@class LspCommand: lsp.ExecuteCommandParams
+---@field open? boolean
+---@field handler? lsp.Handler
+
+---@param opts LspCommand
+function M.execute(opts)
+  local params = {
+    command = opts.command,
+    arguments = opts.arguments,
+  }
+  if opts.open then
+    require("trouble").open({
+      mode = "lsp_command",
+      params = params,
+    })
+  else
+    return vim.lsp.buf_request(0, "workspace/executeCommand", params, opts.handler)
+  end
 end
 
 return M

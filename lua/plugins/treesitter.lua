@@ -13,16 +13,23 @@ return {
     end,
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "RRethy/nvim-treesitter-textsubjects",
       "RRethy/nvim-treesitter-endwise",
       "windwp/nvim-autopairs",
       "windwp/nvim-ts-autotag",
       "andymass/vim-matchup",
+      "nushell/tree-sitter-nu",
     },
     config = function()
       require("nvim-treesitter.configs").setup({
         highlight = {
           enable = true,
+          disable = function(_, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+              return true
+            end
+          end,
         },
         indent = {
           enable = not vim.g.vscode,
@@ -31,14 +38,8 @@ return {
           enable = true,
           keymaps = {
             init_selection = "<CR>",
-          },
-        },
-        textsubjects = {
-          enable = true,
-          prev_selection = "<BS>",
-          keymaps = {
-            ["<CR>"] = "textsubjects-smart",
-            [";"] = "textsubjects-container-outer",
+            node_incremental = "<CR>",
+            node_decremental = "<BS>",
           },
         },
         endwise = {
@@ -224,19 +225,6 @@ return {
         },
       })
     end,
-  },
-  {
-    "aarondiel/spread.nvim",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      local spread = require("spread")
-      local default_options = { silent = true, noremap = true }
-
-      vim.keymap.set("n", "gS", spread.out, default_options)
-      vim.keymap.set("n", "gJ", spread.combine, default_options)
-    end,
-    enabled = false,
   },
   {
     "windwp/nvim-ts-autotag",

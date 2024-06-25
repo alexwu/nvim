@@ -13,11 +13,11 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "kkharji/sqlite.lua",
-      "AckslD/nvim-neoclip.lua",
       {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
       },
+      "nvim-telescope/telescope-file-browser.nvim",
       "tsakirist/telescope-lazy.nvim",
     },
     cond = function()
@@ -29,53 +29,15 @@ return {
       local custom_pickers = require("plugins.telescope.pickers")
       local default_layout_config = {
         width = function()
-          return math.max(100, vim.fn.round(vim.o.columns * 0.5))
+          return math.max(100, vim.fn.round(vim.o.columns * 0.8))
         end,
       }
-
-      local defaults = require("telescope.themes").get_dropdown({
-        set_env = { ["COLORTERM"] = "truecolor" },
-        prompt_prefix = "❯ ",
-        layout_config = {
-          width = function(_, max_columns, _)
-            return math.max(120, vim.fn.round(vim.o.columns * 0.5))
-          end,
-
-          height = function(_, _, max_lines)
-            return math.min(max_lines, 40)
-          end,
-        },
-        sorting_strategy = "ascending",
-        dynamic_preview_title = true,
-        winblend = 20,
-        mappings = {
-          i = {
-            ["<esc>"] = actions.close,
-            ["<C-j>"] = actions.move_selection_next,
-            ["<C-k>"] = actions.move_selection_previous,
-            ["<C-n>"] = actions.move_selection_next,
-            ["<C-p>"] = actions.move_selection_previous,
-            ["<C-u>"] = false,
-          },
-          n = {
-            ["q"] = actions.close,
-            ["<C-j>"] = actions.move_selection_next,
-            ["<C-k>"] = actions.move_selection_previous,
-            ["<C-n>"] = actions.move_selection_next,
-            ["<C-p>"] = actions.move_selection_previous,
-          },
-        },
-      })
 
       require("telescope").setup({
         defaults = {
           set_env = { ["COLORTERM"] = "truecolor" },
           prompt_prefix = "❯ ",
-          -- sorting_strategy = "ascending",
-          -- preview = {
-          -- treesitter = { disable = { "lua" } },
-          -- },
-          winblend = 20,
+          winblend = 10,
           mappings = {
             i = {
               ["<esc>"] = actions.close,
@@ -138,7 +100,7 @@ return {
             ignore_current_buffer = true,
             cwd_only = false,
             sort_lastused = true,
-            path_display = function(opts, path)
+            path_display = function(_opts, path)
               local tail = require("telescope.utils").path_tail(path)
               return string.format("%s (%s)", tail, path)
             end,
@@ -156,7 +118,7 @@ return {
             trim_text = true,
             layout_config = default_layout_config,
             layout_strategy = "center",
-            path_display = function(opts, path)
+            path_display = function(_opts, path)
               local tail = require("telescope.utils").path_tail(path)
               return string.format("%s (%s)", tail, path)
             end,
@@ -188,6 +150,13 @@ return {
             load_session = true,
           },
           commander = {},
+          file_browser = {
+            hijack_netrw = false,
+            mappings = {
+              ["i"] = {},
+              ["n"] = {},
+            },
+          },
           lazy = {
             theme = "ivy",
             show_icon = true,
@@ -207,25 +176,22 @@ return {
       local legendary = require("legendary")
 
       require("telescope").load_extension("fzf")
-
-      require("neoclip").setup({
-        enable_persistent_history = true,
-      })
+      require("telescope").load_extension("file_browser")
 
       set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
-      set(
-        "n",
-        "<Leader>F",
-        lazy(builtin.find_files, { prompt_title = "Find All Files", no_ignore = true }),
-        { desc = "Find files (no_ignore)" }
-      )
+      -- set(
+      --   "n",
+      --   "<Leader>F",
+      --   lazy(builtin.find_files, { prompt_title = "Find All Files", no_ignore = true }),
+      --   { desc = "Find files (no_ignore)" }
+      -- )
 
-      set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
-      set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
+      -- set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
+      -- set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
       set(
         "n",
-        "<Leader>g",
+        "<Leader>gg",
         lazy(custom_pickers.git_changes),
         { desc = "Select from changed files since default branch" }
       )
@@ -242,6 +208,7 @@ return {
         "FileType",
         { group = "bombeelu.telescope", pattern = "TelescopePrompt", command = "setlocal nocursorline" }
       )
+
       nvim.create_autocmd({ "VimEnter", "DirChanged" }, {
         pattern = "*",
         group = group,

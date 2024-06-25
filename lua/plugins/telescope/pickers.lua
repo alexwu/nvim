@@ -236,7 +236,7 @@ function M.git_changes(opts)
         "diff",
         "--name-only",
         "--diff-filter=ACMRTUXB",
-        default_branch,
+        "origin/" .. default_branch,
       }, {
         entry_maker = opts.entry_maker or make_entry.gen_from_file(opts),
       }),
