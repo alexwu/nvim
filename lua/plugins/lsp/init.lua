@@ -179,6 +179,12 @@ return {
         show_header = false,
         source = "always",
       },
+      jump = {
+        float = {
+          border = "rounded",
+          focusable = false,
+        },
+      },
       update_in_insert = false,
     })
 
@@ -326,43 +332,7 @@ return {
       })
     end, { silent = true, desc = "Show diagnostics on current line" })
 
-    set("n", "]d", function()
-      vim.diagnostic.goto_next({
-        float = {
-          border = "rounded",
-          focusable = false,
-        },
-      })
-    end, { silent = true, desc = "Go to next diagnostic" })
-
-    set("n", "[d", function()
-      vim.diagnostic.goto_prev({
-        float = {
-          border = "rounded",
-          focusable = false,
-        },
-      })
-    end, { silent = true, desc = "Go to previous diagnostic" })
-
-    local legendary = require("legendary")
-    legendary.keymaps({
-      {
-        "[D",
-        function()
-          vim.diagnostic.goto_prev({
-            severity = vim.diagnostic.severity.ERROR,
-            float = {
-              border = "rounded",
-              focusable = false,
-            },
-          })
-        end,
-        description = "Go to previous error",
-        { silent = true, desc = "Go to previous error" },
-      },
-    })
-
-    set("n", "K", hover, { silent = true })
+    set("n", "K", hover, { silent = true, desc = "Hover" })
     set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
     set({ "n", "i", "s" }, "<c-f>", function()

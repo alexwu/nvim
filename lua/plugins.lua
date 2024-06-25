@@ -431,9 +431,10 @@ return {
     version = false,
     config = function()
       require("mini.bracketed").setup({
-        diagnostic = { suffix = "d", options = { float = { border = "rounded" } } },
+        diagnostic = { suffix = "" },
         treesitter = { suffix = "" },
         quickfix = { suffix = "" },
+        comment = { suffix = "" },
       })
       require("mini.splitjoin").setup()
       require("mini.colors").setup()
