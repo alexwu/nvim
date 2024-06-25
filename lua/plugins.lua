@@ -37,9 +37,6 @@ return {
   },
   {
     "Bekaboo/dropbar.nvim",
-    cond = function()
-      return vim.fn.has("nvim-0.10.0") == 1
-    end,
     config = true,
     opts = {
       general = {
@@ -204,56 +201,6 @@ return {
     },
   },
   { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true },
-  {
-    "echasnovski/mini.clue",
-    enabled = false,
-    version = false,
-    lazy = false,
-    config = function()
-      local miniclue = require("mini.clue")
-      miniclue.setup({
-        triggers = {
-          -- Leader triggers
-          { mode = "n", keys = "<Leader>" },
-          { mode = "x", keys = "<Leader>" },
-
-          -- `g` key
-          { mode = "n", keys = "g" },
-          { mode = "x", keys = "g" },
-
-          -- Marks
-          { mode = "n", keys = "'" },
-          { mode = "n", keys = "`" },
-          { mode = "x", keys = "'" },
-          { mode = "x", keys = "`" },
-
-          -- Registers
-          { mode = "n", keys = '"' },
-          { mode = "x", keys = '"' },
-          { mode = "i", keys = "<C-r>" },
-          { mode = "c", keys = "<C-r>" },
-
-          -- Window commands
-          { mode = "n", keys = "<C-w>" },
-
-          -- `z` key
-          { mode = "n", keys = "z" },
-          { mode = "x", keys = "z" },
-        },
-        window = {
-          config = {},
-          delay = 200,
-        },
-        clues = {
-          miniclue.gen_clues.g(),
-          miniclue.gen_clues.marks(),
-          miniclue.gen_clues.registers(),
-          miniclue.gen_clues.windows(),
-          miniclue.gen_clues.z(),
-        },
-      })
-    end,
-  },
   {
     "smjonas/inc-rename.nvim",
     event = "VeryLazy",
@@ -423,38 +370,41 @@ return {
         end,
         desc = "Next trouble/quickfix item",
       },
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      {
+        "<leader>cs",
+        "<cmd>Trouble symbols toggle focus=false<cr>",
+        desc = "Symbols (Trouble)",
+      },
+      {
+        "<leader>cl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP Definitions / references / ... (Trouble)",
+      },
+      {
+        "<leader>xL",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Location List (Trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<cmd>Trouble qflist toggle<cr>",
+        desc = "Quickfix List (Trouble)",
+      },
     },
     opts = {
       use_diagnostic_signs = true,
     },
     config = true,
-  },
-  {
-    "kevinhwang91/nvim-bqf",
-    enabled = false,
-    event = "VeryLazy",
-    config = function()
-      require("bqf").setup({
-        auto_enable = true,
-        auto_resize_height = false,
-        preview = {
-          should_preview_cb = function(bufnr, _qwinid)
-            return bufnr ~= vim.api.nvim_get_current_buf()
-          end,
-        },
-        func_map = {
-          drop = "o",
-          openc = "O",
-          split = "<C-s>",
-          tabdrop = "<C-t>",
-          tabc = "",
-          ptogglemode = "z,",
-        },
-      })
-    end,
-    cond = function()
-      return not vim.g.vscode
-    end,
   },
   {
     "RRethy/vim-illuminate",
@@ -504,6 +454,27 @@ return {
           }, {}),
           f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
           c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
+          d = { "%f[%d]%d+" }, -- digits
+          e = { -- Word with case
+            {
+              "%u[%l%d]+%f[^%l%d]",
+              "%f[%S][%l%d]+%f[^%l%d]",
+              "%f[%P][%l%d]+%f[^%l%d]",
+              "^[%l%d]+%f[^%l%d]",
+            },
+            "^().*()$",
+          },
+          g = function() -- Whole buffer, similar to `gg` and 'G' motion
+            local from = { line = 1, col = 1 }
+            local to = {
+              line = vim.fn.line("$"),
+              col = math.max(vim.fn.getline("$"):len(), 1),
+            }
+            return { from = from, to = to }
+          end,
+          u = ai.gen_spec.function_call(), -- u for "Usage"
+          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
         },
       }
     end,
@@ -572,7 +543,7 @@ return {
   },
   {
     "shortcuts/no-neck-pain.nvim",
-    event = "VeryLazy",
+    cmd = { "NoNeckPain" },
     version = "*",
     config = function()
       require("no-neck-pain").setup({
@@ -599,11 +570,6 @@ return {
       vim.api.nvim_set_keymap("n", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
       vim.api.nvim_set_keymap("v", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
     end,
-  },
-  {
-    "Civitasv/cmake-tools.nvim",
-    event = "VeryLazy",
-    config = true,
   },
   {
     "rgroli/other.nvim",
@@ -719,17 +685,6 @@ return {
     lazy = false,
   },
   {
-    "wojciech-kulik/xcodebuild.nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-treesitter/nvim-treesitter", -- (optional) for Quick tests support (required Swift parser)
-    },
-    config = function()
-      require("xcodebuild").setup({})
-    end,
-  },
-  {
     "David-Kunz/gen.nvim",
     opts = {
       model = "llama3", -- The default model to use.
@@ -738,6 +693,60 @@ return {
       show_model = true, -- Displays which model you are using at the beginning of your chat session.
       no_auto_close = false, -- Never closes the window automatically.
       debug = false, -- Prints errors and the command which is run.
+    },
+  },
+  {
+    "danymat/neogen",
+    config = true,
+    cmd = "Neogen",
+    keys = {
+      {
+        "<leader>cn",
+        function()
+          require("neogen").generate({})
+        end,
+        desc = "Generate Annotations (Neogen)",
+      },
+    },
+    opts = {
+      snippet_engine = "nvim",
+    },
+  },
+  {
+    "hedyhli/outline.nvim",
+    keys = { { "<leader>cs", "<cmd>Outline<cr>", desc = "Toggle Outline" } },
+    cmd = "Outline",
+    config = true,
+    opts = {},
+  },
+
+  {
+    "tris203/precognition.nvim",
+    event = "VeryLazy",
+    config = true,
+    enabled = false,
+    opts = {
+      -- startVisible = true,
+      -- showBlankVirtLine = true,
+      -- highlightColor = { link = "Comment" },
+      -- hints = {
+      --      Caret = { text = "^", prio = 2 },
+      --      Dollar = { text = "$", prio = 1 },
+      --      MatchingPair = { text = "%", prio = 5 },
+      --      Zero = { text = "0", prio = 1 },
+      --      w = { text = "w", prio = 10 },
+      --      b = { text = "b", prio = 9 },
+      --      e = { text = "e", prio = 8 },
+      --      W = { text = "W", prio = 7 },
+      --      B = { text = "B", prio = 6 },
+      --      E = { text = "E", prio = 5 },
+      -- },
+      -- gutterHints = {
+      --     G = { text = "G", prio = 10 },
+      --     gg = { text = "gg", prio = 9 },
+      --     PrevParagraph = { text = "{", prio = 8 },
+      --     NextParagraph = { text = "}", prio = 8 },
+      -- },
     },
   },
 }

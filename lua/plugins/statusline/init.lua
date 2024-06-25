@@ -27,8 +27,6 @@ return {
   event = "VeryLazy",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
-    -- { "SmiteshP/nvim-gps", dependencies = "nvim-treesitter/nvim-treesitter" },
-    -- "SmiteshP/nvim-navic",
   },
   config = function()
     M.setup("lualine")
