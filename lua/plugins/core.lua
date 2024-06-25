@@ -1,10 +1,5 @@
 return {
   {
-    "vhyrro/luarocks.nvim",
-    priority = 1000, -- Very high priority is required, luarocks.nvim should run as the first plugin in your config.
-    config = true,
-  },
-  {
     "willothy/flatten.nvim",
     config = true,
     opts = function()
@@ -113,5 +108,18 @@ return {
         description = "Cycle string cases",
       })
     end,
+  },
+  {
+    "stevearc/oil.nvim",
+    opts = {},
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = true,
+    keys = {
+      {
+        "-",
+        [[<CMD>Oil<CR>]],
+        desc = "Go up a directory",
+      },
+    },
   },
 }
