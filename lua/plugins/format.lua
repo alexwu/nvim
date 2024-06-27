@@ -44,6 +44,7 @@ return {
         eruby = { "erb_format" },
         go = { "gofmt" },
         graphql = { "prettier" },
+        gdscript = { "gdformat" },
         handlebars = { "prettier" },
         html = { "prettier" },
         javascript = { { "biome", "prettier" } },

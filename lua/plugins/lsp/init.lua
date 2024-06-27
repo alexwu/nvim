@@ -303,6 +303,8 @@ return {
       },
     })
 
+    require("lspconfig").gdscript.setup({ on_attach = on_attach, capabilities = capabilities })
+
     local function hover()
       local filetype = detect(vim.api.nvim_buf_get_name(0), {})
       if vim.tbl_contains({ "vim", "help" }, filetype) then
