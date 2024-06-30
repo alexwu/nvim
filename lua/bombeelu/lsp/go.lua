@@ -1,11 +1,10 @@
-local ft = require("plenary.filetype")
 local defaults = require("plugins.lsp.defaults")
 
 local go = {}
 
 function go.setup(opts)
   local bufnr = vim.api.nvim_get_current_buf()
-  if ft.detect(vim.api.nvim_buf_get_name(bufnr)) ~= "go" then
+  if vim.filetype.match({ buf = bufnr }) ~= "go" then
     return
   end
 

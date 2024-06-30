@@ -5,12 +5,7 @@ return {
     return vim.env.TERM == "xterm-kitty" and not vim.g.vscode
   end,
   config = function()
-    local Job = require("plenary.job")
-
     local set = vim.keymap.set
-    local if_nil = vim.F.if_nil
-
-    -- vim.g.kitty_navigator_no_mappings = 1
 
     set("n", "<A-h>", "<cmd>KittyNavigateLeft<cr>")
     set("n", "<A-h>", "<cmd>KittyNavigateLeft<cr>")
