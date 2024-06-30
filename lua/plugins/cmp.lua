@@ -1,5 +1,9 @@
 return {
   {
+    "onsails/lspkind-nvim",
+    lazy = true,
+  },
+  {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     cond = function()
@@ -57,14 +61,6 @@ return {
       local cmp = require("cmp")
       local mapping = cmp.mapping
       local compare = cmp.config.compare
-      local lspkind = require("lspkind")
-
-      lspkind.init({
-        symbol_map = {
-          Copilot = "",
-          cmp_tabnine = "[]",
-        },
-      })
 
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -194,19 +190,18 @@ return {
         }),
         formatting = {
           format = function(entry, vim_item)
-            return lspkind.cmp_format({
+            return require("lspkind").cmp_format({
               before = require("tailwind-tools.cmp").lspkind_format,
               preset = preset(),
               mode = "symbol_text",
+              symbol_map = {
+                Copilot = "",
+                cmp_tabnine = "[]",
+              },
               menu = {
                 buffer = "[Buffer]",
-                cmp_tabnine = "[TabNine]",
-                copilot = "[copilot]",
-                crates = "[Crates]",
-                luasnip = "[LuaSnip]",
                 nvim_lsp = "[LSP]",
-                path = "[Path]",
-                treesitter = "[TreeSitter]",
+                luasnip = "[LuaSnip]",
               },
               dup = {
                 buffer = 0,

@@ -4,18 +4,32 @@ return {
     opts = {
       strategy = "toggleterm",
     },
+    cmd = {
+      "OverseerOpen",
+      "OverseerClose",
+      "OverseerToggle",
+      "OverseerSaveBundle",
+      "OverseerLoadBundle",
+      "OverseerDeleteBundle",
+      "OverseerRunCmd",
+      "OverseerRun",
+      "OverseerInfo",
+      "OverseerBuild",
+      "OverseerQuickAction",
+      "OverseerTaskAction",
+      "OverseerClearCache",
+    },
     config = function(_, opts)
       local overseer = require("overseer")
       overseer.setup(opts)
 
       local scripts_template = require("bombeelu.overseer.templates.bin_scripts")
+      -- TODO: Make more of these chezmoi actions
       local chezmoi_template = require("bombeelu.overseer.templates.chezmoi")
-      -- vim.print(scripts_template)
       overseer.register_template(scripts_template)
       overseer.register_template(chezmoi_template)
       -- overseer.load_template("bombeelu.overseer.templates.bin_scripts")
       vim.api.nvim_create_user_command("OverseerRestartLast", function()
-        local overseer = require("overseer")
         local tasks = overseer.list_tasks({ recent_first = true })
         if vim.tbl_isempty(tasks) then
           vim.notify("No tasks found", vim.log.levels.WARN)
@@ -24,14 +38,23 @@ return {
         end
       end, {})
     end,
+    -- keys = {
+    --   {
+    --     "<leader>o",
+    --     function()
+    --       require("overseer").run_template()
+    --     end,
+    --     desc = "Run task",
+    --   },
+    -- },
     keys = {
-      {
-        "<leader>o",
-        function()
-          require("overseer").run_template()
-        end,
-        desc = "Run task",
-      },
+      { "<leader>ow", "<cmd>OverseerToggle<cr>", desc = "Task list" },
+      { "<leader>oo", "<cmd>OverseerRun<cr>", desc = "Run task" },
+      { "<leader>oq", "<cmd>OverseerQuickAction<cr>", desc = "Action recent task" },
+      { "<leader>oi", "<cmd>OverseerInfo<cr>", desc = "Overseer Info" },
+      { "<leader>ob", "<cmd>OverseerBuild<cr>", desc = "Task builder" },
+      { "<leader>ot", "<cmd>OverseerTaskAction<cr>", desc = "Task action" },
+      { "<leader>oc", "<cmd>OverseerClearCache<cr>", desc = "Clear cache" },
     },
   },
 }

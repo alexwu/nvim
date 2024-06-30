@@ -286,9 +286,8 @@ return {
       vim.o.timeout = true
       vim.o.timeoutlen = 300
     end,
-    config = true,
     opts = {
-      operators = { gc = "Comments" },
+      operators = { gc = "+comment" },
       layout = {
         height = { min = 4, max = 25 },
         width = { min = 20, max = 50 },
@@ -298,7 +297,17 @@ return {
       window = {
         border = "rounded",
       },
+      defaults = {
+        ["]"] = { name = "+next" },
+        ["["] = { name = "+prev" },
+        ["<leader>o"] = { name = "+overseer" },
+      },
     },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
+      wk.register(opts.defaults)
+    end,
   },
   { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true },
   {

@@ -27,7 +27,7 @@ function lua.setup(opts)
           enable = true,
           globals = { "vim", "nvim" },
           unusedLocalExclude = {
-            items = { "^_" },
+            "^_",
           },
         },
         completion = { autoRequire = false },

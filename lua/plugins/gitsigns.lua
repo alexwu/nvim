@@ -80,6 +80,7 @@ return {
           -- Actions
           local keymaps = require("legendary").keymaps
           keymaps({
+            { "<leader>h", "", description = "+gitsigns", opts = { buffer = bufnr } },
             {
               "gssh",
               gs.stage_hunk,
