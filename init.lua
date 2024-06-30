@@ -36,6 +36,12 @@ else
         patterns = { "alexwu" },
         fallback = true,
       },
+      ui = {
+        border = "rounded",
+      },
+      diff = {
+        cmd = "diffview.nvim",
+      },
     })
   end
 end
