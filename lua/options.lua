@@ -50,8 +50,8 @@ vim.g.ts_highlight_lua = false
 vim.o.conceallevel = 2
 vim.o.grepformat = "%f:%l:%c:%m"
 vim.o.grepprg = "rg --vimgrep"
-vim.opt.splitkeep = "screen"
-vim.opt.splitright = true
+vim.o.splitkeep = "screen"
+vim.o.splitright = true
 -- vim.opt.foldopen:remove({ "hor" })
 vim.o.conceallevel = 2
 vim.o.smoothscroll = true
@@ -60,8 +60,8 @@ vim.o.smoothscroll = true
 vim.o.foldenable = true
 vim.opt.foldlevel = 99
 
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 vim.o.foldtext = ""
 vim.o.fillchars = "foldclose:,foldopen:,fold: "
