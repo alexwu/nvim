@@ -35,7 +35,7 @@ return {
       typescript = {
         augend.integer.alias.decimal,
         augend.integer.alias.hex,
-        augend.constant.new({ elements = { "let", "const" } }),
+        augend.constant.new({ elements = { "var", "let", "const" } }),
       },
     })
 

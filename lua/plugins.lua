@@ -333,29 +333,6 @@ return {
     enabled = true,
   },
   {
-    "akinsho/git-conflict.nvim",
-    enabled = false,
-    event = "VeryLazy",
-    config = function()
-      require("git-conflict").setup({
-        disable_diagnostics = true,
-      })
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "GitConflictDetected",
-        callback = function()
-          vim.notify("Conflict detected in " .. vim.fn.expand("<afile>"))
-          vim.cmd([[GitConflictListQf]])
-          -- engage.conflict_buster()
-          -- create_buffer_local_mappings()
-        end,
-      })
-    end,
-    cond = function()
-      return not vim.g.vscode
-    end,
-  },
-  {
     "ray-x/go.nvim",
     event = { "VeryLazy" },
     dependencies = { "ray-x/guihua.lua" },
@@ -441,6 +418,10 @@ return {
     "folke/trouble.nvim",
     event = "VeryLazy",
     requires = "nvim-tree/nvim-web-devicons",
+    opts = {
+      use_diagnostic_signs = true,
+      auto_close = true,
+    },
     keys = {
       {
         "[q",
@@ -500,9 +481,6 @@ return {
         "<cmd>Trouble qflist toggle<cr>",
         desc = "Quickfix List (Trouble)",
       },
-    },
-    opts = {
-      use_diagnostic_signs = true,
     },
     config = true,
   },
@@ -782,10 +760,6 @@ return {
     },
   },
   {
-    "lewis6991/fileline.nvim",
-    lazy = false,
-  },
-  {
     "David-Kunz/gen.nvim",
     opts = {
       model = "llama3", -- The default model to use.
@@ -819,35 +793,5 @@ return {
     cmd = "Outline",
     config = true,
     opts = {},
-  },
-
-  {
-    "tris203/precognition.nvim",
-    event = "VeryLazy",
-    config = true,
-    enabled = false,
-    opts = {
-      -- startVisible = true,
-      -- showBlankVirtLine = true,
-      -- highlightColor = { link = "Comment" },
-      -- hints = {
-      --      Caret = { text = "^", prio = 2 },
-      --      Dollar = { text = "$", prio = 1 },
-      --      MatchingPair = { text = "%", prio = 5 },
-      --      Zero = { text = "0", prio = 1 },
-      --      w = { text = "w", prio = 10 },
-      --      b = { text = "b", prio = 9 },
-      --      e = { text = "e", prio = 8 },
-      --      W = { text = "W", prio = 7 },
-      --      B = { text = "B", prio = 6 },
-      --      E = { text = "E", prio = 5 },
-      -- },
-      -- gutterHints = {
-      --     G = { text = "G", prio = 10 },
-      --     gg = { text = "gg", prio = 9 },
-      --     PrevParagraph = { text = "{", prio = 8 },
-      --     NextParagraph = { text = "}", prio = 8 },
-      -- },
-    },
   },
 }

@@ -28,6 +28,30 @@ return {
           create_cmp_source = true,
         },
       },
+      {
+        "chrisgrieser/nvim-scissors",
+        dependencies = { "nvim-telescope/telescope.nvim", "garymjr/nvim-snippets" },
+        opts = {
+          snippetDir = vim.fn.stdpath("config") .. "/snippets",
+        },
+        keys = {
+          {
+            "<leader>se",
+            function()
+              require("scissors").editSnippet()
+            end,
+            desc = "Edit snippets",
+          },
+          {
+            "<leader>sa",
+            function()
+              require("scissors").addNewSnippet()
+            end,
+            mode = { "n", "x" },
+            desc = "Add new snippet",
+          },
+        },
+      },
     },
     config = function()
       local cmp = require("cmp")

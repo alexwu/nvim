@@ -54,7 +54,7 @@ vim.opt.splitkeep = "screen"
 vim.opt.splitright = true
 -- vim.opt.foldopen:remove({ "hor" })
 vim.o.conceallevel = 2
-vim.o.smoothscroll = vim.fn.has("nvim-0.10.0") == 1
+vim.o.smoothscroll = true
 
 -- Folding
 vim.o.foldenable = true

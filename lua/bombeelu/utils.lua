@@ -4,8 +4,6 @@ local fs = vim.fs
 
 local has_legendary, legendary = pcall(require, "legendary")
 
-local a = require("plenary.async")
-
 local M = {}
 
 -- NOTE: The lazy helpers are from here: https://github.com/mrjones2014/legendary.nvim/blob/master/lua/legendary/helpers.lua
@@ -21,11 +19,6 @@ function M.lazy_required_fn(module_name, fn_name, ...)
   return function()
     ((_G["require"](module_name))[fn_name])(unpack(args))
   end
-end
-
-local has_plenary, functional = pcall(require, "plenary.functional")
-if has_plenary then
-  M.F = functional
 end
 
 ---@param modes string|string[]
@@ -331,14 +324,6 @@ end
 M.path = (function()
   local is_windows = uv.os_uname().version:match("Windows")
 
-  local function sanitize(path)
-    if is_windows then
-      path = path:sub(1, 1):upper() .. path:sub(2)
-      path = path:gsub("\\", "/")
-    end
-    return path
-  end
-
   local function exists(filename)
     local stat = uv.fs_stat(filename)
     return stat and stat.type or false
@@ -346,10 +331,6 @@ M.path = (function()
 
   local function is_dir(filename)
     return exists(filename) == "directory"
-  end
-
-  local function is_file(filename)
-    return exists(filename) == "file"
   end
 
   local function is_fs_root(path)
@@ -360,36 +341,8 @@ M.path = (function()
     end
   end
 
-  local function is_absolute(filename)
-    if is_windows then
-      return filename:match("^%a:") or filename:match("^\\\\")
-    else
-      return filename:match("^/")
-    end
-  end
-
   local function path_join(...)
     return table.concat(vim.iter({ ... }):flatten():totable(), "/")
-  end
-
-  -- Traverse the path calling cb along the way.
-  local function traverse_parents(path, cb)
-    path = uv.fs_realpath(path)
-    local dir = path
-    -- Just in case our algo is buggy, don't infinite loop.
-    for _ = 1, 100 do
-      dir = fs.dirname(dir)
-      if not dir then
-        return
-      end
-      -- If we can't ascend further, then stop looking.
-      if cb(dir, path) then
-        return dir, path
-      end
-      if is_fs_root(dir) then
-        break
-      end
-    end
   end
 
   -- Iterate the path until we find the rootdir.
@@ -409,64 +362,11 @@ M.path = (function()
     return it, path, path
   end
 
-  local function is_descendant(root, path)
-    if not path then
-      return false
-    end
-
-    local function cb(dir, _)
-      return dir == root
-    end
-
-    local dir, _ = traverse_parents(path, cb)
-
-    return dir == root
-  end
-
-  local path_separator = is_windows and ";" or ":"
-
-  local function read_async(path, callback)
-    local err, fd, stat, data
-    err, fd = a.uv.fs_open(path, "r", 438)
-    assert(not err, err)
-
-    err, stat = a.uv.fs_fstat(fd)
-    assert(not err, err)
-
-    err, data = a.uv.fs_read(fd, stat.size, 0)
-    assert(not err, err)
-
-    err = a.uv.fs_close(fd)
-    assert(not err, err)
-
-    return callback(data)
-  end
-
-  local function read(path, callback)
-    if callback then
-      read_async(path, callback)
-    else
-      local fd = assert(uv.fs_open(path, "r", 438))
-      local stat = assert(uv.fs_fstat(fd))
-      local data = assert(uv.fs_read(fd, stat.size, 0))
-      assert(uv.fs_close(fd))
-      return data
-    end
-  end
-
   return {
     is_dir = is_dir,
-    is_file = is_file,
-    is_absolute = is_absolute,
     exists = exists,
-    dirname = fs.dirname,
     join = path_join,
-    sanitize = sanitize,
-    traverse_parents = traverse_parents,
     iterate_parents = iterate_parents,
-    is_descendant = is_descendant,
-    path_separator = path_separator,
-    read = read,
   }
 end)()
 

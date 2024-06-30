@@ -96,8 +96,6 @@ return {
     },
     {
       "dmmulroy/ts-error-translator.nvim",
-      opts = {},
-      config = true,
       cond = function()
         return not vim.g.vscode
       end,
@@ -220,6 +218,9 @@ return {
         signs = true,
         update_in_insert = false,
       })
+
+    -- NOTE: This needs to run after we set the publishDiagnostics handler
+    require("ts-error-translator").setup()
 
     require("mason").setup()
     require("mason-lspconfig").setup()
