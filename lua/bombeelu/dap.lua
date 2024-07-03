@@ -33,9 +33,9 @@ function M.setup()
     adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" }, -- which adapters to register in nvim-dap
   })
 
-  vim.keymap.set("n", "gb", function()
+  set("n", "gbt", function()
     require("dap").toggle_breakpoint()
-  end)
+  end, { desc = "Toggle breakpoint" })
 end
 
 function M.setup_keymaps()

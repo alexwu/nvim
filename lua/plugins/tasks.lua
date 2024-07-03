@@ -2,7 +2,10 @@ return {
   {
     "stevearc/overseer.nvim",
     opts = {
-      strategy = "toggleterm",
+      strategy = {
+        "toggleterm",
+        open_on_start = false,
+      },
     },
     cmd = {
       "OverseerOpen",
@@ -37,6 +40,15 @@ return {
           overseer.run_action(tasks[1], "restart")
         end
       end, {})
+
+      -- Automatically preload templates for the current directory
+      vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
+        group = bu.nvim.augroup("bombeelu.overseer"),
+        callback = function()
+          local cwd = vim.uv.cwd()
+          require("overseer").preload_task_cache({ dir = cwd })
+        end,
+      })
     end,
     -- keys = {
     --   {
@@ -56,5 +68,21 @@ return {
       { "<leader>ot", "<cmd>OverseerTaskAction<cr>", desc = "Task action" },
       { "<leader>oc", "<cmd>OverseerClearCache<cr>", desc = "Clear cache" },
     },
+  },
+  -- {
+  --   "nvim-neotest/neotest",
+  --   optional = true,
+  --   opts = function(_, opts)
+  --     opts = opts or {}
+  --     opts.consumers = opts.consumers or {}
+  --     opts.consumers.overseer = require("neotest.consumers.overseer")
+  --   end,
+  -- },
+  {
+    "mfussenegger/nvim-dap",
+    optional = true,
+    opts = function()
+      require("overseer").enable_dap()
+    end,
   },
 }

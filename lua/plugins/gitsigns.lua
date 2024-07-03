@@ -138,7 +138,7 @@ return {
               opts = { buffer = bufnr },
             },
             {
-              "<leader>hS",
+              "<leader>hb",
               gs.stage_buffer,
               description = "Stage Git buffer",
               mode = { "n" },
