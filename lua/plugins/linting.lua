@@ -8,6 +8,7 @@ return {
       linters_by_ft = {
         -- ruby = { "rubocop" },
         lua = { "selene" },
+        gdscript = { "gdlint" },
         -- fish = { "fish" },
         -- Use the "*" filetype to run linters on all filetypes.
         -- ['*'] = { 'global linter' },
