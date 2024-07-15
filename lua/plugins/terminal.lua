@@ -9,19 +9,15 @@ return {
     local set = vim.keymap.set
     local Terminal = require("toggleterm.terminal").Terminal
 
-    -- local lazygit = Terminal:new({
-    --   cmd = "lazygit",
-    --   direction = "float",
-    --   hidden = false,
-    -- })
+    local lazygit = Terminal:new({
+      cmd = "lazygit",
+      direction = "float",
+      hidden = false,
+    })
     --
-    -- vim.api.nvim_create_user_command("LazyGit", function()
-    --   lazygit:toggle()
-    -- end, { nargs = 0 })
-    --
-    -- vim.api.nvim_create_user_command("LG", function()
-    --   lazygit:toggle()
-    -- end, { nargs = 0 })
+    vim.api.nvim_create_user_command("LazyGit", function()
+      lazygit:toggle()
+    end, { nargs = 0 })
 
     local function enter_terminal_normal_mode()
       nvim.feedkeys(nvim.replace_termcodes([[<C-\><C-n>]], true, false, true), "n", false)

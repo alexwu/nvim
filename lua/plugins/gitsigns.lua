@@ -7,7 +7,7 @@ return {
       require("tinygit").setup({
         commitMsg = {
           mediumLen = 50,
-          maxLen = 72,
+          maxLen = 100,
           emptyFillIn = "chore", ---@type string|false
           commitPreview = true,
           conventionalCommits = {

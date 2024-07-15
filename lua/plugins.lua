@@ -36,7 +36,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
       "haydenmeade/neotest-jest",
       "rouge8/neotest-rust",
-      "olimorris/neotest-rspec",
+      "alexwu/neotest-rspec",
       "marilari88/neotest-vitest",
       "antoinemadec/FixCursorHold.nvim",
       "folke/trouble.nvim",
@@ -240,18 +240,29 @@ return {
   },
   {
     "ckolkey/ts-node-action",
+    enabled = false,
     event = "VeryLazy",
     dependencies = { "nvim-treesitter" },
-    config = function()
-      require("ts-node-action").setup({})
-      -- set({ "n" }, "gJ", require("ts-node-action").node_action, { desc = "Trigger Node Action" })
-    end,
+    opts = {},
   },
   {
     "saecki/crates.nvim",
     event = { "BufRead Cargo.toml" },
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {},
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/nvim-cmp",
+      "neovim/nvim-lspconfig",
+    },
+    opts = {
+      lsp = {
+        enabled = true,
+        -- on_attach = require("plugins.lsp.defaults").on_attach,
+        actions = true,
+        completion = true,
+        hover = true,
+      },
+    },
     config = true,
     cond = function()
       return not vim.g.vscode
@@ -282,32 +293,28 @@ return {
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
-    init = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-    end,
     opts = {
-      operators = { gc = "+comment" },
+      preset = "modern",
+      spec = {},
+      icons = {
+        rules = false,
+      },
       layout = {
         height = { min = 4, max = 25 },
         width = { min = 20, max = 50 },
         spacing = 3,
         align = "center",
       },
-      window = {
-        border = "rounded",
-      },
-      defaults = {
-        ["]"] = { name = "+next" },
-        ["["] = { name = "+prev" },
-        ["<leader>o"] = { name = "+overseer" },
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
       },
     },
-    config = function(_, opts)
-      local wk = require("which-key")
-      wk.setup(opts)
-      wk.register(opts.defaults)
-    end,
   },
   { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true },
   {
@@ -570,47 +577,62 @@ return {
       require("mini.ai").setup(opts)
       -- register all text objects with which-key
       -- if require("lazyvim.util").has("which-key.nvim") then
-      ---@type table<string, string|table>
-      local i = {
-        [" "] = "Whitespace",
-        ['"'] = 'Balanced "',
-        ["'"] = "Balanced '",
-        ["`"] = "Balanced `",
-        ["("] = "Balanced (",
-        [")"] = "Balanced ) including white-space",
-        [">"] = "Balanced > including white-space",
-        ["<lt>"] = "Balanced <",
-        ["]"] = "Balanced ] including white-space",
-        ["["] = "Balanced [",
-        ["}"] = "Balanced } including white-space",
-        ["{"] = "Balanced {",
-        ["?"] = "User Prompt",
-        _ = "Underscore",
-        a = "Argument",
-        b = "Balanced ), ], }",
-        c = "Class",
-        f = "Function",
-        o = "Block, conditional, loop",
-        q = "Quote `, \", '",
-        t = "Tag",
+      -- register all text objects with which-key
+      local objects = {
+        { " ", desc = "whitespace" },
+        { '"', desc = '" string' },
+        { "'", desc = "' string" },
+        { "(", desc = "() block" },
+        { ")", desc = "() block with ws" },
+        { "<", desc = "<> block" },
+        { ">", desc = "<> block with ws" },
+        { "?", desc = "user prompt" },
+        { "U", desc = "use/call without dot" },
+        { "[", desc = "[] block" },
+        { "]", desc = "[] block with ws" },
+        { "_", desc = "underscore" },
+        { "`", desc = "` string" },
+        { "a", desc = "argument" },
+        { "b", desc = ")]} block" },
+        { "c", desc = "class" },
+        { "d", desc = "digit(s)" },
+        { "e", desc = "CamelCase / snake_case" },
+        { "f", desc = "function" },
+        { "g", desc = "entire file" },
+        { "i", desc = "indent" },
+        { "o", desc = "block, conditional, loop" },
+        { "q", desc = "quote `\"'" },
+        { "t", desc = "tag" },
+        { "u", desc = "use/call" },
+        { "{", desc = "{} block" },
+        { "}", desc = "{} with ws" },
       }
-      local a = vim.deepcopy(i)
-      for k, v in pairs(a) do
-        a[k] = v:gsub(" including.*", "")
-      end
 
-      local ic = vim.deepcopy(i)
-      local ac = vim.deepcopy(a)
-      for key, name in pairs({ n = "Next", l = "Last" }) do
-        i[key] = vim.tbl_extend("force", { name = "Inside " .. name .. " textobject" }, ic)
-        a[key] = vim.tbl_extend("force", { name = "Around " .. name .. " textobject" }, ac)
+      local ret = { mode = { "o", "x" } }
+      ---@type table<string, string>
+      local mappings = vim.tbl_extend("force", {}, {
+        around = "a",
+        inside = "i",
+        around_next = "an",
+        inside_next = "in",
+        around_last = "al",
+        inside_last = "il",
+      }, opts.mappings or {})
+      mappings.goto_left = nil
+      mappings.goto_right = nil
+
+      for name, prefix in pairs(mappings) do
+        name = name:gsub("^around_", ""):gsub("^inside_", "")
+        ret[#ret + 1] = { prefix, group = name }
+        for _, obj in ipairs(objects) do
+          local desc = obj.desc
+          if prefix:sub(1, 1) == "i" then
+            desc = desc:gsub(" with ws", "")
+          end
+          ret[#ret + 1] = { prefix .. obj[1], desc = obj.desc }
+        end
       end
-      require("which-key").register({
-        mode = { "o", "x" },
-        i = i,
-        a = a,
-      })
-      -- end
+      require("which-key").add(ret, { notify = false })
     end,
   },
   {
@@ -771,12 +793,12 @@ return {
   {
     "David-Kunz/gen.nvim",
     opts = {
-      model = "llama3", -- The default model to use.
-      display_mode = "float", -- The display mode. Can be "float" or "split".
-      show_prompt = true, -- Shows the prompt submitted to Ollama.
-      show_model = true, -- Displays which model you are using at the beginning of your chat session.
-      no_auto_close = false, -- Never closes the window automatically.
-      debug = false, -- Prints errors and the command which is run.
+      model = "llama3",
+      display_mode = "float",
+      show_prompt = true,
+      show_model = true,
+      no_auto_close = false,
+      debug = false,
     },
   },
   {
@@ -802,5 +824,45 @@ return {
     cmd = "Outline",
     config = true,
     opts = {},
+  },
+  {
+    "jmbuhr/otter.nvim",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = {
+      verbose = {
+        no_code_found = false,
+      },
+    },
+    config = function(_, opts)
+      local otter = require("otter")
+
+      otter.setup(opts)
+
+      nvim.create_autocmd("BufRead", {
+        group = bu.nvim.augroup("bombeelu.otter"),
+        callback = function(args)
+          local ft = vim.filetype.match({ buf = args.buf })
+
+          if not ft or vim.list_contains({}, ft) then
+            return
+          end
+          -- local lang = vim.treesitter.language.get_lang(args.match)
+          local lang = vim.treesitter.language.get_lang(ft)
+          if lang then
+            -- vim.print(args)
+            otter.activate()
+          end
+        end,
+      })
+      -- nvim.create_autocmd("BufRead", {
+      --   group = bu.nvim.augroup("bombeelu.otter"),
+      --   callback = function(o)
+      --     -- require("legendary").command(o.buf, ":Chezmoi", chezmoi_apply, { nargs = 0, desc = "Runs chezmoi apply" })
+      --     otter.activate()
+      --   end,
+      -- })
+    end,
   },
 }

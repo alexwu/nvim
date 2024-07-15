@@ -1,5 +1,11 @@
 return {
   {
+    "aznhe21/actions-preview.nvim",
+    config = true,
+    opts = {},
+    lazy = true,
+  },
+  {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     cond = function()
@@ -80,17 +86,6 @@ return {
         },
       },
       {
-        "dmmulroy/tsc.nvim",
-        config = true,
-      },
-      {
-        "p00f/clangd_extensions.nvim",
-        ft = { "c", "cpp" },
-        config = function()
-          require("bombeelu.lsp").clangd.setup()
-        end,
-      },
-      {
         "zbirenbaum/neodim",
         enabled = true,
         event = "LspAttach",
@@ -110,11 +105,27 @@ return {
           })
         end,
       },
-      "camilledejoye/nvim-lsp-selection-range",
       {
-        "aznhe21/actions-preview.nvim",
-        config = true,
+        "camilledejoye/nvim-lsp-selection-range",
         opts = {},
+        config = function()
+          require("bombeelu.utils").on_attach(function(client, bufnr)
+            if client.name ~= "tailwindcss" and client.supports_method("textDocument/selectionRange") then
+              set(
+                "n",
+                "vv",
+                [[<cmd>lua require('lsp-selection-range').trigger()<CR>]],
+                { noremap = true, buffer = bufnr, desc = "Select LSP selection range" }
+              )
+              set(
+                "v",
+                "vv",
+                [[<cmd>lua require('lsp-selection-range').expand()<CR>]],
+                { noremap = true, buffer = bufnr }
+              )
+            end
+          end)
+        end,
       },
       {
         "luckasRanarison/tailwind-tools.nvim",
@@ -257,6 +268,7 @@ return {
           add_ruby_deps_command(client, buffer)
         end,
         capabilities = capabilities,
+        filetypes = { "ruby", "eruby" },
       })
       lsp.biome.setup({ on_attach = on_attach, capabilities = capabilities })
       lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })

@@ -8,7 +8,7 @@ return {
         "*.xcworkspace",
         "compile_commands.json",
         "Package.swift"
-      )(vim.uv.cwd())
+      )(vim.uv.cwd() or vim.uv.os_homedir())
 
       return result
     end,
