@@ -1,6 +1,35 @@
 return {
   {
+    "chrisgrieser/nvim-spider",
+    event = "VeryLazy",
+    opts = {
+      skipInsignificantPunctuation = false,
+    },
+    config = true,
+    keys = {
+      {
+        "w",
+        "<cmd>lua require('spider').motion('w')<CR>",
+        desc = "Spider-w",
+        mode = { "n", "o", "x" },
+      },
+      {
+        "e",
+        "<cmd>lua require('spider').motion('e')<CR>",
+        desc = "Spider-e",
+        mode = { "n", "o", "x" },
+      },
+      {
+        "b",
+        "<cmd>lua require('spider').motion('b')<CR>",
+        desc = "Spider-b",
+        mode = { "n", "o", "x" },
+      },
+    },
+  },
+  {
     "backdround/neowords.nvim",
+    enabled = false,
     event = "VeryLazy",
     keys = {
       {
@@ -117,23 +146,23 @@ return {
       --   end,
       --   desc = "Jump to Treesitter node",
       -- },
-      {
-        "gsd",
-        function()
-          require("flash").jump({
-            matcher = function(win)
-              ---@param diag Diagnostic
-              return vim.tbl_map(function(diag)
-                return {
-                  pos = { diag.lnum + 1, diag.col },
-                  end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
-                }
-              end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
-            end,
-          })
-        end,
-        desc = "Jump to diagnostic",
-      },
+      -- {
+      --   "gsd",
+      --   function()
+      --     require("flash").jump({
+      --       matcher = function(win)
+      --         ---@param diag Diagnostic
+      --         return vim.tbl_map(function(diag)
+      --           return {
+      --             pos = { diag.lnum + 1, diag.col },
+      --             end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
+      --           }
+      --         end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
+      --       end,
+      --     })
+      --   end,
+      --   desc = "Jump to diagnostic",
+      -- },
     },
   },
 }

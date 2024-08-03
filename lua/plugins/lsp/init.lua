@@ -268,7 +268,7 @@ return {
           add_ruby_deps_command(client, buffer)
         end,
         capabilities = capabilities,
-        filetypes = { "ruby", "eruby" },
+        filetypes = { "ruby" },
       })
       lsp.biome.setup({ on_attach = on_attach, capabilities = capabilities })
       lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })

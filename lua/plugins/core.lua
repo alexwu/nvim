@@ -92,7 +92,19 @@ return {
   },
   {
     "stevearc/oil.nvim",
-    opts = {},
+    opts = {
+      delete_to_trash = true,
+      watch_for_changes = true,
+      view_options = {
+        show_hidden = true,
+      },
+      keymaps = {
+        ["<C-s>"] = false,
+        ["<C-h>"] = false,
+        ["<C-t>"] = false,
+        ["<C-l>"] = false,
+      },
+    },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = true,
     keys = {

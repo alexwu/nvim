@@ -55,6 +55,7 @@ return {
           search = { wrap = false },
           highlight = { backdrop = false },
           jump = { register = false },
+          multi_line = false,
         },
       },
     },
@@ -77,23 +78,23 @@ return {
         end,
         desc = "Jump backward",
       },
-      {
-        "gsd",
-        function()
-          require("flash").jump({
-            matcher = function(win)
-              ---@param diag Diagnostic
-              return vim.tbl_map(function(diag)
-                return {
-                  pos = { diag.lnum + 1, diag.col },
-                  end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
-                }
-              end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
-            end,
-          })
-        end,
-        desc = "Jump to diagnostic",
-      },
+      -- {
+      --   "gsd",
+      --   function()
+      --     require("flash").jump({
+      --       matcher = function(win)
+      --         ---@param diag vim.Diagnostic
+      --         return vim.tbl_map(function(diag)
+      --           return {
+      --             pos = { diag.lnum + 1, diag.col },
+      --             end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
+      --           }
+      --         end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
+      --       end,
+      --     })
+      --   end,
+      --   desc = "Jump to diagnostic",
+      -- },
     },
   },
   {
@@ -154,4 +155,5 @@ return {
     end,
     lazy = false,
   },
+
 }

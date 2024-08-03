@@ -1,6 +1,7 @@
 vim.filetype.add({
   extension = {
     rbi = "ruby",
+    ["http"] = "http",
   },
   filename = {
     [".cargo/config"] = "toml",

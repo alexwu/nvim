@@ -33,6 +33,14 @@ return {
         mode = { "n", "v" },
         desc = "Format Injected Langs",
       },
+      {
+        "<F10>",
+        function()
+          require("conform").format({ formatters = { "injected" } })
+        end,
+        mode = { "n", "v" },
+        desc = "Format Injected Langs",
+      },
     },
     opts = {
       formatters_by_ft = {
@@ -47,22 +55,23 @@ return {
         gdscript = { "gdformat" },
         handlebars = { "prettier" },
         html = { "prettier" },
-        javascript = { { "biome", "prettier" } },
-        javascriptreact = { { "biome", "prettier" } },
-        json = { { "biome", "prettier" } },
+        javascript = { "biome", "prettier", stop_after_first = true },
+        javascriptreact = { "biome", "prettier", stop_after_first = true },
+        json = { "biome", "prettier", stop_after_first = true },
         jsonc = { "prettier" },
         just = { "just" },
         less = { "prettier" },
         lua = { "stylua" },
+        liquid = { "prettier" },
         markdown = { "prettier" },
         python = { "ruff" },
         query = { "query_fmt" },
-        ruby = { { "rubyfmt", "syntax_tree" } },
+        ruby = { "rubyfmt", "syntax_tree", stop_after_first = true },
         rust = { "rustfmt" },
         scss = { "prettier" },
         toml = { "taplo" },
-        typescript = { { "biome", "prettier" } },
-        typescriptreact = { { "biome", "prettier" } },
+        typescript = { "biome", "prettier", stop_after_first = true },
+        typescriptreact = { "biome", "prettier", stop_after_first = true },
         vue = { "prettier" },
         yaml = { "prettier" },
         swift = { "swiftformat" },
@@ -97,7 +106,7 @@ return {
       key.map({ "<F8>", "<Leader>y", "gq" }, function()
         require("conform").format({
           bufnr = vim.api.nvim_get_current_buf(),
-          async = true,
+          async = false,
         })
       end, { silent = true, desc = "Format file", modes = { "n" } })
 
