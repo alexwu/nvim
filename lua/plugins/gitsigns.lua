@@ -30,7 +30,6 @@ return {
             },
           },
           spellcheck = true,
-          openReferencedIssue = false,
         },
       })
       require("legendary").commands({
