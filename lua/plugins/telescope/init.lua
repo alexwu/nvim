@@ -180,13 +180,6 @@ return {
 
       set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
-      -- set(
-      --   "n",
-      --   "<Leader>F",
-      --   lazy(builtin.find_files, { prompt_title = "Find All Files", no_ignore = true }),
-      --   { desc = "Find files (no_ignore)" }
-      -- )
-
       -- set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
       -- set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
       set(
@@ -196,11 +189,11 @@ return {
         { desc = "Select from changed files since default branch" }
       )
       set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
-      set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
+      -- set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
       set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
       set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
-      set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
-      set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
+      -- set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
+      -- set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
 
       local group = augroup("bombeelu.telescope", { clear = true })
 

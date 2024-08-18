@@ -7,15 +7,6 @@ function M.on_attach(client, bufnr)
 
   nvim.create_augroup("LspDiagnosticsBufferConfig", { clear = true })
 
-  legendary.keymap({
-    "<Leader>a",
-    function()
-      require("actions-preview").code_actions()
-    end,
-    modes = { "n", "x" },
-    opts = { silent = true, desc = "Select a code action", buffer = bufnr },
-  })
-
   if client.supports_method(methods.textDocument_codeLens) then
     legendary.keymap({
       "<leader>cl",

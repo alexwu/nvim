@@ -1,5 +1,14 @@
 return {
   {
+    "folke/which-key.nvim",
+    opts = {
+      spec = {
+        { "<BS>", desc = "Decrement Selection", mode = "x" },
+        { "<CR>", desc = "Increment Selection", mode = { "x", "n" } },
+      },
+    },
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     init = function(plugin)

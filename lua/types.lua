@@ -17,7 +17,6 @@
 --- @return integer
 function nvim.create_autocmd(event, opts) end
 
-
 ---@param name string
 ---@param opts vim.api.keyset.create_augroup
 --- @return integer
@@ -27,3 +26,9 @@ function nvim.create_augroup(name, opts) end
 ---@param command any
 ---@param opts vim.api.keyset.user_command
 function nvim.create_user_command(name, command, opts) end
+
+---@param bufnr integer
+---@param name string
+---@param command any
+---@param opts vim.api.keyset.user_command
+function nvim.buf_create_user_command(bufnr, name, command, opts) end

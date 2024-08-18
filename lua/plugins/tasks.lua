@@ -2,6 +2,7 @@ return {
   {
     "stevearc/overseer.nvim",
     opts = {
+      templates = { "builtin", "user.chezmoi", "user.bin_scripts" },
       strategy = {
         "toggleterm",
         open_on_start = false,
@@ -26,12 +27,7 @@ return {
       local overseer = require("overseer")
       overseer.setup(opts)
 
-      local scripts_template = require("bombeelu.overseer.templates.bin_scripts")
       -- TODO: Make more of these chezmoi actions
-      local chezmoi_template = require("bombeelu.overseer.templates.chezmoi")
-      overseer.register_template(scripts_template)
-      overseer.register_template(chezmoi_template)
-      -- overseer.load_template("bombeelu.overseer.templates.bin_scripts")
       vim.api.nvim_create_user_command("OverseerRestartLast", function()
         local tasks = overseer.list_tasks({ recent_first = true })
         if vim.tbl_isempty(tasks) then
@@ -50,15 +46,6 @@ return {
         end,
       })
     end,
-    -- keys = {
-    --   {
-    --     "<leader>o",
-    --     function()
-    --       require("overseer").run_template()
-    --     end,
-    --     desc = "Run task",
-    --   },
-    -- },
     keys = {
       { "<leader>ow", "<cmd>OverseerToggle<cr>", desc = "Task list" },
       { "<leader>oo", "<cmd>OverseerRun<cr>", desc = "Run task" },

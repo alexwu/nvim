@@ -183,7 +183,8 @@ require("lualine").setup({
     lualine_a = {
       {
         "mode",
-        separator = { left = "" },
+        -- separator = { left = "" },
+        separator = {},
         right_padding = 2,
       },
     },
@@ -269,7 +270,8 @@ require("lualine").setup({
       },
     },
     lualine_y = {},
-    lualine_z = { { "location", separator = { right = "", left = "" } } },
+    -- lualine_z = { { "location", separator = { right = "", left = "" } } },
+    lualine_z = { { "location", separator = { left = "" } } },
   },
   inactive_sections = {
     lualine_a = {},

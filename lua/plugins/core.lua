@@ -103,9 +103,18 @@ return {
         ["<C-h>"] = false,
         ["<C-t>"] = false,
         ["<C-l>"] = false,
+        ["<Leader>p"] = {
+          desc = "Show image preview",
+          callback = function()
+            require("image_preview").PreviewImageOil()
+          end,
+        },
       },
     },
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "adelarsq/image_preview.nvim",
+    },
     config = true,
     keys = {
       {

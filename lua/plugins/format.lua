@@ -22,9 +22,26 @@ return {
     "stevearc/conform.nvim",
     lazy = false,
     keys = {
-      { "<leader>y" },
-      { "<F8>" },
-      { "gq" },
+      {
+        "<leader>y",
+        desc = "Format file",
+      },
+      {
+        "<leader>Y",
+        function()
+          require("conform").format({ formatters = { "injected" } })
+        end,
+        mode = { "n" },
+        desc = "Format Injected Langs",
+      },
+      {
+        "<F8>",
+        desc = "Format file",
+      },
+      {
+        "gq",
+        desc = "Format file",
+      },
       {
         "<leader>cF",
         function()

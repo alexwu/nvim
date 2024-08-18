@@ -178,42 +178,42 @@ return {
         function()
           require("neotest").run.run(vim.loop.cwd())
         end,
-        desc = "Run All Test Files",
+        desc = "Run all test files",
       },
       {
         "<leader>tn",
         function()
           require("neotest").run.run()
         end,
-        desc = "Run Nearest",
+        desc = "Run nearest test",
       },
       {
         "<leader>ts",
         function()
           require("neotest").summary.toggle()
         end,
-        desc = "Toggle Summary",
+        desc = "Toggle test summary",
       },
       {
         "<leader>to",
         function()
           require("neotest").output.open({ enter = true, auto_close = true })
         end,
-        desc = "Show Output",
+        desc = "Show test output",
       },
       {
         "<leader>tO",
         function()
           require("neotest").output_panel.toggle()
         end,
-        desc = "Toggle Output Panel",
+        desc = "Toggle output panel",
       },
       {
         "<leader>tS",
         function()
           require("neotest").run.stop()
         end,
-        desc = "Stop",
+        desc = "Stop running tests",
       },
       {
         "<leader>tl",
@@ -225,18 +225,18 @@ return {
     },
   },
   {
-    "alexwu/ruby.nvim",
+    "alexwu/ruby-lsp.nvim",
     event = "VeryLazy",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
     dev = true,
-    config = function()
-      require("bombeelu.lsp").sorbet.setup()
-    end,
+    opts = {},
+    config = true,
     cond = function()
       return not vim.g.vscode
     end,
     ft = { "ruby" },
-    enabled = false,
   },
   {
     "ckolkey/ts-node-action",
@@ -247,25 +247,27 @@ return {
   },
   {
     "saecki/crates.nvim",
-    event = { "BufRead Cargo.toml" },
+    cond = function()
+      local result = require("bombeelu.utils").root_pattern("Cargo.toml")(vim.uv.cwd() or vim.uv.os_homedir())
+
+      return result
+    end,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/nvim-cmp",
       "neovim/nvim-lspconfig",
     },
-    opts = {
-      lsp = {
-        enabled = true,
-        -- on_attach = require("plugins.lsp.defaults").on_attach,
-        actions = true,
-        completion = true,
-        hover = true,
-      },
-    },
-    config = true,
-    cond = function()
-      return not vim.g.vscode
+    opts = function()
+      return {
+        lsp = {
+          enabled = true,
+          on_attach = require("plugins.lsp.defaults").on_attach,
+          actions = true,
+          completion = true,
+          hover = true,
+        },
+      }
     end,
   },
   {
@@ -295,7 +297,38 @@ return {
     event = "VeryLazy",
     opts = {
       preset = "modern",
-      spec = {},
+      -- preset = "helix",
+      ---@type wk.Spec
+      spec = {
+        {
+          mode = { "n", "v" },
+          { "[", group = "prev" },
+          { "]", group = "next" },
+          {
+            "<leader>b",
+            group = "buffer",
+            expand = function()
+              return require("which-key.extras").expand.buf()
+            end,
+          },
+          {
+            "<leader>w",
+            group = "windows",
+            proxy = "<c-w>",
+            expand = function()
+              return require("which-key.extras").expand.win()
+            end,
+          },
+        },
+        {
+          mode = { "n", "x" },
+          { "s", group = "flash" },
+        },
+      },
+      triggers = {
+        { "<auto>", mode = "nixsotc" },
+        { "s", mode = { "n", "v" } },
+      },
       icons = {
         rules = false,
       },
@@ -307,6 +340,13 @@ return {
       },
     },
     keys = {
+      {
+        "g?",
+        function()
+          require("which-key").show({ global = true })
+        end,
+        desc = "Keymaps (which-key)",
+      },
       {
         "<leader>?",
         function()
@@ -483,11 +523,6 @@ return {
         desc = "Symbols (Trouble)",
       },
       {
-        "<leader>cl",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-        desc = "LSP Definitions / references / ... (Trouble)",
-      },
-      {
         "<leader>xL",
         "<cmd>Trouble loclist toggle<cr>",
         desc = "Location List (Trouble)",
@@ -502,7 +537,6 @@ return {
   },
   {
     "RRethy/vim-illuminate",
-    enabled = false,
     event = "VeryLazy",
     config = function()
       require("illuminate").configure({
@@ -659,8 +693,8 @@ return {
       require("no-neck-pain").setup({
         width = 300,
         autocmds = {
-          enableOnVimEnter = false,
-          enableOnTabEnter = false,
+          enableOnVimEnter = true,
+          enableOnTabEnter = true,
         },
       })
     end,
@@ -791,17 +825,6 @@ return {
     },
   },
   {
-    "David-Kunz/gen.nvim",
-    opts = {
-      model = "llama3",
-      display_mode = "float",
-      show_prompt = true,
-      show_model = true,
-      no_auto_close = false,
-      debug = false,
-    },
-  },
-  {
     "danymat/neogen",
     config = true,
     cmd = "Neogen",
@@ -827,6 +850,7 @@ return {
   },
   {
     "jmbuhr/otter.nvim",
+    event = "VeryLazy",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
@@ -863,6 +887,79 @@ return {
       --     otter.activate()
       --   end,
       -- })
+    end,
+  },
+  {
+    "mistweaverco/kulala.nvim",
+    ft = { "http" },
+    opts = {
+      debug = true,
+    },
+    config = true,
+    keys = {
+      -- {
+      --   "<C-k>",
+      --   ":lua require('kulala').jump_prev()<CR>",
+      --   { noremap = true, silent = true },
+      -- },
+      -- {
+      --
+      --   "<C-j>",
+      --   ":lua require('kulala').jump_next()<CR>",
+      --   { noremap = true, silent = true },
+      -- },
+      {
+        "<Leader>kl",
+        ":lua require('kulala').run()<CR>",
+        noremap = true,
+        silent = true,
+      },
+    },
+  },
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false, -- Recommended
+    dependencies = {
+      -- You will not need this if you installed the
+      -- parsers manually
+      -- Or if the parsers are in your $RUNTIMEPATH
+      "nvim-treesitter/nvim-treesitter",
+
+      "nvim-tree/nvim-web-devicons",
+    },
+  },
+
+  {
+    "mkusm/nvim-papyrus",
+    lazy = false,
+    config = function()
+      -- vim.g.skyrim_install_path = vim.env.SkyrimInstal
+    end,
+  },
+  {
+    "leath-dub/snipe.nvim",
+    enabled = false,
+    keys = {
+      {
+        "gbb",
+        function()
+          require("snipe").open_buffer_menu()
+        end,
+        desc = "Open Snipe buffer menu",
+      },
+    },
+    opts = {},
+  },
+  {
+    "MagicDuck/grug-far.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("grug-far").setup({
+        engine = "ripgrep",
+        -- ... options, see Configuration section below ...
+        -- ... there are no required options atm...
+        -- ... engine = 'ripgrep' is default, but 'astgrep' can be specified...
+      })
     end,
   },
 }

@@ -44,6 +44,11 @@ return {
       "williamboman/mason-lspconfig.nvim",
       {
         "yioneko/nvim-vtsls",
+        cond = function()
+          local result = require("bombeelu.utils").root_pattern("tsconfig.json")(vim.uv.cwd() or vim.uv.os_homedir())
+
+          return result
+        end,
         config = function()
           require("lspconfig.configs").vtsls = require("vtsls").lspconfig
         end,
@@ -107,6 +112,7 @@ return {
       },
       {
         "camilledejoye/nvim-lsp-selection-range",
+        lazy = true,
         opts = {},
         config = function()
           require("bombeelu.utils").on_attach(function(client, bufnr)
@@ -129,6 +135,7 @@ return {
       },
       {
         "luckasRanarison/tailwind-tools.nvim",
+        event = "VeryLazy",
         dependencies = {
           "nvim-treesitter/nvim-treesitter",
           "hrsh7th/nvim-cmp",
@@ -139,6 +146,7 @@ return {
     config = function()
       local capabilities = require("plugins.lsp.defaults").capabilities
 
+      local legendary = require("legendary")
       local lazy = require("bombeelu.utils").lazy
       local lsp = require("bombeelu.lsp")
       local on_attach = require("plugins.lsp.defaults").on_attach
@@ -208,6 +216,15 @@ return {
           update_in_insert = false,
         })
 
+      autocmd("LspAttach", {
+        group = bu.nvim.augroup("LspAttach_default"),
+        callback = function(args)
+          local buffer = args.buf
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          on_attach(client, buffer)
+        end,
+      })
+
       require("mason").setup()
       require("mason-lspconfig").setup()
 
@@ -229,50 +246,51 @@ return {
       lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
       lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
 
-      local function add_ruby_deps_command(client, bufnr)
-        vim.api.nvim_buf_create_user_command(bufnr, "ShowRubyDeps", function(opts)
-          local params = vim.lsp.util.make_text_document_params()
-          local showAll = opts.args == "all"
-
-          client.request("rubyLsp/workspace/dependencies", params, function(error, result)
-            if error then
-              print("Error showing deps: " .. error)
-              return
-            end
-
-            local qf_list = {}
-            for _, item in ipairs(result) do
-              if showAll or item.dependency then
-                table.insert(qf_list, {
-                  text = string.format("%s (%s) - %s", item.name, item.version, item.dependency),
-                  filename = item.path,
-                })
-              end
-            end
-
-            vim.fn.setqflist(qf_list)
-            vim.cmd("copen")
-          end, bufnr)
-        end, {
-          nargs = "?",
-          complete = function()
-            return { "all" }
-          end,
-        })
-      end
+      lsp.markdown_oxide.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
 
       lsp.ruby_lsp.setup({
         cmd = { "ruby-lsp" },
         on_attach = function(client, buffer)
           on_attach(client, buffer)
-          add_ruby_deps_command(client, buffer)
         end,
         capabilities = capabilities,
-        filetypes = { "ruby" },
+        filetypes = { "ruby", "eruby" },
+        init_options = {
+          formatter = "auto",
+          features_configuration = { inlay_hint = { enable_all = true } },
+          experimentalFeaturesEnabled = true,
+          erbSupport = true,
+        },
       })
       lsp.biome.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.html.setup({ on_attach = on_attach, capabilities = capabilities })
       lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
       lsp.sourcekit.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
+
+      -- Workaround for truncating long TypeScript inlay hints.
+      -- TODO: Remove this if https://github.com/neovim/neovim/issues/27240 gets addressed.
+      local inlay_hint_handler = vim.lsp.handlers[Methods.textDocument_inlayHint]
+      vim.lsp.handlers[Methods.textDocument_inlayHint] = function(err, result, ctx, config)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        if client and client.name == "vtsls" then
+          result = vim.iter(result):map(function(hint)
+            if type(hint.label) == "string" then
+              local label = hint.label ---@type string
+              if string.len(label) >= 30 then
+                label = label:sub(1, 29) .. "…"
+              end
+              hint.label = label
+            end
+            return hint
+          end)
+        end
+
+        inlay_hint_handler(err, result, ctx, config)
+      end
 
       lsp.vtsls.setup({
         on_attach = on_attach,
@@ -308,6 +326,19 @@ return {
 
       augroup("LspDiagnosticsConfig", { clear = true })
 
+      legendary.keymap({
+        "<Leader>a",
+        function()
+          require("actions-preview").code_actions()
+        end,
+        modes = { "n", "x" },
+        opts = { silent = true, desc = "Select a code action" },
+      })
+
+      set("n", "gd", function()
+        vim.lsp.buf.definition({ reuse_win = true })
+      end, { silent = true, desc = "Go to definition" })
+
       set("n", "gy", function()
         vim.lsp.buf.type_definition()
       end, { silent = true, desc = "Go to type definition" })
@@ -322,8 +353,8 @@ return {
         })
       end, { silent = true, desc = "Show diagnostics on current line" })
 
-      set("n", "K", hover, { silent = true, desc = "Hover" })
-      set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
+      -- set("n", "K", hover, { silent = true, desc = "Hover" })
+      -- set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
       set({ "n", "i", "s" }, "<c-f>", function()
         if not require("noice.lsp").scroll(4) then
@@ -348,14 +379,5 @@ return {
         end,
       })
     end,
-  },
-  {
-    "dmmulroy/ts-error-translator.nvim",
-    dependencies = { "neovim/nvim-lspconfig", "yioneko/nvim-vtsls" },
-    cond = function()
-      return not vim.g.vscode
-    end,
-    opts = {},
-    config = true,
   },
 }

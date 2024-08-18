@@ -48,6 +48,13 @@ return {
           end,
           description = "Push committed files",
         },
+        {
+          ":Staging",
+          function()
+            require("tinygit").interactiveStaging()
+          end,
+          description = "Interactive staging",
+        },
       })
     end,
   },
@@ -81,6 +88,7 @@ return {
           local keymaps = require("legendary").keymaps
           keymaps({
             { "<leader>h", "", description = "+gitsigns", opts = { buffer = bufnr } },
+            { "gs", "", description = "+gitsigns", opts = { buffer = bufnr } },
             {
               "gssh",
               gs.stage_hunk,

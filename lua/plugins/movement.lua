@@ -89,7 +89,6 @@ return {
   {
     "folke/flash.nvim",
     event = "VeryLazy",
-    enabled = true,
     ---@type Flash.Config
     opts = {
       search = {
@@ -107,14 +106,23 @@ return {
           enabled = true,
           search = { wrap = false },
           highlight = { backdrop = false },
+          multi_line = false,
           jump = { register = false },
         },
       },
     },
     keys = {
+      { "s", desc = "+flash" },
+      -- {
+      --   "s",
+      --   function()
+      --     require("which-key").show({ keys = "s" })
+      --   end,
+      --   desc = "+flash",
+      -- },
       {
-        "s",
-        mode = { "n", "x", "o" },
+        "ss",
+        mode = { "n", "x" },
         function()
           require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
         end,
@@ -122,7 +130,7 @@ return {
       },
       {
         "S",
-        mode = { "n", "o", "x" },
+        mode = { "n", "x" },
         function()
           require("flash").jump({
             search = { forward = false, wrap = false, multi_window = false },
@@ -131,21 +139,39 @@ return {
         desc = "Jump backward",
       },
       {
-        "gst",
-        mode = { "n", "o", "x" },
+        "sS",
+        mode = { "n", "x" },
+        function()
+          require("flash").jump({
+            search = { forward = false, wrap = false, multi_window = false },
+          })
+        end,
+        desc = "Jump backward",
+      },
+      {
+        "st",
+        mode = { "n", "x" },
         function()
           require("flash").treesitter()
         end,
         desc = "Jump to Treesitter node",
       },
-      -- {
-      --   "<CR>",
-      --   mode = { "n", "x" },
-      --   function()
-      --     require("flash").treesitter()
-      --   end,
-      --   desc = "Jump to Treesitter node",
-      -- },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+      {
+        "R",
+        mode = { "o", "x" },
+        function()
+          require("flash").treesitter_search()
+        end,
+        desc = "Treesitter Search",
+      },
       -- {
       --   "gsd",
       --   function()
