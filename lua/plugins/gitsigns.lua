@@ -160,7 +160,7 @@ return {
               opts = { buffer = bufnr },
             },
             {
-              "gM",
+              "gsM",
               function()
                 gs.blame_line({ full = true, ignore_whitespace = true })
               end,
