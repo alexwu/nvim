@@ -28,65 +28,6 @@ return {
     },
   },
   {
-    "backdround/neowords.nvim",
-    enabled = false,
-    event = "VeryLazy",
-    keys = {
-      {
-        "w",
-        function()
-          local neowords = require("neowords")
-          local p = neowords.pattern_presets
-
-          local subword_hops =
-            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
-          subword_hops.forward_start()
-        end,
-        mode = { "n", "o", "x" },
-        desc = "",
-      },
-      {
-        "e",
-        function()
-          local neowords = require("neowords")
-          local p = neowords.pattern_presets
-
-          local subword_hops =
-            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
-          subword_hops.forward_end()
-        end,
-        mode = { "n", "o", "x" },
-        desc = "",
-      },
-      {
-        "b",
-        function()
-          local neowords = require("neowords")
-          local p = neowords.pattern_presets
-
-          local subword_hops =
-            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
-          subword_hops.backward_start()
-        end,
-        mode = { "n", "o", "x" },
-        desc = "",
-      },
-      {
-        "ge",
-        function()
-          local neowords = require("neowords")
-          local p = neowords.pattern_presets
-
-          local subword_hops =
-            neowords.get_word_hops(p.snake_case, p.camel_case, p.upper_case, p.number, p.hex_color, "\\v\\.+", "\\v,+")
-          subword_hops.backward_end()
-        end,
-        mode = { "n", "o", "x" },
-        desc = "",
-      },
-    },
-  },
-  {
     "folke/flash.nvim",
     event = "VeryLazy",
     ---@type Flash.Config
@@ -189,6 +130,22 @@ return {
       --   end,
       --   desc = "Jump to diagnostic",
       -- },
+    },
+  },
+  {
+    "smoka7/hop.nvim",
+    version = "*",
+    opts = {
+      keys = "etovxqpdygfblzhckisuran",
+    },
+    keys = {
+      {
+        "sw",
+        function()
+          require("hop").hint_camel_case({ direction = 2 })
+        end,
+        desc = "Hop camel case",
+      },
     },
   },
 }
