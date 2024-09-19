@@ -1,4 +1,5 @@
-;; extends
+; extends
+
 (heredoc_body
   (heredoc_content) @injection.content
   (heredoc_end) @identifier

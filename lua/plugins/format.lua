@@ -82,7 +82,7 @@ return {
         liquid = { "prettier" },
         markdown = { "prettier" },
         python = { "ruff" },
-        query = { "query_fmt" },
+        query = { "format-queries", "query_fmt", stop_after_first = true },
         ruby = { "rubyfmt", "syntax_tree", stop_after_first = true },
         rust = { "rustfmt" },
         scss = { "prettier" },
