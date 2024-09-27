@@ -116,18 +116,21 @@ return {
         opts = {},
         config = function()
           require("bombeelu.utils").on_attach(function(client, bufnr)
-            if client.name ~= "tailwindcss" and client.supports_method("textDocument/selectionRange") then
+            if
+              client.name ~= "tailwindcss"
+              and client.supports_method(vim.lsp.protocol.Methods.textDocument_selectionRange)
+            then
               set(
                 "n",
-                "vv",
-                [[<cmd>lua require('lsp-selection-range').trigger()<CR>]],
+                "<CR>",
+                require("lsp-selection-range").trigger,
                 { noremap = true, buffer = bufnr, desc = "Select LSP selection range" }
               )
               set(
-                "v",
-                "vv",
-                [[<cmd>lua require('lsp-selection-range').expand()<CR>]],
-                { noremap = true, buffer = bufnr }
+                "x",
+                "<CR>",
+                require("lsp-selection-range").expand,
+                { noremap = true, buffer = bufnr, desc = "Expand LSP selection range" }
               )
             end
           end)
