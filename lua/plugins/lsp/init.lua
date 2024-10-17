@@ -6,6 +6,18 @@ return {
     lazy = true,
   },
   {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    enabled = true,
+    event = "LspAttach",
+    opt = {
+      options = {
+        show_source = true,
+        multiple_diag_under_cursor = true,
+      },
+    },
+    config = true,
+  },
+  {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     cond = function()
