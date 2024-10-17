@@ -35,31 +35,6 @@ return {
     opts = {},
   },
   {
-    "saecki/crates.nvim",
-    cond = function()
-      local result = require("bombeelu.utils").root_pattern("Cargo.toml")(vim.uv.cwd() or vim.uv.os_homedir())
-
-      return result
-    end,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/nvim-cmp",
-      "neovim/nvim-lspconfig",
-    },
-    opts = function()
-      return {
-        lsp = {
-          enabled = true,
-          on_attach = require("plugins.lsp.defaults").on_attach,
-          actions = true,
-          completion = true,
-          hover = true,
-        },
-      }
-    end,
-  },
-  {
     "vuki656/package-info.nvim",
     event = { "BufRead package.json" },
     dependencies = "MunifTanjim/nui.nvim",
