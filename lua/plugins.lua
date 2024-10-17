@@ -47,16 +47,6 @@ return {
     },
   },
   {
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("plugins.dressing")
-    end,
-    cond = function()
-      return not vim.g.vscode
-    end,
-  },
-  {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
@@ -120,7 +110,7 @@ return {
       },
     },
   },
-  { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true },
+  { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true, cond = true },
   {
     "smjonas/inc-rename.nvim",
     event = "VeryLazy",
@@ -298,19 +288,26 @@ return {
     end,
   },
   {
-    "echasnovski/mini.nvim",
+    "echasnovski/mini.bracketed",
     event = "VeryLazy",
     version = false,
-    config = function()
-      require("mini.bracketed").setup({
-        diagnostic = { suffix = "" },
-        treesitter = { suffix = "" },
-        quickfix = { suffix = "" },
-        comment = { suffix = "" },
-      })
-      require("mini.splitjoin").setup()
-      require("mini.colors").setup()
-    end,
+    opts = {
+      diagnostic = { suffix = "" },
+      treesitter = { suffix = "" },
+      quickfix = { suffix = "" },
+      comment = { suffix = "" },
+    },
+  },
+  {
+    "echasnovski/mini.splitjoin",
+    event = "VeryLazy",
+    version = false,
+    opts = {
+      diagnostic = { suffix = "" },
+      treesitter = { suffix = "" },
+      quickfix = { suffix = "" },
+      comment = { suffix = "" },
+    },
   },
   {
     "echasnovski/mini.ai",
@@ -354,7 +351,6 @@ return {
     config = function(_, opts)
       require("mini.ai").setup(opts)
       -- register all text objects with which-key
-      -- if require("lazyvim.util").has("which-key.nvim") then
       -- register all text objects with which-key
       local objects = {
         { " ", desc = "whitespace" },
@@ -613,7 +609,7 @@ return {
         callback = function(args)
           local ft = vim.filetype.match({ buf = args.buf })
 
-          if not ft or vim.list_contains({}, ft) then
+          if not ft or vim.list_contains({ "oil" }, ft) then
             return
           end
           -- local lang = vim.treesitter.language.get_lang(args.match)
