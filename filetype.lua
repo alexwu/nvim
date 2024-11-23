@@ -9,11 +9,14 @@ vim.filetype.add({
     ["dot_gitconfig"] = "gitconfig",
     ["dot_config/git/ignore"] = "gitconfig",
     ["dot_zshrc"] = "zsh",
+    ["dot_zprofile"] = "zsh",
     ["dot_vimrc"] = "vim",
     [".zimrc"] = "zsh",
     ["private_dot_zimrc"] = "zsh",
     Justfile = "just",
     justfile = "just",
+    Modelfile = "modelfile",
+    modefile = "modelfile",
   },
   pattern = {
     [".env.*"] = function(path, bufnr, ext)

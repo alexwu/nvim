@@ -5,10 +5,5 @@ return {
     require("bombeelu.legendary").setup()
     require("bombeelu.scratch").setup()
   end,
-  -- config = true,
-  -- opts = {
-  --
-  -- },
-  -- keys = {}
   lazy = false,
 }
