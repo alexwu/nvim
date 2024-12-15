@@ -1,7 +1,10 @@
 return {
   "windwp/nvim-autopairs",
   event = "VeryLazy",
-  dependencies = { "hrsh7th/nvim-cmp" },
+  dependencies = {
+    -- "hrsh7th/nvim-cmp",
+    -- "iguanacucumber/magazine.nvim",
+  },
   cond = function()
     return not vim.g.vscode
   end,
@@ -12,16 +15,17 @@ return {
     npairs.setup({
       map_bs = false,
       check_ts = true,
-      -- ignored_next_char = '[%w%."]',
-      ignored_next_char = '[%w%."{(]',
+      ignored_next_char = '[%w%."]',
+
+      -- ignored_next_char = '[%w%."{(]',
       map_c_w = false,
       fast_wrap = {},
       enable_afterquote = true,
     })
 
-    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-    local cmp = require("cmp")
-    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    -- local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+    -- local cmp = require("cmp")
+    -- cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
     local get_closing_for_line = function(line)
       local i = -1

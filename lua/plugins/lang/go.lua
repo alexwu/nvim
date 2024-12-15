@@ -1,9 +1,8 @@
 return {
   {
     "ray-x/go.nvim",
-    event = { "VeryLazy" },
     dependencies = { "ray-x/guihua.lua" },
-    ft = "go",
+    ft = {"go"},
     config = function()
       require("bombeelu.lsp.go").setup()
     end,

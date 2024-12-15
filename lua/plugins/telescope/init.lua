@@ -17,8 +17,11 @@ return {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
       },
-      "nvim-telescope/telescope-file-browser.nvim",
-      "tsakirist/telescope-lazy.nvim",
+      {
+        "altermo/telescope-nucleo-sorter.nvim",
+        -- as = "telescope-nucleo",
+        build = "cargo rustc --release -- -C link-arg=-undefined -C link-arg=dynamic_lookup",
+      },
     },
     cond = function()
       return not vim.g.vscode
@@ -170,18 +173,21 @@ return {
               open_lazy_root_live_grep = "<C-r>g",
             },
           },
+          smart_open = {},
         },
       })
 
       local legendary = require("legendary")
 
       require("telescope").load_extension("fzf")
-      require("telescope").load_extension("file_browser")
+      require("telescope").load_extension("nucleo")
+      -- require("telescope").load_extension("file_browser")
 
-      set("n", { "<Leader>b" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
+      set("n", { "<Leader>fb" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
 
       -- set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
       -- set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
+      set("n", "<Leader>gs", lazy(builtin.git_status, {}), { desc = "Find files by git status" })
       set(
         "n",
         "<Leader>gg",
@@ -189,8 +195,8 @@ return {
         { desc = "Select from changed files since default branch" }
       )
       set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
-      -- set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
-      set("n", "gr", lazy(builtin.lsp_references), { desc = "Go to references" })
+      set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
+      set("n", "grr", lazy(builtin.lsp_references), { desc = "Go to references" })
       set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
       -- set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
       -- set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
@@ -228,16 +234,10 @@ return {
     event = "VeryLazy",
     config = function()
       require("telescope").load_extension("smart_open")
-      local legendary = require("legendary")
-      legendary.keymaps({
-        {
-          "<Leader><Leader>",
-          function()
-            require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })
-          end,
-          description = "Select from recent files",
-        },
-      })
+
+      set("n", "<Leader><Leader>", function()
+        require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })
+      end, { desc = "Select from recent files" })
     end,
     dependencies = {
       "kkharji/sqlite.lua",

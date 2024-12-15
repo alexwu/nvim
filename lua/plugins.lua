@@ -12,21 +12,10 @@ return {
       vim.g.polyglot_disabled = { "sensible", "ftdetect" }
     end,
   },
-  { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
-    "Bekaboo/dropbar.nvim",
-    config = true,
-    opts = {
-      general = {
-        enable = function(buf, win)
-          return not vim.api.nvim_win_get_config(win).zindex
-            and (vim.bo[buf].buftype == "" or vim.bo[buf].buftype == "terminal")
-            and vim.api.nvim_buf_get_name(buf) ~= ""
-            and not vim.wo[win].diff
-        end,
-      },
-    },
+    "brainwo/vim-modelfile",
   },
+  { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
     "ckolkey/ts-node-action",
     enabled = false,
@@ -38,7 +27,6 @@ return {
     "vuki656/package-info.nvim",
     event = { "BufRead package.json" },
     dependencies = "MunifTanjim/nui.nvim",
-    config = true,
     opts = {
       colors = {
         up_to_date = "#57c7ff",
@@ -58,21 +46,6 @@ return {
           mode = { "n", "v" },
           { "[", group = "prev" },
           { "]", group = "next" },
-          {
-            "<leader>b",
-            group = "buffer",
-            expand = function()
-              return require("which-key.extras").expand.buf()
-            end,
-          },
-          {
-            "<leader>w",
-            group = "windows",
-            proxy = "<c-w>",
-            expand = function()
-              return require("which-key.extras").expand.win()
-            end,
-          },
         },
         {
           mode = { "n", "x" },
@@ -82,6 +55,7 @@ return {
       triggers = {
         { "<auto>", mode = "nixsotc" },
         { "s", mode = { "n", "v" } },
+        { "<leader>", mode = { "n", "v" } },
       },
       icons = {
         rules = false,
@@ -110,14 +84,20 @@ return {
       },
     },
   },
-  { "echasnovski/mini.align", event = "VeryLazy", version = false, opts = {}, config = true, cond = true },
+  {
+    "echasnovski/mini.align",
+    event = "VeryLazy",
+    version = false,
+    opts = {},
+    cond = true,
+  },
   {
     "smjonas/inc-rename.nvim",
     event = "VeryLazy",
     config = function()
       require("inc_rename").setup({})
 
-      vim.keymap.set("n", "<leader>rn", function()
+      set("n", "<leader>rn", function()
         return ":IncRename " .. vim.fn.expand("<cword>")
       end, { expr = true, desc = "Rename symbol" })
     end,
@@ -129,25 +109,16 @@ return {
       vim.g.matchup_matchparen_deferred = 1
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,
-    cond = function()
-      return not vim.g.vscode
-    end,
-    enabled = true,
   },
   {
     "lewis6991/spaceless.nvim",
     opts = {},
-    config = true,
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = "InsertEnter",
   },
   {
     "willothy/wezterm.nvim",
     event = "VeryLazy",
     dependencies = { "mrjones2014/legendary.nvim" },
-    enabled = true,
     cond = function()
       return vim.fn.executable("wezterm") ~= 0
     end,
@@ -271,6 +242,7 @@ return {
   },
   {
     "RRethy/vim-illuminate",
+    enabled = false,
     event = "VeryLazy",
     config = function()
       require("illuminate").configure({
@@ -421,9 +393,6 @@ return {
       })
     end,
     cmd = { "ColorizerToggle" },
-    cond = function()
-      return not vim.g.vscode
-    end,
   },
   {
     "shortcuts/no-neck-pain.nvim",
@@ -433,8 +402,8 @@ return {
       require("no-neck-pain").setup({
         width = 300,
         autocmds = {
-          enableOnVimEnter = true,
-          enableOnTabEnter = true,
+          enableOnVimEnter = false,
+          enableOnTabEnter = false,
         },
       })
     end,
@@ -451,8 +420,9 @@ return {
     config = function()
       require("textcase").setup({})
       require("telescope").load_extension("textcase")
-      vim.api.nvim_set_keymap("n", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
-      vim.api.nvim_set_keymap("v", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
+
+      set("n", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
+      set("v", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
     end,
   },
   {
@@ -517,7 +487,7 @@ return {
         },
         style = {
           border = "rounded",
-          seperator = "|",
+          separator = "|",
           width = 0.7,
           minHeight = 2,
         },
@@ -565,32 +535,15 @@ return {
     },
   },
   {
-    "danymat/neogen",
-    config = true,
-    cmd = "Neogen",
-    keys = {
-      {
-        "<leader>cn",
-        function()
-          require("neogen").generate({})
-        end,
-        desc = "Generate Annotations (Neogen)",
-      },
-    },
-    opts = {
-      snippet_engine = "nvim",
-    },
-  },
-  {
     "hedyhli/outline.nvim",
     keys = { { "<leader>cs", "<cmd>Outline<cr>", desc = "Toggle Outline" } },
     cmd = "Outline",
-    config = true,
     opts = {},
   },
   {
     "jmbuhr/otter.nvim",
     event = "VeryLazy",
+    enabled = false,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
@@ -609,7 +562,13 @@ return {
         callback = function(args)
           local ft = vim.filetype.match({ buf = args.buf })
 
-          if not ft or vim.list_contains({ "oil" }, ft) then
+          -- if not ft or vim.list_contains({ "oil" }, ft) then
+          --   return
+          -- end
+          if
+            not ft
+            or not vim.list_contains({ "ruby", "eruby", "markdown", "tyescriptreact", "javascriptreact", "html" }, ft)
+          then
             return
           end
           -- local lang = vim.treesitter.language.get_lang(args.match)
@@ -658,51 +617,288 @@ return {
   },
   {
     "OXY2DEV/markview.nvim",
-    lazy = false, -- Recommended
+    lazy = false,
     dependencies = {
-      -- You will not need this if you installed the
-      -- parsers manually
-      -- Or if the parsers are in your $RUNTIMEPATH
       "nvim-treesitter/nvim-treesitter",
-
       "nvim-tree/nvim-web-devicons",
     },
+    opts = {
+      modes = { "n", "i", "no", "c" },
+      hybrid_modes = { "i", "n" },
+      callbacks = {
+        on_enable = function(_, win)
+          vim.wo[win].conceallevel = 2
+          vim.wo[win].concealcursor = "c"
+        end,
+      },
+    },
   },
 
   {
-    "mkusm/nvim-papyrus",
-    cond = function()
-      return vim.uv.os_uname().version:match("Windows")
-    end,
-    lazy = false,
-    config = function()
-      vim.g.skyrim_install_path = vim.env.Skyrim64Path
-    end,
-  },
-  {
-    "leath-dub/snipe.nvim",
-    enabled = false,
-    keys = {
-      {
-        "gbb",
-        function()
-          require("snipe").open_buffer_menu()
-        end,
-        desc = "Open Snipe buffer menu",
-      },
-    },
-    opts = {},
-  },
-  {
-    "MagicDuck/grug-far.nvim",
+    "epwalsh/obsidian.nvim",
     event = "VeryLazy",
-    config = function()
-      require("grug-far").setup({
-        engine = "ripgrep",
-        -- ... options, see Configuration section below ...
-        -- ... there are no required options atm...
-        -- ... engine = 'ripgrep' is default, but 'astgrep' can be specified...
+    version = "*",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "personal",
+          path = "~/Obsidian/Default",
+        },
+        {
+          name = "work",
+          path = "~/Obsidian/Work/",
+        },
+      },
+      new_notes_location = "current_dir",
+      -- Optional, customize how note IDs are generated given an optional title.
+      ---@param title string|?
+      ---@return string
+      note_id_func = function(title)
+        -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+        -- In this case a note with the title 'My new note' will be given an ID that looks
+        -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+        local suffix = ""
+        if title ~= nil then
+          -- If title is given, transform it into valid file name.
+          suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+        else
+          -- If title is nil, just add 4 random uppercase letters to the suffix.
+          for _ = 1, 4 do
+            suffix = suffix .. string.char(math.random(65, 90))
+          end
+        end
+        return tostring(os.time()) .. "-" .. suffix
+      end,
+      ---@param spec { id: string, dir: obsidian.Path, title: string|? }
+      ---@return string|obsidian.Path The full path to the new note.
+      note_path_func = function(spec)
+        -- This is equivalent to the default behavior.
+        local path = spec.dir / tostring(spec.id)
+        return path:with_suffix(".md")
+      end,
+    },
+
+    config = function(_, opts)
+      require("obsidian").setup(opts)
+      require("legendary").commands({
+        {
+          "Notes",
+          function()
+            vim.cmd.chdir([[~/Obsidian/Default]])
+            vim.cmd.edit([[~/Obsidian/Default]])
+          end,
+          description = "Open default Obsidian vault",
+        },
       })
     end,
   },
+
+  {
+    "MagicDuck/grug-far.nvim",
+    cmd = { "GrugFar" },
+    opts = {
+      engine = "ripgrep",
+    },
+  },
+  {
+    "pwntester/octo.nvim",
+    event = "VeryLazy",
+    init = function()
+      vim.treesitter.language.register("markdown", "octo")
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {
+      suppress_missing_scope = {
+        projects_v2 = true,
+      },
+    },
+    keys = {
+      { "<leader>gi", "<cmd>Octo issue list<CR>", desc = "List Issues (Octo)" },
+      { "<leader>gI", "<cmd>Octo issue search<CR>", desc = "Search Issues (Octo)" },
+      { "<leader>gp", "<cmd>Octo pr list<CR>", desc = "List PRs (Octo)" },
+      { "<leader>gP", "<cmd>Octo pr search<CR>", desc = "Search PRs (Octo)" },
+      { "<leader>gr", "<cmd>Octo repo list<CR>", desc = "List Repos (Octo)" },
+    },
+  },
+  {
+    "OXY2DEV/helpview.nvim",
+    lazy = false,
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+  {
+    "echasnovski/mini.extra",
+    event = "VeryLazy",
+    version = false,
+    opts = {},
+  },
+  {
+    "stevearc/profile.nvim",
+    cond = function()
+      return os.getenv("NVIM_PROFILE") ~= nil
+    end,
+    config = function()
+      local should_profile = os.getenv("NVIM_PROFILE")
+      if should_profile then
+        require("profile").instrument_autocmds()
+        if should_profile:lower():match("^start") then
+          require("profile").start("*")
+        else
+          require("profile").instrument("*")
+        end
+      end
+
+      local function toggle_profile()
+        local prof = require("profile")
+        if prof.is_recording() then
+          prof.stop()
+          vim.ui.input(
+            { prompt = "Save profile to:", completion = "file", default = "profile.json" },
+            function(filename)
+              if filename then
+                prof.export(filename)
+                vim.notify(string.format("Wrote %s", filename))
+              end
+            end
+          )
+        else
+          prof.start("*")
+        end
+      end
+      set("", "<f1>", toggle_profile)
+    end,
+  },
+
+  {
+    -- highlighting for chezmoi files template files
+    "alker0/chezmoi.vim",
+    init = function()
+      vim.g["chezmoi#use_tmp_buffer"] = 1
+      vim.g["chezmoi#source_dir_path"] = os.getenv("HOME") .. "/.local/share/chezmoi"
+    end,
+  },
+  {
+    "xvzc/chezmoi.nvim",
+    opts = {
+      edit = {
+        watch = false,
+        force = false,
+      },
+      notification = {
+        on_open = true,
+        on_apply = true,
+        on_watch = false,
+      },
+      telescope = {
+        select = { "<CR>" },
+      },
+    },
+    init = function()
+      -- run chezmoi edit on file enter
+      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+        pattern = { os.getenv("HOME") .. "/.local/share/chezmoi/*" },
+        callback = function()
+          vim.schedule(require("chezmoi.commands.__edit").watch)
+        end,
+      })
+    end,
+  },
+  {
+    "ahmedkhalf/project.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    event = "VeryLazy",
+    opts = {
+      manual_mode = true,
+      patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "Gemfile", "node_modules/**" },
+      exclude_dirs = { "node_modules", ".cargo" },
+    },
+    config = function(_, opts)
+      require("project_nvim").setup(opts)
+      require("telescope").load_extension("projects")
+    end,
+    keys = {
+      {
+        "<leader>fp",
+        function()
+          require("telescope").extensions.projects.projects({})
+        end,
+        desc = "Projects (Telescope)",
+      },
+    },
+  },
+  {
+    "stevearc/resession.nvim",
+    opts = {},
+    config = function(_, opts)
+      local resession = require("resession")
+      resession.setup(opts)
+
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+          -- Always save a special session named "last"
+          resession.save("last")
+        end,
+      })
+
+      local function get_session_name()
+        local name = vim.fn.getcwd()
+        local branch = vim.trim(vim.fn.system("git branch --show-current"))
+        if vim.v.shell_error == 0 then
+          return name .. branch
+        else
+          return name
+        end
+      end
+      vim.api.nvim_create_autocmd("VimEnter", {
+        callback = function()
+          -- Only load the session if nvim was started with no args
+          if vim.fn.argc(-1) == 0 then
+            resession.load(get_session_name(), { dir = "dirsession", silence_errors = true })
+          end
+        end,
+      })
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+          resession.save(get_session_name(), { dir = "dirsession", notify = false })
+        end,
+      })
+    end,
+    keys = {
+      {
+        "<leader>ee",
+        function()
+          require("resession").save()
+        end,
+        desc = "Save session",
+      },
+      {
+        "<leader>el",
+        function()
+          require("resession").load()
+        end,
+        desc = "Load session",
+      },
+      {
+        "<leader>ed",
+        function()
+          require("resession").delete()
+        end,
+        desc = "Delete session",
+      },
+    },
+  },
+  {
+    "Goose97/timber.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
+  { import = "plugins.lang" },
 }

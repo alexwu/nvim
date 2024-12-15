@@ -5,11 +5,11 @@ return {
     dependencies = { "stevearc/dressing.nvim" },
     config = function()
       require("tinygit").setup({
-        commitMsg = {
+        commit = {
           mediumLen = 50,
           maxLen = 100,
           emptyFillIn = "chore", ---@type string|false
-          commitPreview = true,
+          preview = true,
           conventionalCommits = {
             enforce = false, -- disallow commit messages without a keyword
             keywords = {
@@ -30,6 +30,7 @@ return {
             },
           },
           spellcheck = true,
+          openReferencedIssue = false,
         },
       })
       require("legendary").commands({

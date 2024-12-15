@@ -5,6 +5,7 @@ end
 return {
   {
     "lukas-reineke/indent-blankline.nvim",
+    enabled = false,
     main = "ibl",
     opts = {
       scope = {
@@ -25,6 +26,7 @@ return {
           "toggleterm",
           "lazyterm",
           "FZF",
+          "ministarter",
         },
       },
     },
@@ -32,6 +34,7 @@ return {
   },
   {
     "echasnovski/mini.indentscope",
+    enabled = false,
     version = false,
     event = "VeryLazy",
     opts = {
@@ -55,6 +58,7 @@ return {
           "lazyterm",
           "FZF",
           "noice",
+          "ministarter",
         },
         callback = function()
           vim.b.miniindentscope_disable = true

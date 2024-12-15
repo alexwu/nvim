@@ -18,7 +18,7 @@ function M.setup()
         require("legendary").find({
           filters = {
             require("legendary.filters").current_mode(),
-            -- require("legendary.filters").commands(),
+            require("legendary.filters").commands(),
           },
           formatter = function(item, mode)
             local values = require("legendary.ui.format").default_format(item)
@@ -42,7 +42,7 @@ function M.setup()
         require("legendary").find({
           filters = {
             require("legendary.filters").current_mode(),
-            -- require("legendary.filters").commands(),
+            require("legendary.filters").commands(),
           },
           formatter = function(item, mode)
             local values = require("legendary.ui.format").default_format(item)

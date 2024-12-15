@@ -51,6 +51,7 @@ local LSPWithDiagSource = {
 
 return {
   "lewis6991/hover.nvim",
+  enabled = false,
   config = function()
     local hover = require("hover")
     hover.setup({
@@ -59,7 +60,7 @@ return {
         require("hover.providers.lsp")
         require("hover.providers.gh")
         require("hover.providers.gh_user")
-        require("hover.providers.dap")
+        -- require("hover.providers.dap")
         require("hover.providers.fold_preview")
         require("hover.providers.diagnostic")
         require("hover.providers.man")

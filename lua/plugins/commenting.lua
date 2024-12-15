@@ -1,7 +1,7 @@
 return {
   {
     "echasnovski/mini.comment",
-    enabled = false,
+    enabled = true,
     event = "VeryLazy",
     dependencies = {
       "JoosepAlviste/nvim-ts-context-commentstring",
@@ -23,5 +23,6 @@ return {
     "folke/ts-comments.nvim",
     opts = {},
     event = "VeryLazy",
+    enabled = false,
   },
 }

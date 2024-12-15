@@ -1,6 +1,9 @@
 return {
   {
     "stevearc/overseer.nvim",
+    dependencies = {
+      "akinsho/toggleterm.nvim",
+    },
     opts = {
       templates = { "builtin", "user.chezmoi", "user.bin_scripts" },
       strategy = {

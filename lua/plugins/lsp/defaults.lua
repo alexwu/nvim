@@ -8,13 +8,6 @@ function M.on_attach(client, bufnr)
   nvim.create_augroup("LspDiagnosticsBufferConfig", { clear = true })
 
   if client.supports_method(methods.textDocument_codeLens) then
-    legendary.keymap({
-      "<leader>cl",
-      vim.lsp.codelens.run,
-      modes = { "n" },
-      opts = { desc = "Run CodeLens", buffer = bufnr },
-    })
-
     local codelens_group = vim.api.nvim_create_augroup("bombeelu/codelens", { clear = false })
     vim.api.nvim_create_autocmd("InsertEnter", {
       group = codelens_group,
@@ -39,10 +32,14 @@ function M.on_attach(client, bufnr)
 end
 
 local make_capabilities = function()
-  local cap = require("cmp_nvim_lsp").default_capabilities()
-  local lsp_selection_range = require("lsp-selection-range")
+  local cap = vim.lsp.protocol.make_client_capabilities()
+  if package.loaded.cmp_nvim_lsp then
+    cap = require("cmp_nvim_lsp").default_capabilities()
+  elseif package.loaded.blink then
+    cap = require("blink.cmp").get_lsp_capabilities(cap)
+  end
 
-  cap = lsp_selection_range.update_capabilities(cap)
+  cap = require("lsp-selection-range").update_capabilities(cap)
 
   cap.textDocument.foldingRange = {
     dynamicRegistration = false,

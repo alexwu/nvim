@@ -1,5 +1,3 @@
-local set = vim.keymap.set
-
 local function enter_terminal_normal_mode()
   nvim.feedkeys(nvim.replace_termcodes([[<C-\><C-n>]], true, false, true), "n", false)
 end

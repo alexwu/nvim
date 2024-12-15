@@ -32,3 +32,7 @@ function nvim.create_user_command(name, command, opts) end
 ---@param command any
 ---@param opts vim.api.keyset.user_command
 function nvim.buf_create_user_command(bufnr, name, command, opts) end
+
+function nvim.feedkeys(keys, mode, escape) end
+
+function nvim.replace_termcodes(str, from_part, do_lt, special) end

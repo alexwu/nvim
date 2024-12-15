@@ -8,22 +8,12 @@ local api = vim.api
 
 vim.g.mapleader = " "
 
-key.map(
-  { "j", "<Down>" },
-  'v:count || mode(1)[0:1] == "no" ? "j" : "gj"',
-  { expr = true, modes = "n", desc = "Move down a line" }
-)
-key.map(
-  { "k", "<Up>" },
-  'v:count || mode(1)[0:1] == "no" ? "k" : "gk"',
-  { expr = true, modes = "n", desc = "Move up a line" }
-)
+set("n", { "j", "<Down>" }, 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { expr = true, desc = "Move down a line" })
 
-key.map({ "<" }, "<gv", { modes = "x" })
-key.map({ ">", "<Tab>" }, ">gv", { modes = "x" })
+set("n", { "k", "<Up>" }, 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { expr = true, desc = "Move up a line" })
 
-key.map("<leader>bb", "<cmd>e #<cr>", { desc = "Switch to other Buffer" })
-key.map("<leader>`", "<cmd>e #<cr>", { desc = "Switch to other Buffer" })
+set("x", { "<" }, "<gv", { desc = "De-dent selection" })
+set("x", { ">", "<Tab>" }, ">gv", { desc = "Indent selection" })
 
 set("n", "<ESC>", ex("noh"))
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
@@ -36,6 +26,9 @@ set("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open Quickfix List" })
 set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 
 set("n", "Q", lazy(vim.cmd.quit))
+
+set("n", "]t", vim.cmd.tabnext, { desc = "Next tab" })
+set("n", "[t", vim.cmd.tabprevious, { desc = "Previous tab" })
 
 set(
   "n",
@@ -62,6 +55,7 @@ set(
 ---@param opts? ScrollHalfPageOpts
 local function scroll_half_page(dir, opts)
   opts = vim.F.if_nil(opts, {})
+  opts = opts or {}
   local bufnr = vim.F.if_nil(opts.bufnr, api.nvim_get_current_buf())
   local line_count = api.nvim_buf_line_count(bufnr)
   local height = api.nvim_win_get_height(0)

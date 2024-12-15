@@ -1,6 +1,15 @@
 return {
   {
+    "suketa/nvim-dap-ruby",
+    event = "VeryLazy",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    opts = {},
+  },
+  {
     "nvim-neotest/neotest",
+    ft = { "ruby" },
     dependencies = {
       "alexwu/neotest-rspec",
     },

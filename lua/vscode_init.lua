@@ -99,6 +99,7 @@ return {
   },
   {
     "nvim-lua/plenary.nvim",
+    cond = true,
     dependencies = {
       { "alexwu/bu", url = "git@github.com:alexwu/bu.git" },
     },
@@ -110,7 +111,9 @@ return {
       -- require("bombeelu.commands")
       -- require("mappings")
 
-      require("bombeelu.vscode.mappings")
+      if vim.g.vscode then
+        require("bombeelu.vscode.mappings")
+      end
     end,
     lazy = false,
     priority = 1001,
@@ -155,5 +158,4 @@ return {
     end,
     lazy = false,
   },
-
 }

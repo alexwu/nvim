@@ -8,7 +8,8 @@ return {
   {
     "rachartier/tiny-inline-diagnostic.nvim",
     enabled = true,
-    event = "LspAttach",
+    event = "VeryLazy",
+    priority = 1000,
     opt = {
       options = {
         show_source = true,
@@ -20,9 +21,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
-    cond = function()
-      return not vim.g.vscode
-    end,
     dependencies = {
       {
         -- NOTE: This needs to be at the top
@@ -31,8 +29,11 @@ return {
         config = true,
         opts = {},
       },
-      "hrsh7th/nvim-cmp",
-      "hrsh7th/cmp-nvim-lsp",
+      -- "iguanacucumber/magazine.nvim",
+      -- "iguanacucumber/mag-nvim-lsp",
+      -- "hrsh7th/nvim-cmp",
+      -- "hrsh7th/cmp-nvim-lsp",
+      "saghen/blink.cmp",
       {
         "kosayoda/nvim-lightbulb",
         config = true,
@@ -56,11 +57,32 @@ return {
       "williamboman/mason-lspconfig.nvim",
       {
         "yioneko/nvim-vtsls",
-        cond = function()
-          local result = require("bombeelu.utils").root_pattern("tsconfig.json")(vim.uv.cwd() or vim.uv.os_homedir())
+        lazy = true,
+        init = function()
+          local loaded = false
+          local function check()
+            local result = require("bombeelu.utils").root_pattern("tsconfig.json")(vim.uv.cwd() or vim.uv.os_homedir())
 
-          return result
+            if result then
+              require("lazy").load({ plugins = { "nvim-vtsls" } })
+              loaded = true
+            end
+          end
+          check()
+          vim.api.nvim_create_autocmd("DirChanged", {
+            group = require("bu").nvim.augroup("vtsls.custom"),
+            callback = function()
+              if not loaded then
+                check()
+              end
+            end,
+          })
         end,
+        -- cond = function()
+        --   local result = require("bombeelu.utils").root_pattern("tsconfig.json")(vim.uv.cwd() or vim.uv.os_homedir())
+        --
+        --   return result
+        -- end,
         config = function()
           require("lspconfig.configs").vtsls = require("vtsls").lspconfig
         end,
@@ -123,13 +145,17 @@ return {
         end,
       },
       {
-        "camilledejoye/nvim-lsp-selection-range",
+        "alexwu/nvim-lsp-selection-range",
+        enabled = true,
         lazy = true,
+        dev = true,
         opts = {},
         config = function()
           require("bombeelu.utils").on_attach(function(client, bufnr)
+            local ft = vim.filetype.match({ buf = bufnr })
             if
-              client.name ~= "tailwindcss"
+              ft ~= "eruby"
+              and client.name ~= "tailwindcss"
               and client.supports_method(vim.lsp.protocol.Methods.textDocument_selectionRange)
             then
               set(
@@ -153,7 +179,7 @@ return {
         event = "VeryLazy",
         dependencies = {
           "nvim-treesitter/nvim-treesitter",
-          "hrsh7th/nvim-cmp",
+          -- "hrsh7th/nvim-cmp",
         },
         opts = {},
       },
@@ -175,7 +201,7 @@ return {
       vim.diagnostic.config({
         virtual_text = false,
         underline = {
-          severity = "error",
+          severity = vim.diagnostic.severity.ERROR,
         },
         signs = {
           text = {
@@ -187,49 +213,49 @@ return {
         },
         float = {
           show_header = false,
-          source = "always",
+          source = true,
         },
         jump = {
-          float = {
-            border = "rounded",
-            focusable = false,
-          },
+          -- float = {
+          --   border = "rounded",
+          --   focusable = false,
+          -- },
         },
         update_in_insert = false,
       })
 
-      vim.lsp.handlers[Methods.textDocument_diagnostic] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
-        virtual_text = {
-          spacing = 4,
-          severity = "error",
-        },
-        underline = {
-          severity = "error",
-        },
-        float = {
-          show_header = false,
-          source = "always",
-        },
-        signs = true,
-        update_in_insert = false,
-      })
-
-      vim.lsp.handlers[Methods.textDocument_publishDiagnostics] =
-        vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-          virtual_text = {
-            spacing = 4,
-            severity = "error",
-          },
-          underline = {
-            severity = "error",
-          },
-          float = {
-            show_header = false,
-            source = "always",
-          },
-          signs = true,
-          update_in_insert = false,
-        })
+      -- vim.lsp.handlers[Methods.textDocument_diagnostic] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
+      --   virtual_text = {
+      --     spacing = 4,
+      --     severity = "error",
+      --   },
+      --   underline = {
+      --     severity = "error",
+      --   },
+      --   float = {
+      --     show_header = false,
+      --     source = "always",
+      --   },
+      --   signs = true,
+      --   update_in_insert = false,
+      -- })
+      --
+      -- vim.lsp.handlers[Methods.textDocument_publishDiagnostics] =
+      --   vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+      --     virtual_text = {
+      --       spacing = 4,
+      --       severity = "error",
+      --     },
+      --     underline = {
+      --       severity = "error",
+      --     },
+      --     float = {
+      --       show_header = false,
+      --       source = "always",
+      --     },
+      --     signs = true,
+      --     update_in_insert = false,
+      --   })
 
       autocmd("LspAttach", {
         group = bu.nvim.augroup("LspAttach_default"),
@@ -266,25 +292,91 @@ return {
         capabilities = capabilities,
       })
 
-      lsp.ruby_lsp.setup({
-        cmd = { "ruby-lsp" },
-        on_attach = function(client, buffer)
-          on_attach(client, buffer)
-        end,
+      lsp.ruff.setup({
+        on_attach = on_attach,
         capabilities = capabilities,
-        filetypes = { "ruby", "eruby" },
-        init_options = {
-          formatter = "auto",
-          features_configuration = { inlay_hint = { enable_all = true } },
-          experimentalFeaturesEnabled = true,
-          erbSupport = true,
+      })
+
+      lsp.basedpyright.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+          pyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+          },
+          python = {
+            analysis = {
+              -- Ignore all files for analysis to exclusively use Ruff for linting
+              ignore = { "*" },
+            },
+          },
         },
       })
-      lsp.biome.setup({ on_attach = on_attach, capabilities = capabilities })
+
+      -- lsp.ruby_lsp.setup({
+      --   cmd = { "ruby-lsp" },
+      --   on_attach = function(client, buffer)
+      --     on_attach(client, buffer)
+      --   end,
+      --   capabilities = capabilities,
+      --   filetypes = { "ruby", "eruby" },
+      --   init_options = {
+      --     formatter = "auto",
+      --     features_configuration = { inlay_hint = { enable_all = true } },
+      --     experimentalFeaturesEnabled = true,
+      --     erbSupport = true,
+      --   },
+      -- })
+      lsp.biome.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        filetypes = { "typescript", "typescriptreact" },
+      })
       lsp.html.setup({ on_attach = on_attach, capabilities = capabilities })
       lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
       lsp.sourcekit.setup({ on_attach = on_attach, capabilities = capabilities })
       lsp.theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.typos_lsp.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        init_options = {
+          -- Custom config. Used together with a config file found in the workspace or its parents,
+          -- taking precedence for settings declared in both.
+          -- Equivalent to the typos `--config` cli argument.
+          -- config = "~/code/typos-lsp/crates/typos-lsp/tests/typos.toml",
+          -- How typos are rendered in the editor, can be one of an Error, Warning, Info or Hint.
+          -- Defaults to error.
+          diagnosticSeverity = "Warning",
+        },
+      })
+      lsp.harper_ls.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        filetypes = { "modelfile", "markdown" },
+        settings = {
+          ["harper-ls"] = {
+            diagnosticSeverity = "hint", -- Can also be "information", "warning", or "error"
+            linters = {
+              spell_check = true,
+              spelled_numbers = false,
+              an_a = true,
+              sentence_capitalization = true,
+              unclosed_quotes = true,
+              wrong_quotes = false,
+              long_sentences = true,
+              repeated_words = true,
+              spaces = true,
+              matcher = true,
+              correct_number_suffix = true,
+              number_suffix_capitalization = true,
+              multiple_sequential_pronouns = true,
+              linking_verbs = false,
+              avoid_curses = false,
+            },
+          },
+        },
+      })
 
       -- Workaround for truncating long TypeScript inlay hints.
       -- TODO: Remove this if https://github.com/neovim/neovim/issues/27240 gets addressed.
@@ -350,9 +442,11 @@ return {
         opts = { silent = true, desc = "Select a code action" },
       })
 
-      set("n", "gd", function()
-        vim.lsp.buf.definition({ reuse_win = true })
-      end, { silent = true, desc = "Go to definition" })
+      set({ "n", "x" }, "<leader>cl", vim.lsp.codelens.run, { desc = "Run Code Lens" })
+
+      -- set("n", "gd", function()
+      --   vim.lsp.buf.definition({ reuse_win = true })
+      -- end, { silent = true, desc = "Go to definition" })
 
       set("n", "gy", function()
         vim.lsp.buf.type_definition()
@@ -368,7 +462,7 @@ return {
         })
       end, { silent = true, desc = "Show diagnostics on current line" })
 
-      -- set("n", "K", hover, { silent = true, desc = "Hover" })
+      set("n", "K", hover, { silent = true, desc = "Hover" })
       -- set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
       set({ "n", "i", "s" }, "<c-f>", function()

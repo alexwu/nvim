@@ -100,4 +100,14 @@ return {
     pattern = "/app/workers/(.*)/(.*)_worker.rb",
     target = rails_alternative_targets,
   },
+  {
+    pattern = "/app/views/components/(.*)/(.*).rb$",
+    target = "/app/views/components/%1/%2.html.erb",
+    context = "source",
+  },
+  {
+    pattern = "/app/views/components/(.*)/(.*).html.erb",
+    target = "/app/views/components/%1/%2.rb$",
+    context = "source",
+  },
 }

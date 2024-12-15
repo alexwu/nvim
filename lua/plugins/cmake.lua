@@ -13,6 +13,7 @@ return {
       end
       check()
       vim.api.nvim_create_autocmd("DirChanged", {
+        group = require("bu").nvim.augroup("cmake-tools.custom"),
         callback = function()
           if not loaded then
             check()

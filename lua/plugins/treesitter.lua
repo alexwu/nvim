@@ -22,7 +22,8 @@ return {
     end,
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
-      "RRethy/nvim-treesitter-endwise",
+      -- { "RRethy/nvim-treesitter-endwise", enabled = true },
+      { "alexwu/nvim-treesitter-endwise", dev = true, enabled = true },
       "windwp/nvim-autopairs",
       "windwp/nvim-ts-autotag",
       "andymass/vim-matchup",

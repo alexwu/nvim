@@ -2,6 +2,7 @@ vim.filetype.add({
   extension = {
     rbi = "ruby",
     ["http"] = "http",
+    ["d.tl"] = "teal",
   },
   filename = {
     [".cargo/config"] = "toml",
@@ -11,6 +12,7 @@ vim.filetype.add({
     ["dot_zshrc"] = "zsh",
     ["dot_zprofile"] = "zsh",
     ["dot_vimrc"] = "vim",
+    ["dot_ideavimrc"] = "vimrc",
     [".zimrc"] = "zsh",
     ["private_dot_zimrc"] = "zsh",
     Justfile = "just",

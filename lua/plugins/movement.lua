@@ -1,6 +1,7 @@
 return {
   {
     "chrisgrieser/nvim-spider",
+    cond = true,
     event = "VeryLazy",
     opts = {
       skipInsignificantPunctuation = false,
@@ -29,6 +30,7 @@ return {
   },
   {
     "folke/flash.nvim",
+    cond = true,
     event = "VeryLazy",
     ---@type Flash.Config
     opts = {
@@ -53,7 +55,7 @@ return {
       },
     },
     keys = {
-      { "s", desc = "+flash" },
+      -- { "s", desc = "+flash" },
       -- {
       --   "s",
       --   function()
@@ -62,12 +64,21 @@ return {
       --   desc = "+flash",
       -- },
       {
-        "ss",
+        "s",
         mode = { "n", "x" },
         function()
           require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
         end,
         desc = "Jump forward",
+      },
+      {
+        "<leader>s",
+        desc = "+flash",
+        -- mode = { "n", "x" },
+        -- function()
+        --   require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
+        -- end,
+        -- desc = "Jump forward",
       },
       {
         "S",
@@ -80,7 +91,7 @@ return {
         desc = "Jump backward",
       },
       {
-        "sS",
+        "<leader>S",
         mode = { "n", "x" },
         function()
           require("flash").jump({
@@ -89,8 +100,19 @@ return {
         end,
         desc = "Jump backward",
       },
+
+      -- {
+      --   "sS",
+      --   mode = { "n", "x" },
+      --   function()
+      --     require("flash").jump({
+      --       search = { forward = false, wrap = false, multi_window = false },
+      --     })
+      --   end,
+      --   desc = "Jump backward",
+      -- },
       {
-        "st",
+        "<leader>st",
         mode = { "n", "x" },
         function()
           require("flash").treesitter()
@@ -113,23 +135,55 @@ return {
         end,
         desc = "Treesitter Search",
       },
+      {
+        "<leader>sd",
+        function()
+          require("flash").jump({
+            matcher = function(win)
+              ---@param diag vim.Diagnostic
+              return vim.tbl_map(function(diag)
+                return {
+                  pos = { diag.lnum + 1, diag.col },
+                  end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
+                }
+              end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
+            end,
+          })
+        end,
+        desc = "Jump to diagnostic",
+      },
+    },
+  },
+  {
+    "smoka7/hop.nvim",
+    version = "*",
+    opts = {
+      -- keys = "etovxqpdygfblzhckisuran",
+    },
+    keys = {
       -- {
-      --   "gsd",
+      --   "sw",
+      --   mode = { "n", "x" },
       --   function()
-      --     require("flash").jump({
-      --       matcher = function(win)
-      --         ---@param diag Diagnostic
-      --         return vim.tbl_map(function(diag)
-      --           return {
-      --             pos = { diag.lnum + 1, diag.col },
-      --             end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
-      --           }
-      --         end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
-      --       end,
-      --     })
+      --     require("hop").hint_camel_case({ direction = 2 })
       --   end,
-      --   desc = "Jump to diagnostic",
       -- },
+      {
+        "<leader>w",
+        mode = { "n", "x" },
+        function()
+          require("hop").hint_camel_case({ direction = 2 })
+        end,
+        desc = "Jump to a word",
+      },
+      {
+        "<leader>W",
+        mode = { "n", "x" },
+        function()
+          require("hop").hint_camel_case({ direction = 1 })
+        end,
+        desc = "Jump backward to a word",
+      },
     },
   },
   {

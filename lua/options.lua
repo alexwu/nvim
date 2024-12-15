@@ -72,6 +72,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+-- aunmenu PopUp.-2-
 vim.cmd([[
   aunmenu PopUp.How-to\ disable\ mouse
   aunmenu PopUp.-1-

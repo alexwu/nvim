@@ -210,7 +210,8 @@ function M.setup()
   vim.api.nvim_create_user_command("Scratch", function(opts)
     local fargs = opts.fargs
 
-    M.toggle(fargs[1], fargs[2])
+    -- M.toggle(fargs[1], fargs[2])
+    Snacks.scratch.open({ ft = fargs[1] })
   end, { nargs = "+" })
 end
 

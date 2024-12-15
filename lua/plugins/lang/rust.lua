@@ -1,15 +1,33 @@
 return {
   {
     "saecki/crates.nvim",
-    cond = function()
-      local result = require("bombeelu.utils").root_pattern("Cargo.toml")(vim.uv.cwd() or vim.uv.os_homedir())
+    lazy = true,
+    init = function()
+      local loaded = false
+      local function check()
+        local result = require("bombeelu.utils").root_pattern("Cargo.toml")(vim.uv.cwd() or vim.uv.os_homedir())
 
-      return result
+        if result then
+          require("lazy").load({ plugins = { "crates.nvim" } })
+          loaded = true
+        end
+      end
+      check()
+      vim.api.nvim_create_autocmd("DirChanged", {
+        group = require("bu").nvim.augroup("crates.custom"),
+        callback = function()
+          if not loaded then
+            check()
+          end
+        end,
+      })
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/nvim-cmp",
+      -- "hrsh7th/cmp-nvim-lsp",
+      -- "iguanacucumber/mag-nvim-lsp",
+      -- "iguanacucumber/magazine.nvim",
+      -- "hrsh7th/nvim-cmp",
       "neovim/nvim-lspconfig",
     },
     opts = function()
@@ -55,4 +73,16 @@ return {
     end,
   },
   { "adaszko/tree_climber_rust.nvim" },
+  {
+    "nvim-neotest/neotest",
+    ft = { "rust" },
+    dependencies = {
+      "mrcjkb/rustaceanvim",
+    },
+    opts = {
+      adapters = {
+        ["rustaceanvim.neotest"] = {},
+      },
+    },
+  },
 }

@@ -1,11 +1,12 @@
 return {
   "akinsho/toggleterm.nvim",
   event = "VeryLazy",
-  dependencies = { "mrjones2014/legendary.nvim" },
+  dependencies = { "mrjones2014/legendary.nvim", "alexwu/nvim-snazzy" },
   cond = function()
     return not vim.g.vscode
   end,
   config = function()
+    local palette = require("snazzy").palette
     local set = vim.keymap.set
     local Terminal = require("toggleterm.terminal").Terminal
 
@@ -34,6 +35,19 @@ return {
       open_mapping = [[<C-\>]],
       hide_numbers = true,
       shade_filetypes = {},
+      highlights = {
+        -- highlights which map to a highlight group name and a table of it's values
+        -- NOTE: this is only a subset of values, any group placed here will be set for the terminal window split
+        Normal = {
+          guibg = "#282a36",
+        },
+        NormalFloat = {
+          guibg = "#282a36",
+        },
+        FloatBorder = {
+          guibg = "#282a36",
+        },
+      },
       shade_terminals = true,
       shading_factor = 1,
       start_in_insert = true, -- NOTE: When this it true it makes you kill the buffer if the process exited
@@ -48,7 +62,10 @@ return {
         width = vim.fn.round(0.9 * vim.o.columns),
         height = vim.fn.round(0.9 * vim.o.lines),
         winblend = 10,
-        highlights = { border = "FloatBorder", background = "Normal" },
+        highlights = {
+          border = "FloatBorder",
+          background = "Normal",
+        },
       },
       on_open = function()
         -- enter_terminal_normal_mode()

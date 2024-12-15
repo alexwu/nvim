@@ -1,8 +1,7 @@
-local easypick = require("easypick")
-
 local M = {}
 
 function M.setup()
+  local easypick = require("easypick")
   easypick.setup({
     pickers = {
       {

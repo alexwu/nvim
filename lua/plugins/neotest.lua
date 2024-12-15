@@ -6,11 +6,12 @@ return {
       "nvim-neotest/nvim-nio",
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "haydenmeade/neotest-jest",
+      -- "haydenmeade/neotest-jest",
       -- "rouge8/neotest-rust",
-      "marilari88/neotest-vitest",
+      -- "marilari88/neotest-vitest",
       "antoinemadec/FixCursorHold.nvim",
       "folke/trouble.nvim",
+      "stevearc/overseer.nvim",
     },
     opts = {
       log_level = vim.log.levels.TRACE,
@@ -20,21 +21,7 @@ return {
       -- The adapter will then be automatically loaded with the config.
       -- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/test/core.lua
       adapters = {
-        ["rustaceanvim.neotest"] = {},
-        ["neotest-jest"] = {
-          jestCommand = "yarn test",
-          jestConfigFile = "jest.config.js",
-          env = { DEBUG_PRINT_LIMIT = 20000 },
-          cwd = function(path)
-            return vim.fs.dirname(
-              vim.fs.find(
-                { "jest.config.js", "package.json" },
-                { upward = true, stop = vim.loop.os_homedir(), path = path }
-              )[1]
-            )
-          end,
-        },
-        ["neotest-vitest"] = {},
+        -- ["rustaceanvim.neotest"] = {},
       },
       -- NOTE: Example for loading neotest-golang with a custom config
       -- adapters = {
@@ -67,6 +54,7 @@ return {
     },
     config = function(_, opts)
       opts.consumers = opts.consumers or {}
+      opts.overseer = require("neotest.consumers.overseer")
       -- Refresh and auto close trouble after running tests
       ---@type neotest.Consumer
       opts.consumers.trouble = function(client)

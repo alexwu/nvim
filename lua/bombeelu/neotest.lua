@@ -83,13 +83,13 @@ function M.setup()
     end,
   })
 
-  key.map("[t", function()
+  set("n", "[T", function()
     require("neotest").jump.prev()
-  end, { modes = "n", desc = "Jump to previous test" })
+  end, { desc = "Jump to previous test" })
 
-  key.map("]t", function()
+  set("n", "]T", function()
     require("neotest").jump.next()
-  end, { modes = "n", desc = "Jump to next test" })
+  end, { desc = "Jump to next test" })
 end
 
 return M

@@ -159,6 +159,7 @@ return {
     lazy = false,
     ---@type snacks.Config
     opts = function()
+      local in_git = Snacks.git.get_root() ~= nil
       return {
         ---@class snacks.bigfile.Config
         bigfile = {
@@ -194,28 +195,40 @@ return {
           -- When using a function, the `items` argument are the default keymaps.
           ---@type snacks.dashboard.Item[]|fun(items:snacks.dashboard.Item[]):snacks.dashboard.Item[]?
           -- stylua: ignore
-          keys = {
-            { icon = " ", key = "f", desc = "Find File", action = [[:lua require("nucleo.sources").find_files()]] },
-            { icon = " ", key = "/", desc = "Grep", action = ":lua Snacks.dashboard.pick('live_grep')" },
-            { icon = " ", key = "r", desc = "Tasks", action = [[:lua require("overseer").run_template()]] },
-            { icon = " ", key = "n", desc = "Notes", action = [[:Notes]] },
-            { icon = " ", key = "c", desc = "Config", action = [[:lua require("bombeelu.pickers").config_files()]] },
-            { icon = " ", key = "s", desc = "Restore Session", section = "session" },
-            { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy },
-            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
-          },
+            keys = {
+              { icon = " ", key = "f", desc = "Find File", action = [[:lua require("nucleo.sources").find_files()]] },
+              { icon = " ", key = "/", desc = "Grep", action = ":lua Snacks.dashboard.pick('live_grep')" },
+              { icon = " ", key = "r", desc = "Run", action = [[:lua require("overseer").run_template()]] },
+              { icon = " ", key = "n", desc = "Notes", action = [[:Notes]] },
+              { icon = " ", key = "c", desc = "Config", action = [[:lua require("bombeelu.pickers").config_files()]] },
+              { icon = " ", key = "d", desc = "Diff HEAD", action = [[:DiffviewOpen]] },
+              { icon = " ", key = "R", desc = "Restore Session", section = "session" },
+              { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy },
+              { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+            },
           },
           sections = {
-            -- { section = "header" },
             { section = "keys", gap = 1, padding = 1 },
+            {
+              icon = " ",
+              desc = "Browse Repo",
+              padding = 1,
+              key = "b",
+              action = function()
+                Snacks.gitbrowse()
+              end,
+              enabled = in_git,
+            },
             -- { pane = 1, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
-            { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+            { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1, enabled = not in_git },
             function()
-              local in_git = Snacks.git.get_root() ~= nil
               local cmds = {
                 {
                   title = "Notifications",
                   cmd = "gh notify -s -a -n5",
+                  action = function()
+                    vim.ui.open("https://github.com/notifications")
+                  end,
                   icon = " ",
                   height = 5,
                   enabled = true,
@@ -241,7 +254,7 @@ return {
               }
               return vim.tbl_map(function(cmd)
                 return vim.tbl_extend("force", {
-                  pane = 2,
+                  pane = 1,
                   section = "terminal",
                   enabled = in_git,
                   padding = 1,
@@ -262,14 +275,14 @@ return {
             --   ttl = 5 * 60,
             --   indent = 3,
             -- },
-            { section = "startup" },
+            { section = "startup", padding = 1 },
             {
               section = "terminal",
+              pane = 2,
               cmd = "pokemon-colorscripts -r --no-title; sleep .1",
               random = 10,
-              -- pane = 2,
-              indent = 4,
-              height = 30,
+              indent = 13,
+              height = 20,
             },
           },
         },

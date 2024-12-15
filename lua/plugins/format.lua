@@ -6,14 +6,23 @@ local function build_command(formatter)
   return {
     cmd,
     function(o)
+      local range = nil
+      if o.count ~= -1 then
+        local end_line = vim.api.nvim_buf_get_lines(0, o.line2 - 1, o.line2, true)[1]
+        range = {
+          start = { o.line1, 0 },
+          ["end"] = { o.line2, end_line:len() },
+        }
+      end
       require("conform").format({
         formatters = { formatter.name },
         bufnr = o.buf,
         async = true,
+        range = range,
       })
     end,
     description = string.format("Format file with %s", cmd),
-    opts = { bang = true, buffer = 0 },
+    opts = { bang = true, buffer = 0, range = true },
   }
 end
 
@@ -59,6 +68,8 @@ return {
         desc = "Format Injected Langs",
       },
     },
+    ---@module "conform"
+    ---@type conform.setupOpts
     opts = {
       formatters_by_ft = {
         ["markdown.mdx"] = { "prettier" },
@@ -66,15 +77,18 @@ return {
         cmake = { "cmake_format" },
         cpp = { "clang_format" },
         css = { "prettier" },
-        eruby = { "erb_format" },
+        eruby = { "erb_format", "rustywind", stop_after_first = true },
         go = { "gofmt" },
         graphql = { "prettier" },
         gdscript = { "gdformat" },
         handlebars = { "prettier" },
         html = { "prettier" },
-        javascript = { "biome", "prettier", stop_after_first = true },
-        javascriptreact = { "biome", "prettier", stop_after_first = true },
-        json = { "biome", "prettier", stop_after_first = true },
+        -- javascript = { "biome", "prettier", stop_after_first = true },
+        javascript = { "prettier", stop_after_first = true },
+        -- javascriptreact = { "biome", "prettier", stop_after_first = true },
+        javascriptreact = { "prettier", stop_after_first = true },
+        -- json = { "biome", "prettier", stop_after_first = true },
+        json = { "prettier", stop_after_first = true },
         jsonc = { "prettier" },
         just = { "just" },
         less = { "prettier" },
@@ -87,8 +101,10 @@ return {
         rust = { "rustfmt" },
         scss = { "prettier" },
         toml = { "taplo" },
-        typescript = { "biome", "prettier", stop_after_first = true },
-        typescriptreact = { "biome", "prettier", stop_after_first = true },
+        -- typescript = { "biome", "prettier", stop_after_first = true },
+        typescript = { "prettier", stop_after_first = true },
+        -- typescriptreact = { "biome", "prettier", stop_after_first = true },
+        typescriptreact = { "prettier", stop_after_first = true },
         vue = { "prettier" },
         yaml = { "prettier" },
         swift = { "swiftformat" },
@@ -114,11 +130,38 @@ return {
           stdin = false,
           require_cwd = false,
         },
+        erb_format = {
+          args = { "--stdin", "--single-class-per-line", "--print-width", "100" },
+          stdin = true,
+        },
+
+        prettier = {
+          inherit = true,
+          options = {
+            ft_parsers = {
+              eruby = "html",
+            },
+          },
+        },
       },
     },
     config = function(_, opts)
       require("conform").setup(opts)
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+      ---@param bufnr integer
+      ---@param ... string
+      ---@return string
+      local function first(bufnr, ...)
+        local conform = require("conform")
+        for i = 1, select("#", ...) do
+          local formatter = select(i, ...)
+          if conform.get_formatter_info(formatter, bufnr).available then
+            return formatter
+          end
+        end
+        return select(1, ...)
+      end
 
       key.map({ "<F8>", "<Leader>y", "gq" }, function()
         require("conform").format({
@@ -165,7 +208,7 @@ return {
             ["end"] = { args.line2, end_line:len() },
           }
         end
-        require("conform").format({ async = true, lsp_fallback = true, range = range })
+        require("conform").format({ async = true, lsp_fallback = "fallback", range = range })
       end, { range = true })
     end,
   },

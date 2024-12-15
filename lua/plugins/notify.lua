@@ -57,6 +57,7 @@ local stages = function()
 end
 return {
   "rcarriga/nvim-notify",
+  enabled = false,
   event = "VeryLazy",
   config = function()
     -- vim.notify = require("notify")
