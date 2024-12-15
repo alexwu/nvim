@@ -157,10 +157,26 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
-    ---@type snacks.Config
+    ---@type fun():snacks.Config
     opts = function()
       local in_git = Snacks.git.get_root() ~= nil
       return {
+        ---@type table<string, snacks.win.Config>
+        styles = {
+          scratch = {
+            width = 0.9,
+            height = 0.9,
+            bo = { buftype = "", buflisted = false, bufhidden = "hide", swapfile = false },
+            minimal = false,
+            noautocmd = false,
+            -- position = "right",
+            zindex = 20,
+            wo = { winhighlight = "NormalFloat:Normal" },
+            border = "rounded",
+            title_pos = "center",
+            footer_pos = "center",
+          },
+        },
         ---@class snacks.bigfile.Config
         bigfile = {
           enabled = true,
@@ -263,18 +279,6 @@ return {
                 }, cmd)
               end, cmds)
             end,
-            -- {
-            --   pane = 1,
-            --   icon = " ",
-            --   title = "Git Status",
-            --   section = "terminal",
-            --   enabled = Snacks.git.get_root() ~= nil,
-            --   cmd = "hub status --short --branch --renames",
-            --   height = 5,
-            --   padding = 1,
-            --   ttl = 5 * 60,
-            --   indent = 3,
-            -- },
             { section = "startup", padding = 1 },
             {
               section = "terminal",
@@ -292,7 +296,7 @@ return {
     keys = {
       { "<leader>z", function() Snacks.zen() end, desc = "Toggle Zen Mode" },
       { "<leader>Z", function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
-      { "<leader>n",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
+      { "<leader>fn",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
       { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
       { "<leader>gl", function() Snacks.lazygit() end, desc = "Lazygit" },
       { "<c-`>", function() Snacks.terminal.toggle() end, desc = "Toggle Terminal (bottom)" },
