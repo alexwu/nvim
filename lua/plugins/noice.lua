@@ -76,6 +76,7 @@ return {
   dependencies = {
     "MunifTanjim/nui.nvim",
     "rcarriga/nvim-notify",
-    "hrsh7th/nvim-cmp",
+    -- "hrsh7th/nvim-cmp",
+    -- "iguanacucumber/magazine.nvim",
   },
 }

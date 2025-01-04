@@ -7,6 +7,7 @@ return {
       ---@diagnostic disable-next-line: missing-fields
       require("satellite").setup({
         current_only = true,
+        excluded_filetypes = { "TelescopePrompt", "TelescopeResults" },
       })
     end,
   },

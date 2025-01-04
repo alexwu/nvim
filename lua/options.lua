@@ -10,7 +10,7 @@ vim.o.cursorline = true
 vim.o.directory = "~/.vim-tmp/,~/.tmp/,~/tmp/,/var/tmp/,/tmp"
 vim.o.mouse = "nvi"
 vim.o.mousemodel = "popup_setpos"
-vim.o.updatetime = 250
+-- vim.o.updatetime = 250
 vim.o.hlsearch = true
 vim.o.expandtab = true
 vim.o.incsearch = true
@@ -28,8 +28,10 @@ vim.o.numberwidth = 5
 vim.o.ruler = true
 vim.o.scrolloff = 5
 vim.o.shiftwidth = 2
+vim.opt.shiftround = true -- Round indent
 vim.o.showcmd = true
-vim.o.signcolumn = "yes:1"
+vim.o.signcolumn = "yes:2"
+-- vim.o.signcolumn = "yes"
 vim.o.smartcase = true
 vim.o.smarttab = true
 vim.o.softtabstop = 2
@@ -39,7 +41,9 @@ vim.o.tags = "./TAGS,TAGS"
 vim.o.wildignore = "*.swp,.git,.svn,*.log,*.gif,*.jpeg,*.jpg,*.png,*.pdf,tmp/**,.DS_STORE,.DS_Store"
 vim.opt.shortmess:append("Icq")
 vim.o.termguicolors = true
-vim.o.timeoutlen = 500
+vim.opt.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]]
+
+-- vim.o.timeoutlen = 500
 vim.o.pumheight = 10
 vim.o.guifont = "FiraCode Nerd Font:h14"
 vim.g.ts_highlight_lua = false
@@ -58,9 +62,23 @@ vim.opt.foldlevel = 99
 
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 
-vim.o.foldtext = ""
-vim.o.fillchars = "foldclose:,foldopen:,fold: "
+vim.opt.foldtext = ""
+-- vim.o.fillchars = "foldclose:,foldopen:,fold: "
+vim.opt.fillchars = {
+  foldopen = "",
+  foldclose = "",
+  fold = " ",
+  foldsep = " ",
+  diff = "╱",
+  eob = " ",
+}
+
+vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
+vim.opt.undofile = true
+vim.opt.undolevels = 10000
+vim.opt.updatetime = 200 -- Save
 
 vim.o.foldcolumn = "1"
 

@@ -16,7 +16,27 @@ return {
         multiple_diag_under_cursor = true,
       },
     },
-    config = true,
+    config = function(_, opts)
+      require("tiny-inline-diagnostic").setup(opts)
+
+      Snacks.toggle
+        .new({
+          id = "tiny-inline-diagnostic",
+          name = "Pretty Diagnostics",
+          get = function()
+            return require("tiny-inline-diagnostic.diagnostic").user_toggle_state
+          end,
+          set = function(state)
+            local diag = require("tiny-inline-diagnostic.diagnostic")
+            if state then
+              diag.enable()
+            else
+              diag.disable()
+            end
+          end,
+        })
+        :map("<leader>up")
+    end,
   },
   {
     "neovim/nvim-lspconfig",
@@ -78,11 +98,6 @@ return {
             end,
           })
         end,
-        -- cond = function()
-        --   local result = require("bombeelu.utils").root_pattern("tsconfig.json")(vim.uv.cwd() or vim.uv.os_homedir())
-        --
-        --   return result
-        -- end,
         config = function()
           require("lspconfig.configs").vtsls = require("vtsls").lspconfig
         end,
@@ -146,7 +161,7 @@ return {
       },
       {
         "alexwu/nvim-lsp-selection-range",
-        enabled = true,
+        enabled = false,
         lazy = true,
         dev = true,
         opts = {},
@@ -187,7 +202,6 @@ return {
     config = function()
       local capabilities = require("plugins.lsp.defaults").capabilities
 
-      local legendary = require("legendary")
       local lazy = require("bombeelu.utils").lazy
       local lsp = require("bombeelu.lsp")
       local on_attach = require("plugins.lsp.defaults").on_attach
@@ -380,24 +394,24 @@ return {
 
       -- Workaround for truncating long TypeScript inlay hints.
       -- TODO: Remove this if https://github.com/neovim/neovim/issues/27240 gets addressed.
-      local inlay_hint_handler = vim.lsp.handlers[Methods.textDocument_inlayHint]
-      vim.lsp.handlers[Methods.textDocument_inlayHint] = function(err, result, ctx, config)
-        local client = vim.lsp.get_client_by_id(ctx.client_id)
-        if client and client.name == "vtsls" then
-          result = vim.iter(result):map(function(hint)
-            if type(hint.label) == "string" then
-              local label = hint.label ---@type string
-              if string.len(label) >= 30 then
-                label = label:sub(1, 29) .. "…"
-              end
-              hint.label = label
-            end
-            return hint
-          end)
-        end
-
-        inlay_hint_handler(err, result, ctx, config)
-      end
+      -- local inlay_hint_handler = vim.lsp.handlers[Methods.textDocument_inlayHint]
+      -- vim.lsp.handlers[Methods.textDocument_inlayHint] = function(err, result, ctx, config)
+      --   local client = vim.lsp.get_client_by_id(ctx.client_id)
+      --   if client and client.name == "vtsls" then
+      --     result = vim.iter(result):map(function(hint)
+      --       if type(hint.label) == "string" then
+      --         local label = hint.label ---@type string
+      --         if string.len(label) >= 30 then
+      --           label = label:sub(1, 29) .. "…"
+      --         end
+      --         hint.label = label
+      --       end
+      --       return hint
+      --     end)
+      --   end
+      --
+      --   inlay_hint_handler(err, result, ctx, config)
+      -- end
 
       lsp.vtsls.setup({
         on_attach = on_attach,
@@ -431,17 +445,16 @@ return {
         end
       end
 
-      augroup("LspDiagnosticsConfig", { clear = true })
+      -- legendary.keymap({
+      --   "<Leader>a",
+      --   function()
+      --     require("actions-preview").code_actions()
+      --   end,
+      --   modes = { "n", "x" },
+      --   opts = { silent = true, desc = "Select a code action" },
+      -- })
 
-      legendary.keymap({
-        "<Leader>a",
-        function()
-          require("actions-preview").code_actions()
-        end,
-        modes = { "n", "x" },
-        opts = { silent = true, desc = "Select a code action" },
-      })
-
+      set({ "n", "x" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Select a code action" })
       set({ "n", "x" }, "<leader>cl", vim.lsp.codelens.run, { desc = "Run Code Lens" })
 
       -- set("n", "gd", function()

@@ -9,7 +9,7 @@ return {
         window = {
           open = "alternate",
         },
-        callbacks = {
+        hooks = {
           should_block = function(argv)
             return vim.tbl_contains(argv, "-b")
           end,
@@ -200,6 +200,19 @@ return {
         statuscolumn = {},
         indent = {},
         words = { enabled = false },
+        zen = {
+          toggles = {
+            dim = false,
+            git_signs = true,
+            mini_diff_signs = false,
+            -- diagnostics = false,
+            -- inlay_hints = false,
+          },
+          show = {
+            statusline = true, -- can only be shown when using the global statusline
+            tabline = true,
+          },
+        },
         dashboard = {
 
           preset = {
@@ -307,6 +320,12 @@ return {
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
       { "<leader>fs", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+
+      { "<leader>ns", function()
+        vim.ui.input({prompt = "Input scratcch buffer file type"}, function (ft)
+          Snacks.scratch.open({ ft = ft })
+        end)
+      end, desc = "New Scratch Buffer" },
       {
         "<leader>N",
         desc = "Neovim News",

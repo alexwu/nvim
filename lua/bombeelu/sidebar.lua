@@ -8,7 +8,7 @@ symbols.bindings["<CR>"] = require("sidebar-nvim.builtin.symbols").bindings["e"]
 local M = {}
 
 function M.setup_mappings()
-  vim.keymap.set("n", "<C-m>", lazy(sidebar.toggle))
+  set("n", "<C-m>", lazy(sidebar.toggle))
 end
 
 function M.setup()

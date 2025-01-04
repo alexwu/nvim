@@ -39,7 +39,9 @@ local make_capabilities = function()
     cap = require("blink.cmp").get_lsp_capabilities(cap)
   end
 
-  cap = require("lsp-selection-range").update_capabilities(cap)
+  if package.loaded["lsp-selection-range"] then
+    cap = require("lsp-selection-range").update_capabilities(cap)
+  end
 
   cap.textDocument.foldingRange = {
     dynamicRegistration = false,

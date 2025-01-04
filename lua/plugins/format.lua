@@ -94,7 +94,7 @@ return {
         less = { "prettier" },
         lua = { "stylua" },
         liquid = { "prettier" },
-        markdown = { "prettier" },
+        markdown = { "dprint", "prettier", stop_after_first = true },
         python = { "ruff" },
         query = { "format-queries", "query_fmt", stop_after_first = true },
         ruby = { "rubyfmt", "syntax_tree", stop_after_first = true },

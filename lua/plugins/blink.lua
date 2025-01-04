@@ -24,18 +24,26 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
+      enabled = function()
+        return not vim.tbl_contains({ "TelescopePrompt" }, vim.bo.filetype)
+          and vim.bo.buftype ~= "prompt"
+          and vim.b.completion ~= false
+      end,
       keymap = {
         preset = "super-tab",
         ["<CR>"] = { "accept", "fallback" },
+        ["<C-e>"] = { "cancel", "fallback" },
         ["<S-Tab>"] = { "select_prev", "fallback" },
         ["<Tab>"] = { "select_next", "fallback" },
+        -- cmdline = {},
       },
       completion = {
         accept = {
           auto_brackets = { enabled = true },
         },
         list = {
-          selection = "manual",
+          -- selection = "manual",
+          selection = "auto_insert",
         },
         menu = {
           border = "rounded",
@@ -44,12 +52,21 @@ return {
             treesitter = { "lsp" },
           },
         },
-        documentation = { auto_show = true },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 0,
+          window = {
+            border = "rounded",
+          },
+        },
         ghost_text = { enabled = true },
       },
       appearance = {
         use_nvim_cmp_as_default = false,
         nerd_font_variant = "mono",
+      },
+      signature = {
+        enabled = true,
       },
 
       sources = {
