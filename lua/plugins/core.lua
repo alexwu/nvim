@@ -24,7 +24,7 @@ return {
             else
               vim.api.nvim_set_current_win(winnr)
 
-              require("wezterm").switch_pane.id(tonumber(os.getenv("WEZTERM_PANE")))
+              require("wezterm").switch_pane.id(tonumber(os.getenv("WEZTERM_PANE")) or 0)
             end
 
             if ft == "gitcommit" or ft == "gitrebase" then
