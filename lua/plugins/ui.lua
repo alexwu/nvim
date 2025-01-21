@@ -242,20 +242,31 @@ return {
     "Bekaboo/dropbar.nvim",
     opts = {
       bar = {
-        -- enable = function(buf, win)
-        --   return not vim.api.nvim_win_get_config(win).zindex
-        --     and (vim.bo[buf].buftype == "" or vim.bo[buf].buftype == "terminal")
-        --     and vim.api.nvim_buf_get_name(buf) ~= ""
-        --     and not vim.wo[win].diff
-        -- end,
-        -- enable = function(buf, win, _)
-        --   return vim.api.nvim_buf_is_valid(buf)
-        --     and vim.api.nvim_win_is_valid(win)
-        --     and vim.wo[win].winbar == ""
-        --     and not vim.wo[win].diff
-        --     and not vim.bo[buf].buftype == "terminal"
-        --     and ((pcall(vim.treesitter.get_parser, buf, vim.bo[buf].ft)) and true or false)
-        -- end,
+        enable = function(buf, win, _)
+          if
+            not vim.api.nvim_buf_is_valid(buf)
+            or not vim.api.nvim_win_is_valid(win)
+            or vim.fn.win_gettype(win) ~= ""
+            or vim.wo[win].winbar ~= ""
+            or vim.bo[buf].ft == "help"
+          then
+            return false
+          end
+
+          local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(buf))
+          if stat and stat.size > 1024 * 1024 then
+            return false
+          end
+
+          local ft = vim.bo[buf].ft
+          return ft == "markdown"
+            or ft == "oil"
+            or pcall(vim.treesitter.get_parser, buf)
+            or not vim.tbl_isempty(vim.lsp.get_clients({
+              bufnr = buf,
+              method = "textDocument/documentSymbol",
+            }))
+        end,
       },
     },
   },
