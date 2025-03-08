@@ -36,7 +36,51 @@ return {
         },
         opts = {
           system_prompt = function()
-            return ""
+            local version = vim.version()
+
+            local cwd = vim.fn.getcwd()
+            local files = {}
+            for file, t in vim.fs.dir(cwd) do
+              if t == "file" then
+                table.insert(files, file .. " (file)")
+              elseif t == "directory" then
+                table.insert(files, file .. " (directory)")
+              end
+            end
+
+            local context = {
+              os = vim.uv.os_uname().sysname,
+              nvim_version = string.format("%d.%d.%d", version.major, version.minor, version.patch),
+              files = files,
+              home = vim.env.HOME,
+              editor = vim.env.EDITOR,
+              term = vim.env.TERM,
+              shell = vim.env.SHELL,
+            }
+
+            local output = "### Current Session Information:\n"
+            for key, value in pairs(context) do
+              if key ~= "files" then
+                output = output .. "  " .. key .. ": " .. tostring(value) .. "\n"
+              end
+            end
+
+            output = output .. "  Files in Current Working Directory: " .. table.concat(context.files, ", ")
+
+            return output
+            -- return string.format(
+            --   [[
+            -- ### Current Session Information:
+            --   Current Working Directory: %s
+            --   Files in Current Working Directory: %s
+            --   Operating System: %s
+            --   Neovim Version: %s
+            -- ]],
+            --   cwd,
+            --   table.concat(files, ", "),
+            --   os,
+            --   version_string
+            -- )
           end,
         },
         strategies = {
