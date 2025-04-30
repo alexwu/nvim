@@ -12,53 +12,6 @@ return {
     end,
   },
 
-  {
-    "goolord/alpha-nvim",
-    enabled = false,
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "danielfalk/smart-open.nvim",
-      "stevearc/overseer.nvim",
-    },
-    event = "VimEnter",
-    opts = function() end,
-    config = function()
-      local dash = require("alpha.themes.dashboard")
-
-      dash.section.buttons.val = {
-        -- stylua: ignore
-        dash.button("f", "󰈞 " .. " Files", [[:lua require("nucleo.sources").find_files()<CR>]]),
-        dash.button("/", " " .. " Grep", [[:Telescope live_grep <CR>]]),
-        dash.button("r", " " .. " Tasks", [[:lua require("overseer").run_template()<CR>]]),
-        dash.button("t", "󰙨 " .. " Tests", [[:lua require("neotest").summary.open()<CR>]]),
-        dash.button("T", " " .. " To-do", [[:TodoTelescope<CR>]]),
-        dash.button("n", "󰎞 " .. " Notes", [[:Notes<CR>]]),
-        dash.button("c", " " .. " Config", [[:lua require("bombeelu.pickers").config_files() <CR>]]),
-        dash.button("l", "󰒲 " .. " Lazy", [[:Lazy<CR>]]),
-        dash.button("q", " " .. " Quit", [[:qa<CR>]]),
-      }
-      for _, button in ipairs(dash.section.buttons.val) do
-        button.opts.hl = "AlphaButtons"
-        button.opts.hl_shortcut = "AlphaShortcut"
-      end
-      dash.section.header.opts.hl = "AlphaHeader"
-      dash.section.buttons.opts.hl = "AlphaButtons"
-      dash.section.footer.opts.hl = "AlphaFooter"
-      dash.opts.layout[1].val = 8
-      -- close Lazy and re-open when the dashboard is ready
-      if vim.o.filetype == "lazy" then
-        vim.cmd.close()
-        vim.api.nvim_create_autocmd("User", {
-          pattern = "AlphaReady",
-          callback = function()
-            require("lazy").show()
-          end,
-        })
-      end
-
-      require("alpha").setup(dash.opts)
-    end,
-  },
   { "nvchad/volt", lazy = true },
   {
     "nvchad/minty",
@@ -66,6 +19,7 @@ return {
   },
   {
     "nvchad/menu",
+    enabled = false,
     lazy = true,
     keys = {
       {
@@ -93,7 +47,7 @@ return {
             {
               name = "Code Actions",
               cmd = vim.lsp.buf.code_action,
-              rtxt = "<leader>a",
+              rtxt = "<leader>ca",
             },
 
             { name = "separator" },
@@ -109,12 +63,12 @@ return {
             {
               name = "Stage Hunk",
               cmd = "Gitsigns stage_hunk",
-              rtxt = "sh",
+              rtxt = "<leader>hs",
             },
             {
               name = "Reset Hunk",
               cmd = "Gitsigns reset_hunk",
-              rtxt = "rh",
+              rtxt = "<leader>hr",
             },
 
             {
@@ -261,6 +215,8 @@ return {
           local ft = vim.bo[buf].ft
           return ft == "markdown"
             or ft == "oil"
+            or ft == "fugitive"
+            or ft == "codecompanion"
             or pcall(vim.treesitter.get_parser, buf)
             or not vim.tbl_isempty(vim.lsp.get_clients({
               bufnr = buf,
@@ -268,7 +224,116 @@ return {
             }))
         end,
       },
+      sources = {
+        path = {
+          relative_to = function(buf, win)
+            -- Show full path in oil or fugitive buffers
+            local bufname = vim.api.nvim_buf_get_name(buf)
+            if vim.startswith(bufname, "oil://") or vim.startswith(bufname, "fugitive://") then
+              local root = bufname:gsub("^%S+://", "", 1)
+              while root and root ~= vim.fs.dirname(root) do
+                root = vim.fs.dirname(root)
+              end
+              return root
+            end
+
+            local ok, cwd = pcall(vim.fn.getcwd, win)
+            return ok and cwd or vim.fn.getcwd()
+          end,
+        },
+      },
     },
   },
+  {
+    "rachartier/tiny-glimmer.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
+    "bassamsdata/namu.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("namu").setup({
+        -- Enable the modules you want
+        namu_symbols = {
+          enable = true,
+          options = {}, -- here you can configure namu
+        },
+        -- Optional: Enable other modules if needed
+        ui_select = { enable = false }, -- vim.ui.select() wrapper
+        colorscheme = {
+          enable = false,
+          options = {
+            -- NOTE: if you activate persist, then please remove any vim.cmd("colorscheme ...") in your config, no needed anymore
+            persist = true, -- very efficient mechanism to Remember selected colorscheme
+            write_shada = false, -- If you open multiple nvim instances, then probably you need to enable this
+          },
+        },
+      })
+      -- === Suggested Keymaps: ===
+      set("n", { "<leader>ss", "gO" }, ":Namu symbols<cr>", {
+        desc = "Jump to LSP symbol",
+        silent = true,
+      })
+    end,
+  },
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      preset = "modern",
+      -- preset = "helix",
+      ---@type wk.Spec
+      spec = {
+        {
+          mode = { "n", "v" },
+          { "[", group = "prev" },
+          { "]", group = "next" },
+        },
+        {
+          mode = { "n" },
+          { "<Space>", group = "leader" },
+        },
+      },
+
+      ---@type number | fun(ctx: { keys: string, mode: string, plugin?: string }):number
+      delay = function(ctx)
+        return ctx.plugin and 0 or 200
+      end,
+
+      triggers = {
+        { "<auto>", mode = "nixsotc" },
+        -- { "s", mode = { "n", "v" } },
+        { "<leader>", mode = { "n", "v" } },
+        { "<space>", mode = { "n" } },
+      },
+      icons = {
+        rules = false,
+      },
+      layout = {
+        height = { min = 4, max = 25 },
+        width = { min = 20, max = 50 },
+        spacing = 3,
+        align = "center",
+      },
+    },
+    keys = {
+      {
+        "g?",
+        function()
+          require("which-key").show({ global = true })
+        end,
+        desc = "Keymaps (which-key)",
+      },
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
+  },
+
   -- { "akinsho/bufferline.nvim", version = "*", dependencies = "nvim-tree/nvim-web-devicons" },
 }
