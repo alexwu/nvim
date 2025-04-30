@@ -1,9 +1,37 @@
 return {
   {
     "aznhe21/actions-preview.nvim",
+    enabled = false,
     config = true,
     opts = {},
     lazy = true,
+  },
+  {
+    "rachartier/tiny-code-action.nvim",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      {
+        "folke/snacks.nvim",
+        opts = {
+          terminal = {},
+        },
+      },
+    },
+    event = "LspAttach",
+    opts = {
+      backend = "vim",
+      picker = "snacks",
+    },
+  },
+  {
+    "mhanberg/output-panel.nvim",
+    version = "*",
+    event = "LspAttach",
+    config = function()
+      require("output_panel").setup({
+        max_buffer_size = 5000, -- default
+      })
+    end,
   },
   {
     "rachartier/tiny-inline-diagnostic.nvim",
@@ -41,10 +69,14 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    keys = {
+      { "<leader>c", "", desc = "+lsp", mode = { "n", "x" } },
+    },
     dependencies = {
       {
         -- NOTE: This needs to be at the top
         "folke/neoconf.nvim",
+        enabled = false,
         module = "neoconf",
         config = true,
         opts = {},
@@ -72,7 +104,6 @@ return {
       },
       "nvim-telescope/telescope.nvim",
       "b0o/schemastore.nvim",
-      "stevearc/dressing.nvim",
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       {
@@ -117,6 +148,13 @@ return {
             desc = "Organize Imports",
           },
           {
+            "gro",
+            function()
+              require("vtsls").commands.organize_imports(0)
+            end,
+            desc = "Organize Imports",
+          },
+          {
             "<leader>cM",
             function()
               require("vtsls").commands.add_missing_imports(0)
@@ -131,13 +169,33 @@ return {
             desc = "Remove unused imports",
           },
           {
+            "gru",
+            function()
+              require("vtsls").commands.remove_unused_imports(0)
+            end,
+            desc = "Remove unused imports",
+          },
+          {
             "<leader>cU",
             function()
               require("vtsls").commands.remove_unused(0)
             end,
             desc = "Remove unused",
           },
+          {
+            "grU",
+            function()
+              require("vtsls").commands.remove_unused(0)
+            end,
+            desc = "Remove unused",
+          },
         },
+      },
+      {
+        "pmizio/typescript-tools.nvim",
+        enabled = false,
+        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        opts = {},
       },
       {
         "zbirenbaum/neodim",
@@ -238,39 +296,6 @@ return {
         update_in_insert = false,
       })
 
-      -- vim.lsp.handlers[Methods.textDocument_diagnostic] = vim.lsp.with(vim.lsp.diagnostic.on_diagnostic, {
-      --   virtual_text = {
-      --     spacing = 4,
-      --     severity = "error",
-      --   },
-      --   underline = {
-      --     severity = "error",
-      --   },
-      --   float = {
-      --     show_header = false,
-      --     source = "always",
-      --   },
-      --   signs = true,
-      --   update_in_insert = false,
-      -- })
-      --
-      -- vim.lsp.handlers[Methods.textDocument_publishDiagnostics] =
-      --   vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      --     virtual_text = {
-      --       spacing = 4,
-      --       severity = "error",
-      --     },
-      --     underline = {
-      --       severity = "error",
-      --     },
-      --     float = {
-      --       show_header = false,
-      --       source = "always",
-      --     },
-      --     signs = true,
-      --     update_in_insert = false,
-      --   })
-
       autocmd("LspAttach", {
         group = bu.nvim.augroup("LspAttach_default"),
         callback = function(args)
@@ -283,36 +308,30 @@ return {
       require("mason").setup()
       require("mason-lspconfig").setup()
 
-      -- vim.lsp.handlers["textDocument/hover"] =
-      --   vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded", focusable = false })
-
-      lsp.eslint.setup({ on_attach = on_attach, capabilities = capabilities })
-      lsp.json.setup({ on_attach = on_attach, capabilities = capabilities })
-      -- lsp.relay.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.eslint.setup({ capabilities = capabilities })
+      lsp.json.setup({ capabilities = capabilities })
+      -- lsp.relay.setup({  capabilities = capabilities })
       lsp.tailwindcss.setup({
-        on_attach = on_attach,
         capabilities = capabilities,
         settings = {
           classAttributes = { "class", "className", "class:list", "classList", "ngClass", "classes" },
         },
       })
-      lsp.taplo.setup({ on_attach = on_attach, capabilities = capabilities })
-      lsp.yamlls.setup({ on_attach = on_attach, capabilities = capabilities })
-      lsp.zls.setup({ on_attach = on_attach, capabilities = capabilities })
-      lsp.lua.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.taplo.setup({ capabilities = capabilities })
+      lsp.yamlls.setup({ capabilities = capabilities })
+      lsp.zls.setup({ capabilities = capabilities })
+      lsp.lua.setup({ capabilities = capabilities })
 
       lsp.markdown_oxide.setup({
-        on_attach = on_attach,
+
         capabilities = capabilities,
       })
 
       lsp.ruff.setup({
-        on_attach = on_attach,
         capabilities = capabilities,
       })
 
       lsp.basedpyright.setup({
-        on_attach = on_attach,
         capabilities = capabilities,
         settings = {
           pyright = {
@@ -327,6 +346,8 @@ return {
           },
         },
       })
+
+      -- lsp.vectorcode_server.setup({ capabilities = capabilities })
 
       -- lsp.ruby_lsp.setup({
       --   cmd = { "ruby-lsp" },
@@ -343,16 +364,14 @@ return {
       --   },
       -- })
       lsp.biome.setup({
-        on_attach = on_attach,
         capabilities = capabilities,
         filetypes = { "typescript", "typescriptreact" },
       })
-      lsp.html.setup({ on_attach = on_attach, capabilities = capabilities })
-      lsp.htmx.setup({ on_attach = on_attach, capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
-      lsp.sourcekit.setup({ on_attach = on_attach, capabilities = capabilities })
-      lsp.theme_check.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.html.setup({ capabilities = capabilities })
+      -- lsp.htmx.setup({ capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
+      lsp.sourcekit.setup({ capabilities = capabilities })
+      lsp.theme_check.setup({ capabilities = capabilities })
       lsp.typos_lsp.setup({
-        on_attach = on_attach,
         capabilities = capabilities,
         init_options = {
           -- Custom config. Used together with a config file found in the workspace or its parents,
@@ -365,7 +384,7 @@ return {
         },
       })
       lsp.harper_ls.setup({
-        on_attach = on_attach,
+
         capabilities = capabilities,
         filetypes = { "modelfile", "markdown" },
         settings = {
@@ -414,7 +433,6 @@ return {
       -- end
 
       lsp.vtsls.setup({
-        on_attach = on_attach,
         capabilities = capabilities,
         settings = {
           typescript = {
@@ -426,11 +444,19 @@ return {
               functionLikeReturnTypes = { enabled = true },
               enumMemberValues = { enabled = true },
             },
+            suggest = { completeFunctionCalls = true },
+          },
+          vtsls = {
+            experimental = {
+              completion = {
+                enableServerSideFuzzyMatch = true,
+              },
+            },
           },
         },
       })
 
-      lsp.gdscript.setup({ on_attach = on_attach, capabilities = capabilities })
+      lsp.gdscript.setup({ capabilities = capabilities })
 
       local function hover()
         local filetype = vim.filetype.match({ buf = 0 })
@@ -454,28 +480,42 @@ return {
       --   opts = { silent = true, desc = "Select a code action" },
       -- })
 
-      set({ "n", "x" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Select a code action" })
-      set({ "n", "x" }, "<leader>cl", vim.lsp.codelens.run, { desc = "Run Code Lens" })
+      -- set({ "n", "x" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Select a code action" })
+      set({ "n", "x" }, "gra", require("tiny-code-action").code_action, { desc = "Select a code action" })
+      -- set({ "n", "x" }, "<leader>cl", vim.lsp.codelens.run, { desc = "Run Code Lens" })
+      set({ "n", "x" }, "grl", vim.lsp.codelens.run, { desc = "Run Code Lens" })
 
-      -- set("n", "gd", function()
-      --   vim.lsp.buf.definition({ reuse_win = true })
-      -- end, { silent = true, desc = "Go to definition" })
+      set("n", "gd", function()
+        Snacks.picker.lsp_definitions()
+      end, { silent = true, desc = "Go to definition" })
 
-      set("n", "gy", function()
-        vim.lsp.buf.type_definition()
-      end, { silent = true, desc = "Go to type definition" })
-
-      set("n", "L", function()
-        vim.diagnostic.open_float(nil, {
-          scope = "line",
-          show_header = false,
-          source = "always",
-          focusable = false,
-          border = "rounded",
+      set("n", "grr", function()
+        Snacks.picker.lsp_references() end, { desc = "Go to references"
         })
-      end, { silent = true, desc = "Show diagnostics on current line" })
 
-      set("n", "K", hover, { silent = true, desc = "Hover" })
+      set("n", "<leader>gs", function()
+        Snacks.picker.git_status()
+      end, { desc = "Git Status" })
+
+      set("n", "gri", function()
+        Snacks.picker.lsp_implementations()
+      end, { desc = "Go to Implementation" })
+
+      set("n", "gry", function()
+        Snacks.picker.lsp_type_definitions()
+      end, { desc = "Goto T[y]pe Definition" })
+
+      -- set("n", "L", function()
+      --   vim.diagnostic.open_float(nil, {
+      --     scope = "line",
+      --     show_header = false,
+      --     source = "always",
+      --     focusable = false,
+      --     border = "rounded",
+      --   })
+      -- end, { silent = true, desc = "Show diagnostics on current line" })
+
+      -- set("n", "K", hover, { silent = true, desc = "Hover" })
       -- set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
       set({ "n", "i", "s" }, "<c-f>", function()
