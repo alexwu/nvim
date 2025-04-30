@@ -1,6 +1,7 @@
 return {
   {
     "willothy/flatten.nvim",
+    version = "*",
     opts = function()
       ---@type Terminal?
       local saved_terminal
@@ -95,7 +96,12 @@ return {
   {
     "stevearc/oil.nvim",
     lazy = false,
+    ---@module 'oil'
+    ---@type oil.SetupOpts
     opts = {
+      win_options = {
+        signcolumn = "yes:2",
+      },
       delete_to_trash = true,
       watch_for_changes = true,
       view_options = {
@@ -123,10 +129,52 @@ return {
       {
         "-",
         [[<CMD>Oil<CR>]],
-        desc = "Go up a directory",
+        desc = "Open parent directory",
       },
     },
   },
+  -- {
+  --   "refractalize/oil-git-status.nvim",
+  --   -- "OleJoik/oil-git-status.nvim",
+  --   -- branch = "fs-events",
+  --   dependencies = {
+  --     "stevearc/oil.nvim",
+  --   },
+  --   opts = {
+  --     -- watch_for_changes = true,
+  --     symbols = { -- customize the symbols that appear in the git status columns
+  --       index = {
+  --         ["!"] = "!",
+  --         ["?"] = "?",
+  --         ["A"] = "A",
+  --         ["C"] = "C",
+  --         ["D"] = "D",
+  --         ["M"] = "M",
+  --         ["R"] = "R",
+  --         ["T"] = "T",
+  --         ["U"] = "U",
+  --         [" "] = " ",
+  --       },
+  --       working_tree = {
+  --         ["!"] = "",
+  --         ["?"] = "",
+  --         ["A"] = "A",
+  --         ["C"] = "C",
+  --         ["D"] = "✖",
+  --         ["M"] = "",
+  --         ["R"] = "R",
+  --         ["T"] = "T",
+  --         ["U"] = "U",
+  --         [" "] = " ",
+  --       },
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "JezerM/oil-lsp-diagnostics.nvim",
+  --   dependencies = { "stevearc/oil.nvim" },
+  --   opts = {},
+  -- },
   {
     "echasnovski/mini.surround",
     cond = true,
@@ -176,6 +224,9 @@ return {
             title_pos = "center",
             footer_pos = "center",
           },
+          zen = {
+            width = 250,
+          },
         },
         ---@class snacks.bigfile.Config
         bigfile = {
@@ -185,10 +236,10 @@ return {
           -- Enable or disable features when big file detected
           ---@param ctx {buf: number, ft:string}
           setup = function(ctx)
-            vim.b.minianimate_disable = true
-            vim.schedule(function()
-              vim.bo[ctx.buf].syntax = ctx.ft
-            end)
+            -- vim.b.minianimate_disable = true
+            -- vim.schedule(function()
+            --   vim.bo[ctx.buf].syntax = ctx.ft
+            -- end)
           end,
         },
         input = {},
@@ -197,8 +248,27 @@ return {
         quickfile = {},
         scratch = {},
         scroll = { enabled = false },
+        picker = {
+          enabled = true,
+          win = {
+            -- input window
+            input = {
+              keys = {
+                ["<Esc>"] = { "close", mode = { "n", "i" } },
+              },
+            },
+          },
+        },
         statuscolumn = {},
-        indent = {},
+        ---@class snacks.indent.Config
+        indent = {
+          enabled = true,
+          only_scope = true,
+          only_current = true,
+        },
+        scope = {
+          edge = false,
+        },
         words = { enabled = false },
         zen = {
           toggles = {
@@ -214,66 +284,59 @@ return {
           },
         },
         dashboard = {
-
           preset = {
             -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
             ---@type fun(cmd:string, opts:table)|nil
             pick = nil,
-          -- Used by the `keys` section to show keymaps.
-          -- Set your curstom keymaps here.
-          -- When using a function, the `items` argument are the default keymaps.
-          ---@type snacks.dashboard.Item[]|fun(items:snacks.dashboard.Item[]):snacks.dashboard.Item[]?
-          -- stylua: ignore
+            -- Used by the `keys` section to show keymaps.
+            -- Set your curstom keymaps here.
+            -- When using a function, the `items` argument are the default keymaps.
+            ---@type snacks.dashboard.Item[]|fun(items:snacks.dashboard.Item[]):snacks.dashboard.Item[]?
             keys = {
-              { icon = " ", key = "f", desc = "Find File", action = [[:lua require("nucleo.sources").find_files()]] },
+              {
+                icon = " ",
+                key = "f",
+                desc = "Find File",
+                action = [[:lua require("bombeelu.pickers").files()]],
+              },
               { icon = " ", key = "/", desc = "Grep", action = ":lua Snacks.dashboard.pick('live_grep')" },
               { icon = " ", key = "r", desc = "Run", action = [[:lua require("overseer").run_template()]] },
               { icon = " ", key = "n", desc = "Notes", action = [[:Notes]] },
-              { icon = " ", key = "c", desc = "Config", action = [[:lua require("bombeelu.pickers").config_files()]] },
-              { icon = " ", key = "d", desc = "Diff HEAD", action = [[:DiffviewOpen]] },
+              {
+                icon = " ",
+                key = "c",
+                desc = "Config",
+                action = [[:lua require("bombeelu.pickers").config_files()]],
+              },
+              {
+                icon = " ",
+                key = "d",
+                desc = "Diff HEAD",
+                action = [[:DiffviewOpen]],
+
+                enabled = in_git,
+              },
               { icon = " ", key = "R", desc = "Restore Session", section = "session" },
+              {
+                icon = " ",
+                desc = "Browse Repo",
+                padding = 1,
+                key = "b",
+                action = function()
+                  Snacks.gitbrowse()
+                end,
+                enabled = in_git,
+              },
               { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy },
               { icon = " ", key = "q", desc = "Quit", action = ":qa" },
             },
           },
           sections = {
             { section = "keys", gap = 1, padding = 1 },
-            {
-              icon = " ",
-              desc = "Browse Repo",
-              padding = 1,
-              key = "b",
-              action = function()
-                Snacks.gitbrowse()
-              end,
-              enabled = in_git,
-            },
             -- { pane = 1, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
             { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1, enabled = not in_git },
             function()
               local cmds = {
-                {
-                  title = "Notifications",
-                  cmd = "gh notify -s -a -n5",
-                  action = function()
-                    vim.ui.open("https://github.com/notifications")
-                  end,
-                  icon = " ",
-                  height = 5,
-                  enabled = true,
-                },
-                {
-                  title = "Open Issues",
-                  cmd = "gh issue list -L 3",
-                  icon = " ",
-                  height = 7,
-                },
-                {
-                  icon = " ",
-                  title = "Open PRs",
-                  cmd = "gh pr list -L 3",
-                  height = 7,
-                },
                 {
                   icon = " ",
                   title = "Git Status",
@@ -300,6 +363,7 @@ return {
               random = 10,
               indent = 13,
               height = 20,
+              enabled = vim.fn.executable("pokemon-colorscripts"),
             },
           },
         },
@@ -309,7 +373,6 @@ return {
     keys = {
       { "<leader>z", function() Snacks.zen() end, desc = "Toggle Zen Mode" },
       { "<leader>Z", function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
-      { "<leader>fn",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
       { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
       { "<leader>gl", function() Snacks.lazygit() end, desc = "Lazygit" },
       { "<c-`>", function() Snacks.terminal.toggle() end, desc = "Toggle Terminal (bottom)" },
@@ -319,11 +382,21 @@ return {
       { "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference" },
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
-      { "<leader>fs", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+      { "<leader>fs", function() Snacks.scratch.select() end, desc = "Select from scratch buffers" },
+      { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Find files by Git status" },
+      { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Select from open buffers" },
+      { "<leader>f/", function() Snacks.picker.search_history() end, desc = "Search History" },
+      { "<leader>fc", function() Snacks.picker.command_history() end, desc = "Command History" },
+      { "<leader>fh", function() Snacks.picker.help() end, desc = "Help Pages" },
+      { "<leader>fii", function() Snacks.picker.icons() end, desc = "Icons" },
+      { "<leader>fj", function() Snacks.picker.jumps() end, desc = "Jumps" },
+      { "<leader>fn", function() Snacks.picker.notifications() end, desc = "Notification History" },
 
       { "<leader>ns", function()
-        vim.ui.input({prompt = "Input scratcch buffer file type"}, function (ft)
-          Snacks.scratch.open({ ft = ft })
+        vim.ui.input({ prompt = "Input scratch buffer file type" }, function(ft)
+          if ft then
+            Snacks.scratch.open({ ft = ft })
+          end
         end)
       end, desc = "New Scratch Buffer" },
       {
@@ -371,6 +444,129 @@ return {
           Snacks.toggle.dim():map("<leader>uD")
         end,
       })
+    end,
+  },
+  {
+    "ColinKennedy/mega.cmdparse",
+    lazy = true,
+    dependencies = { "ColinKennedy/mega.logging" },
+    version = "v1.*",
+  },
+  {
+    "MagicDuck/grug-far.nvim",
+    cmd = { "GrugFar" },
+    opts = {
+      engine = "ripgrep",
+    },
+  },
+  {
+    "echasnovski/mini.splitjoin",
+    event = "VeryLazy",
+    version = false,
+    opts = {
+      diagnostic = { suffix = "" },
+      treesitter = { suffix = "" },
+      quickfix = { suffix = "" },
+      comment = { suffix = "" },
+    },
+  },
+  {
+    "echasnovski/mini.ai",
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter-textobjects" },
+    opts = function()
+      local ai = require("mini.ai")
+      return {
+        n_lines = 500,
+        custom_textobjects = {
+          o = ai.gen_spec.treesitter({
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+          }, {}),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
+          d = { "%f[%d]%d+" }, -- digits
+          e = { -- Word with case
+            {
+              "%u[%l%d]+%f[^%l%d]",
+              "%f[%S][%l%d]+%f[^%l%d]",
+              "%f[%P][%l%d]+%f[^%l%d]",
+              "^[%l%d]+%f[^%l%d]",
+            },
+            "^().*()$",
+          },
+          g = function() -- Whole buffer, similar to `gg` and 'G' motion
+            local from = { line = 1, col = 1 }
+            local to = {
+              line = vim.fn.line("$"),
+              col = math.max(vim.fn.getline("$"):len(), 1),
+            }
+            return { from = from, to = to }
+          end,
+          u = ai.gen_spec.function_call(), -- u for "Usage"
+          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
+        },
+      }
+    end,
+    config = function(_, opts)
+      require("mini.ai").setup(opts)
+      -- register all text objects with which-key
+      local objects = {
+        { " ", desc = "whitespace" },
+        { '"', desc = '" string' },
+        { "'", desc = "' string" },
+        { "(", desc = "() block" },
+        { ")", desc = "() block with ws" },
+        { "<", desc = "<> block" },
+        { ">", desc = "<> block with ws" },
+        { "?", desc = "user prompt" },
+        { "U", desc = "use/call without dot" },
+        { "[", desc = "[] block" },
+        { "]", desc = "[] block with ws" },
+        { "_", desc = "underscore" },
+        { "`", desc = "` string" },
+        { "a", desc = "argument" },
+        { "b", desc = ")]} block" },
+        { "c", desc = "class" },
+        { "d", desc = "digit(s)" },
+        { "e", desc = "CamelCase / snake_case" },
+        { "f", desc = "function" },
+        { "g", desc = "entire file" },
+        { "i", desc = "indent" },
+        { "o", desc = "block, conditional, loop" },
+        { "q", desc = "quote `\"'" },
+        { "t", desc = "tag" },
+        { "u", desc = "use/call" },
+        { "{", desc = "{} block" },
+        { "}", desc = "{} with ws" },
+      }
+
+      local ret = { mode = { "o", "x" } }
+      ---@type table<string, string>
+      local mappings = vim.tbl_extend("force", {}, {
+        around = "a",
+        inside = "i",
+        around_next = "an",
+        inside_next = "in",
+        around_last = "al",
+        inside_last = "il",
+      }, opts.mappings or {})
+      mappings.goto_left = nil
+      mappings.goto_right = nil
+
+      for name, prefix in pairs(mappings) do
+        name = name:gsub("^around_", ""):gsub("^inside_", "")
+        ret[#ret + 1] = { prefix, group = name }
+        for _, obj in ipairs(objects) do
+          local desc = obj.desc
+          if prefix:sub(1, 1) == "i" then
+            desc = desc:gsub(" with ws", "")
+          end
+          ret[#ret + 1] = { prefix .. obj[1], desc = obj.desc }
+        end
+      end
+      require("which-key").add(ret, { notify = false })
     end,
   },
 }
