@@ -81,10 +81,6 @@ return {
         config = true,
         opts = {},
       },
-      -- "iguanacucumber/magazine.nvim",
-      -- "iguanacucumber/mag-nvim-lsp",
-      -- "hrsh7th/nvim-cmp",
-      -- "hrsh7th/cmp-nvim-lsp",
       "saghen/blink.cmp",
       {
         "kosayoda/nvim-lightbulb",
@@ -490,8 +486,8 @@ return {
       end, { silent = true, desc = "Go to definition" })
 
       set("n", "grr", function()
-        Snacks.picker.lsp_references() end, { desc = "Go to references"
-        })
+        Snacks.picker.lsp_references()
+      end, { desc = "Go to references" })
 
       set("n", "<leader>gs", function()
         Snacks.picker.git_status()
