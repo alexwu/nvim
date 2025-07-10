@@ -133,48 +133,6 @@ return {
       },
     },
   },
-  -- {
-  --   "refractalize/oil-git-status.nvim",
-  --   -- "OleJoik/oil-git-status.nvim",
-  --   -- branch = "fs-events",
-  --   dependencies = {
-  --     "stevearc/oil.nvim",
-  --   },
-  --   opts = {
-  --     -- watch_for_changes = true,
-  --     symbols = { -- customize the symbols that appear in the git status columns
-  --       index = {
-  --         ["!"] = "!",
-  --         ["?"] = "?",
-  --         ["A"] = "A",
-  --         ["C"] = "C",
-  --         ["D"] = "D",
-  --         ["M"] = "M",
-  --         ["R"] = "R",
-  --         ["T"] = "T",
-  --         ["U"] = "U",
-  --         [" "] = " ",
-  --       },
-  --       working_tree = {
-  --         ["!"] = "",
-  --         ["?"] = "",
-  --         ["A"] = "A",
-  --         ["C"] = "C",
-  --         ["D"] = "✖",
-  --         ["M"] = "",
-  --         ["R"] = "R",
-  --         ["T"] = "T",
-  --         ["U"] = "U",
-  --         [" "] = " ",
-  --       },
-  --     },
-  --   },
-  -- },
-  -- {
-  --   "JezerM/oil-lsp-diagnostics.nvim",
-  --   dependencies = { "stevearc/oil.nvim" },
-  --   opts = {},
-  -- },
   {
     "echasnovski/mini.surround",
     cond = true,
@@ -251,10 +209,10 @@ return {
         picker = {
           enabled = true,
           win = {
-            -- input window
             input = {
               keys = {
                 ["<Esc>"] = { "close", mode = { "n", "i" } },
+                ["<c-u>"] = { "", mode = { "i" } },
               },
             },
           },
@@ -299,9 +257,9 @@ return {
                 desc = "Find File",
                 action = [[:lua require("bombeelu.pickers").files()]],
               },
-              { icon = " ", key = "/", desc = "Grep", action = ":lua Snacks.dashboard.pick('live_grep')" },
+              { icon = " ", key = "/", desc = "Grep", action = ":Telescope live_grep" },
               { icon = " ", key = "r", desc = "Run", action = [[:lua require("overseer").run_template()]] },
-              { icon = " ", key = "n", desc = "Notes", action = [[:Notes]] },
+              -- { icon = " ", key = "n", desc = "Notes", action = [[:Notes]] },
               {
                 icon = " ",
                 key = "c",
@@ -382,12 +340,14 @@ return {
       { "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference" },
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
       { "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+      -- { "<leader>/", function() Snacks.picker.grep({ }) end, desc = "Live Grep" },
       { "<leader>fs", function() Snacks.scratch.select() end, desc = "Select from scratch buffers" },
       { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Find files by Git status" },
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Select from open buffers" },
       { "<leader>f/", function() Snacks.picker.search_history() end, desc = "Search History" },
       { "<leader>fc", function() Snacks.picker.command_history() end, desc = "Command History" },
       { "<leader>fh", function() Snacks.picker.help() end, desc = "Help Pages" },
+      { "<leader>fH", function() Snacks.picker.highlights() end, desc = "Highlights" },
       { "<leader>fii", function() Snacks.picker.icons() end, desc = "Icons" },
       { "<leader>fj", function() Snacks.picker.jumps() end, desc = "Jumps" },
       { "<leader>fn", function() Snacks.picker.notifications() end, desc = "Notification History" },

@@ -6,13 +6,16 @@ return {
   {
     "saghen/blink.cmp",
     lazy = false,
+    version = "*",
     dependencies = {
       "rafamadriz/friendly-snippets",
+      { "xzbdmw/colorful-menu.nvim", opts = {} },
       {
         "saghen/blink.compat",
         optional = true,
         opts = {},
       },
+      { "disrupted/blink-cmp-conventional-commits" },
     },
     build = "cargo build --release",
     opts_extend = {
@@ -29,27 +32,51 @@ return {
           and vim.bo.buftype ~= "prompt"
           and vim.b.completion ~= false
       end,
+      fuzzy = {
+        implementation = "prefer_rust_with_warning",
+        prebuilt_binaries = {
+          download = true,
+        },
+        -- sorts = {
+        --   "exact",
+        --   -- defaults
+        --   "score",
+        --   "sort_text",
+        -- },
+      },
       keymap = {
         preset = "super-tab",
         ["<CR>"] = { "accept", "fallback" },
         ["<C-e>"] = { "cancel", "fallback" },
         ["<S-Tab>"] = { "select_prev", "fallback" },
         ["<Tab>"] = { "select_next", "fallback" },
-        -- cmdline = {},
       },
       completion = {
         accept = {
           auto_brackets = { enabled = true },
         },
         list = {
-          -- selection = "manual",
-          selection = "auto_insert",
+          selection = {
+            preselect = false,
+            auto_insert = false,
+          },
         },
         menu = {
           border = "rounded",
           draw = {
-            columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind", "source_name", gap = 1 } },
+            -- columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind", "source_name", gap = 1 } },
+            columns = { { "label" }, { "kind_icon", "kind", "source_name", gap = 1 } },
             treesitter = { "lsp" },
+            components = {
+              label = {
+                text = function(ctx)
+                  return require("colorful-menu").blink_components_text(ctx)
+                end,
+                highlight = function(ctx)
+                  return require("colorful-menu").blink_components_highlight(ctx)
+                end,
+              },
+            },
           },
         },
         documentation = {
@@ -67,10 +94,43 @@ return {
       },
       signature = {
         enabled = true,
+        window = {
+          border = "rounded",
+        },
       },
 
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
+        per_filetype = { gitcommit = { "conventional_commits" } },
+        providers = {
+          conventional_commits = {
+            name = "Conventional Commits",
+            module = "blink-cmp-conventional-commits",
+            enabled = function()
+              return vim.bo.filetype == "gitcommit"
+            end,
+            ---@module 'blink-cmp-conventional-commits'
+            ---@type blink-cmp-conventional-commits.Options
+            opts = {}, -- none so far
+          },
+        },
+      },
+
+      cmdline = {
+        keymap = {
+          preset = "inherit",
+        },
+        completion = {
+          list = {
+            selection = {
+              preselect = false,
+              auto_insert = false,
+            },
+          },
+          menu = {
+            auto_show = true,
+          },
+        },
       },
     },
   },

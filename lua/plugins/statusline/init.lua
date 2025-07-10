@@ -27,6 +27,7 @@ return {
   event = "VeryLazy",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
+    "Hashino/doing.nvim",
   },
   config = function()
     M.setup("lualine")

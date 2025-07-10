@@ -1,12 +1,5 @@
 return {
   {
-    "aznhe21/actions-preview.nvim",
-    enabled = false,
-    config = true,
-    opts = {},
-    lazy = true,
-  },
-  {
     "rachartier/tiny-code-action.nvim",
     dependencies = {
       { "nvim-lua/plenary.nvim" },
@@ -108,7 +101,7 @@ return {
         init = function()
           local loaded = false
           local function check()
-            local result = require("bombeelu.utils").root_pattern("tsconfig.json")(vim.uv.cwd() or vim.uv.os_homedir())
+            local result = vim.fs.root(0, { "tsconfig.json" })
 
             if result then
               require("lazy").load({ plugins = { "nvim-vtsls" } })
@@ -188,12 +181,6 @@ return {
         },
       },
       {
-        "pmizio/typescript-tools.nvim",
-        enabled = false,
-        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-        opts = {},
-      },
-      {
         "zbirenbaum/neodim",
         enabled = true,
         event = "LspAttach",
@@ -214,41 +201,10 @@ return {
         end,
       },
       {
-        "alexwu/nvim-lsp-selection-range",
-        enabled = false,
-        lazy = true,
-        dev = true,
-        opts = {},
-        config = function()
-          require("bombeelu.utils").on_attach(function(client, bufnr)
-            local ft = vim.filetype.match({ buf = bufnr })
-            if
-              ft ~= "eruby"
-              and client.name ~= "tailwindcss"
-              and client.supports_method(vim.lsp.protocol.Methods.textDocument_selectionRange)
-            then
-              set(
-                "n",
-                "<CR>",
-                require("lsp-selection-range").trigger,
-                { noremap = true, buffer = bufnr, desc = "Select LSP selection range" }
-              )
-              set(
-                "x",
-                "<CR>",
-                require("lsp-selection-range").expand,
-                { noremap = true, buffer = bufnr, desc = "Expand LSP selection range" }
-              )
-            end
-          end)
-        end,
-      },
-      {
         "luckasRanarison/tailwind-tools.nvim",
         event = "VeryLazy",
         dependencies = {
           "nvim-treesitter/nvim-treesitter",
-          -- "hrsh7th/nvim-cmp",
         },
         opts = {},
       },
@@ -374,7 +330,7 @@ return {
           -- taking precedence for settings declared in both.
           -- Equivalent to the typos `--config` cli argument.
           -- config = "~/code/typos-lsp/crates/typos-lsp/tests/typos.toml",
-          -- How typos are rendered in the editor, can be one of an Error, Warning, Info or Hint.
+          -- How typos are rendered in the editor, can be one of an Error, Warning, Info, or Hint.
           -- Defaults to error.
           diagnosticSeverity = "Warning",
         },
@@ -385,23 +341,24 @@ return {
         filetypes = { "modelfile", "markdown" },
         settings = {
           ["harper-ls"] = {
-            diagnosticSeverity = "hint", -- Can also be "information", "warning", or "error"
+            diagnosticSeverity = "hint",
             linters = {
-              spell_check = true,
-              spelled_numbers = false,
-              an_a = true,
-              sentence_capitalization = true,
-              unclosed_quotes = true,
-              wrong_quotes = false,
-              long_sentences = true,
-              repeated_words = true,
-              spaces = true,
-              matcher = true,
-              correct_number_suffix = true,
-              number_suffix_capitalization = true,
-              multiple_sequential_pronouns = true,
-              linking_verbs = false,
-              avoid_curses = false,
+              SpellCheck = true,
+              SpelledNumbers = false,
+              AnA = true,
+              SentenceCapitalization = false,
+              UnclosedQuotes = true,
+              WrongQuotes = false,
+              LongSentences = true,
+              RepeatedWords = true,
+              Spaces = true,
+              Matcher = true,
+              CorrectNumberSuffix = true,
+              NumberSuffixCapitalization = true,
+              MultipleSequentialPronouns = true,
+              LinkingVerbs = false,
+              AvoidCurses = false,
+              ToDoHyphen = false,
             },
           },
         },
@@ -511,7 +468,7 @@ return {
       --   })
       -- end, { silent = true, desc = "Show diagnostics on current line" })
 
-      -- set("n", "K", hover, { silent = true, desc = "Hover" })
+      set("n", "K", hover, { silent = true, desc = "Hover" })
       -- set("i", "<c-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
 
       set({ "n", "i", "s" }, "<c-f>", function()

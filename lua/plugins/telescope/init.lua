@@ -13,6 +13,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "kkharji/sqlite.lua",
+      "folke/trouble.nvim",
       {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
@@ -35,9 +36,11 @@ return {
           return math.max(100, vim.fn.round(vim.o.columns * 0.8))
         end,
       }
+      local open_with_trouble = require("trouble.sources.telescope").open
 
       require("telescope").setup({
         defaults = {
+          -- initial_mode = "normal",
           set_env = { ["COLORTERM"] = "truecolor" },
           prompt_prefix = "❯ ",
           winblend = 10,
@@ -48,6 +51,7 @@ return {
               ["<C-k>"] = actions.move_selection_previous,
               ["<C-n>"] = actions.move_selection_next,
               ["<C-p>"] = actions.move_selection_previous,
+              ["<C-q>"] = open_with_trouble,
               ["<C-u>"] = false,
             },
             n = {
@@ -56,6 +60,7 @@ return {
               ["<C-k>"] = actions.move_selection_previous,
               ["<C-n>"] = actions.move_selection_next,
               ["<C-p>"] = actions.move_selection_previous,
+              ["<C-q>"] = open_with_trouble,
             },
           },
         },
@@ -97,7 +102,7 @@ return {
             no_ignore = false,
           },
           buffers = {
-            initial_mode = "insert",
+            -- initial_mode = "insert",
             layout_config = default_layout_config,
             layout_strategy = "center",
             ignore_current_buffer = true,
@@ -181,13 +186,8 @@ return {
 
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("nucleo")
-      -- require("telescope").load_extension("file_browser")
 
       set("n", { "<Leader>fb" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
-
-      -- set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
-      -- set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
-      set("n", "<Leader>gs", lazy(builtin.git_status, {}), { desc = "Find files by git status" })
       set(
         "n",
         "<Leader>gg",
@@ -195,11 +195,6 @@ return {
         { desc = "Select from changed files since default branch" }
       )
       set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
-      set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
-      set("n", "grr", lazy(builtin.lsp_references), { desc = "Go to references" })
-      set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
-      -- set("n", "<Leader>s", lazy(builtin.lsp_document_symbols), { desc = "Select LSP document symbol" })
-      -- set("n", "<Leader>S", lazy(builtin.lsp_workplace_symbols), { desc = "Select LSP workplace symbol" })
 
       local group = augroup("bombeelu.telescope", { clear = true })
 

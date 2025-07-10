@@ -47,22 +47,18 @@ return {
         },
         char = {
           enabled = true,
+          jump_labels = true,
           search = { wrap = false },
           highlight = { backdrop = false },
           multi_line = false,
-          jump = { register = false },
+          jump = {
+            register = false,
+            autojump = true,
+          },
         },
       },
     },
     keys = {
-      -- { "s", desc = "+flash" },
-      -- {
-      --   "s",
-      --   function()
-      --     require("which-key").show({ keys = "s" })
-      --   end,
-      --   desc = "+flash",
-      -- },
       {
         "s",
         mode = { "n", "x" },
@@ -73,12 +69,9 @@ return {
       },
       {
         "<leader>s",
-        desc = "+flash",
-        -- mode = { "n", "x" },
-        -- function()
-        --   require("flash").jump({ search = { forward = true, wrap = false, multi_window = false } })
-        -- end,
-        -- desc = "Jump forward",
+        "",
+        desc = "+jump",
+        mode = { "n", "x" },
       },
       {
         "S",
@@ -101,16 +94,6 @@ return {
         desc = "Jump backward",
       },
 
-      -- {
-      --   "sS",
-      --   mode = { "n", "x" },
-      --   function()
-      --     require("flash").jump({
-      --       search = { forward = false, wrap = false, multi_window = false },
-      --     })
-      --   end,
-      --   desc = "Jump backward",
-      -- },
       {
         "<leader>st",
         mode = { "n", "x" },
@@ -135,23 +118,6 @@ return {
         end,
         desc = "Treesitter Search",
       },
-      {
-        "<leader>sd",
-        function()
-          require("flash").jump({
-            matcher = function(win)
-              ---@param diag vim.Diagnostic
-              return vim.tbl_map(function(diag)
-                return {
-                  pos = { diag.lnum + 1, diag.col },
-                  end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
-                }
-              end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
-            end,
-          })
-        end,
-        desc = "Jump to diagnostic",
-      },
     },
   },
   {
@@ -161,15 +127,8 @@ return {
       -- keys = "etovxqpdygfblzhckisuran",
     },
     keys = {
-      -- {
-      --   "sw",
-      --   mode = { "n", "x" },
-      --   function()
-      --     require("hop").hint_camel_case({ direction = 2 })
-      --   end,
-      -- },
       {
-        "<leader>w",
+        "<leader>sw",
         mode = { "n", "x" },
         function()
           require("hop").hint_camel_case({ direction = 2 })
@@ -177,28 +136,12 @@ return {
         desc = "Jump to a word",
       },
       {
-        "<leader>W",
+        "<leader>sW",
         mode = { "n", "x" },
         function()
           require("hop").hint_camel_case({ direction = 1 })
         end,
         desc = "Jump backward to a word",
-      },
-    },
-  },
-  {
-    "smoka7/hop.nvim",
-    version = "*",
-    opts = {
-      keys = "etovxqpdygfblzhckisuran",
-    },
-    keys = {
-      {
-        "sw",
-        function()
-          require("hop").hint_camel_case({ direction = 2 })
-        end,
-        desc = "Hop camel case",
       },
     },
   },

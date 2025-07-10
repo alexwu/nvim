@@ -164,6 +164,7 @@ require("lualine").setup({
         "dashboard",
         "alpha",
         "starter",
+        "snacks_dashboard",
       },
       winbar = { "neo-tree" },
     },
@@ -177,6 +178,13 @@ require("lualine").setup({
     "quickfix",
     "neo-tree",
     "lazy",
+    "trouble",
+    "oil",
+    "nvim-dap-ui",
+    "overseer",
+    "toggleterm",
+    "man",
+    "mason",
     "trouble",
   },
   sections = {
@@ -194,28 +202,40 @@ require("lualine").setup({
     lualine_c = {
       root_dir(),
       {
-        "diagnostics",
-        sources = { "nvim_diagnostic" },
-        sections = { "error", "warn", "info", "hint" },
-
-        diagnostics_color = {
-          error = "DiagnosticError",
-          warn = "DiagnosticWarn",
-          info = "DiagnosticInfo",
-          hint = "DiagnosticHint",
-        },
-        symbols = { error = "✘ ", warn = " ", info = " ", hint = " " },
-        colored = true,
-        update_in_insert = false,
-        always_visible = false,
-      },
-      {
         "filetype",
         icon_only = true,
         separator = "",
         padding = { left = 1, right = 0 },
       },
-      { pretty_path() },
+      -- { pretty_path() },
+      {
+        "filename",
+        color = { fg = colors.white },
+        symbols = {
+          modified = "[+]",
+          readonly = "[-]",
+          unnamed = "",
+          newfile = "[New]",
+        },
+      },
+      {
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        sections = { "error", "warn", "info", "hint" },
+
+        -- diagnostics_color = {
+        --   error = "DiagnosticError",
+        --   warn = "DiagnosticWarn",
+        --   info = "DiagnosticInfo",
+        --   hint = "DiagnosticHint",
+        -- },
+        symbols = { error = " ", warn = " ", info = " ", hint = " " },
+        colored = true,
+        update_in_insert = false,
+        always_visible = false,
+      },
+
+      { require("doing").status },
     },
     lualine_x = {
       {
@@ -253,9 +273,9 @@ require("lualine").setup({
       {
         "diff",
         symbols = {
-          added = " ",
-          modified = " ",
-          removed = " ",
+          added = " ",
+          modified = " ",
+          removed = " ",
         },
         source = function()
           local gitsigns = vim.b.gitsigns_status_dict
@@ -269,7 +289,14 @@ require("lualine").setup({
         end,
       },
     },
-    lualine_y = {},
+    lualine_y = {
+      {
+        "overseer",
+      },
+      {
+        "codecompanion",
+      },
+    },
     -- lualine_z = { { "location", separator = { right = "", left = "" } } },
     lualine_z = { { "location", separator = { left = "" } } },
   },

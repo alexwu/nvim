@@ -1,5 +1,11 @@
 local M = {}
 
+function M.files(...)
+  if package.loaded.nucleo then
+    require("nucleo.sources").find_files(...)
+  end
+end
+
 function M.config_files()
   ---@diagnostic disable-next-line: undefined-field
   local config = vim.system({ "chezmoi", "source-path", "~/.config/nvim" }, { text = true }):wait()

@@ -6,15 +6,18 @@ return {
       {
         filter = {
           event = "msg_show",
-          kind = "",
-          find = "written",
+          any = {
+            { find = "%d+L, %d+B" },
+            { find = "; after #%d+" },
+            { find = "; before #%d+" },
+          },
         },
-        opts = { skip = true },
+        view = "mini",
       },
     },
     popupmenu = {
       enabled = true,
-      backend = "cmp",
+      backend = "nui",
     },
     notify = {
       enabled = true,
@@ -44,24 +47,13 @@ return {
         ---@type NoiceViewOptions
         opts = {}, -- merged with defaults from documentation
       },
-      signature = {
-        enabled = true,
-        auto_open = {
-          enabled = true,
-          trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
-          luasnip = true, -- Will open signature help when jumping to Luasnip insert nodes
-          throttle = 50, -- Debounce lsp signature help request by 50ms
-        },
-        view = nil, -- when nil, use defaults from documentation
-        ---@type NoiceViewOptions
-        opts = {}, -- merged with defaults from documentation
-      },
       documentation = {
         enabled = true,
         view = "hover",
       },
     },
     presets = {
+      bottom_search = false,
       command_palette = true,
       long_message_to_split = true,
       inc_rename = true,
@@ -76,7 +68,5 @@ return {
   dependencies = {
     "MunifTanjim/nui.nvim",
     "rcarriga/nvim-notify",
-    -- "hrsh7th/nvim-cmp",
-    -- "iguanacucumber/magazine.nvim",
   },
 }

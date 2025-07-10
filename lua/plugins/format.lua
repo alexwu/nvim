@@ -32,10 +32,6 @@ return {
     lazy = false,
     keys = {
       {
-        "<leader>y",
-        desc = "Format file",
-      },
-      {
         "<leader>Y",
         function()
           require("conform").format({ formatters = { "injected" } })
@@ -94,7 +90,7 @@ return {
         less = { "prettier" },
         lua = { "stylua" },
         liquid = { "prettier" },
-        markdown = { "dprint", "prettier", stop_after_first = true },
+        markdown = { "prettier", stop_after_first = true },
         python = { "ruff" },
         query = { "format-queries", "query_fmt", stop_after_first = true },
         ruby = { "rubyfmt", "syntax_tree", stop_after_first = true },
@@ -107,7 +103,8 @@ return {
         typescriptreact = { "prettier", stop_after_first = true },
         vue = { "prettier" },
         yaml = { "prettier" },
-        swift = { "swiftformat" },
+        swift = { "swift_format", "swiftformat", stop_after_first = true },
+        xml = { "xmlformatter" },
         zig = { "zigfmt" },
       },
       formatters = {
@@ -163,7 +160,7 @@ return {
         return select(1, ...)
       end
 
-      key.map({ "<F8>", "<Leader>y", "gq" }, function()
+      key.map({ "<F8>", "gq" }, function()
         require("conform").format({
           bufnr = vim.api.nvim_get_current_buf(),
           async = false,

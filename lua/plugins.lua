@@ -12,9 +12,7 @@ return {
       vim.g.polyglot_disabled = { "sensible", "ftdetect" }
     end,
   },
-  {
-    "brainwo/vim-modelfile",
-  },
+  { "brainwo/vim-modelfile" },
   { "antoinemadec/FixCursorHold.nvim", lazy = false },
   {
     "ckolkey/ts-node-action",
@@ -35,60 +33,6 @@ return {
     },
   },
   {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    opts = {
-      preset = "modern",
-      -- preset = "helix",
-      ---@type wk.Spec
-      spec = {
-        {
-          mode = { "n", "v" },
-          { "[", group = "prev" },
-          { "]", group = "next" },
-        },
-        {
-          mode = { "n", "x" },
-          { "s", group = "flash" },
-        },
-      },
-      filter = function(mapping)
-        return mapping.desc and mapping.desc ~= ""
-      end,
-
-      triggers = {
-        { "<auto>", mode = "nixsotc" },
-        { "s", mode = { "n", "v" } },
-        { "<leader>", mode = { "n", "v" } },
-      },
-      icons = {
-        rules = false,
-      },
-      layout = {
-        height = { min = 4, max = 25 },
-        width = { min = 20, max = 50 },
-        spacing = 3,
-        align = "center",
-      },
-    },
-    keys = {
-      {
-        "g?",
-        function()
-          require("which-key").show({ global = true })
-        end,
-        desc = "Keymaps (which-key)",
-      },
-      {
-        "<leader>?",
-        function()
-          require("which-key").show({ global = false })
-        end,
-        desc = "Buffer Local Keymaps (which-key)",
-      },
-    },
-  },
-  {
     "echasnovski/mini.align",
     event = "VeryLazy",
     version = false,
@@ -102,6 +46,9 @@ return {
       require("inc_rename").setup({})
 
       set("n", "<leader>rn", function()
+        return ":IncRename " .. vim.fn.expand("<cword>")
+      end, { expr = true, desc = "Rename symbol" })
+      set("n", "grn", function()
         return ":IncRename " .. vim.fn.expand("<cword>")
       end, { expr = true, desc = "Rename symbol" })
     end,
@@ -232,12 +179,12 @@ return {
         desc = "Symbols (Trouble)",
       },
       {
-        "<leader>xL",
+        "<leader>xl",
         "<cmd>Trouble loclist toggle<cr>",
         desc = "Location List (Trouble)",
       },
       {
-        "<leader>xQ",
+        "<leader>xq",
         "<cmd>Trouble qflist toggle<cr>",
         desc = "Quickfix List (Trouble)",
       },
@@ -275,117 +222,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.splitjoin",
-    event = "VeryLazy",
-    version = false,
-    opts = {
-      diagnostic = { suffix = "" },
-      treesitter = { suffix = "" },
-      quickfix = { suffix = "" },
-      comment = { suffix = "" },
-    },
-  },
-  {
-    "echasnovski/mini.ai",
-    event = "VeryLazy",
-    dependencies = { "nvim-treesitter-textobjects" },
-    opts = function()
-      local ai = require("mini.ai")
-      return {
-        n_lines = 500,
-        custom_textobjects = {
-          o = ai.gen_spec.treesitter({
-            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
-            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
-          }, {}),
-          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
-          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
-          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
-          d = { "%f[%d]%d+" }, -- digits
-          e = { -- Word with case
-            {
-              "%u[%l%d]+%f[^%l%d]",
-              "%f[%S][%l%d]+%f[^%l%d]",
-              "%f[%P][%l%d]+%f[^%l%d]",
-              "^[%l%d]+%f[^%l%d]",
-            },
-            "^().*()$",
-          },
-          g = function() -- Whole buffer, similar to `gg` and 'G' motion
-            local from = { line = 1, col = 1 }
-            local to = {
-              line = vim.fn.line("$"),
-              col = math.max(vim.fn.getline("$"):len(), 1),
-            }
-            return { from = from, to = to }
-          end,
-          u = ai.gen_spec.function_call(), -- u for "Usage"
-          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
-        },
-      }
-    end,
-    config = function(_, opts)
-      require("mini.ai").setup(opts)
-      -- register all text objects with which-key
-      local objects = {
-        { " ", desc = "whitespace" },
-        { '"', desc = '" string' },
-        { "'", desc = "' string" },
-        { "(", desc = "() block" },
-        { ")", desc = "() block with ws" },
-        { "<", desc = "<> block" },
-        { ">", desc = "<> block with ws" },
-        { "?", desc = "user prompt" },
-        { "U", desc = "use/call without dot" },
-        { "[", desc = "[] block" },
-        { "]", desc = "[] block with ws" },
-        { "_", desc = "underscore" },
-        { "`", desc = "` string" },
-        { "a", desc = "argument" },
-        { "b", desc = ")]} block" },
-        { "c", desc = "class" },
-        { "d", desc = "digit(s)" },
-        { "e", desc = "CamelCase / snake_case" },
-        { "f", desc = "function" },
-        { "g", desc = "entire file" },
-        { "i", desc = "indent" },
-        { "o", desc = "block, conditional, loop" },
-        { "q", desc = "quote `\"'" },
-        { "t", desc = "tag" },
-        { "u", desc = "use/call" },
-        { "{", desc = "{} block" },
-        { "}", desc = "{} with ws" },
-      }
-
-      local ret = { mode = { "o", "x" } }
-      ---@type table<string, string>
-      local mappings = vim.tbl_extend("force", {}, {
-        around = "a",
-        inside = "i",
-        around_next = "an",
-        inside_next = "in",
-        around_last = "al",
-        inside_last = "il",
-      }, opts.mappings or {})
-      mappings.goto_left = nil
-      mappings.goto_right = nil
-
-      for name, prefix in pairs(mappings) do
-        name = name:gsub("^around_", ""):gsub("^inside_", "")
-        ret[#ret + 1] = { prefix, group = name }
-        for _, obj in ipairs(objects) do
-          local desc = obj.desc
-          if prefix:sub(1, 1) == "i" then
-            desc = desc:gsub(" with ws", "")
-          end
-          ret[#ret + 1] = { prefix .. obj[1], desc = obj.desc }
-        end
-      end
-      require("which-key").add(ret, { notify = false })
-    end,
-  },
-  {
-    "NvChad/nvim-colorizer.lua",
+    "catgoose/nvim-colorizer.lua",
     config = function()
       require("colorizer").setup({
         filetypes = { "*" },
@@ -393,9 +230,19 @@ return {
           names = false,
         },
         buftypes = {},
+        RRGGBBAA = true, -- #RRGGBBAA hex codes
+        AARRGGBB = true, -- 0xAARRGGBB hex codes
+        rgb_fn = true, -- CSS rgb() and rgba() functions
+        hsl_fn = true, -- CSS hsl() and hsla() functions
+        css = true, -- Enable all CSS *features*:
+        -- names, RGB, RGBA, RRGGBB, RRGGBBAA, AARRGGBB, rgb_fn, hsl_fn
+        css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+        -- Tailwind colors.  boolean|'normal'|'lsp'|'both'.  True sets to 'normal'
+        tailwind = "both", -- Enable tailwind colors
+        sass = { enable = true, parsers = { "css" } }, -- Enable sass colors
       })
     end,
-    cmd = { "ColorizerToggle" },
+    cmd = { "ColorizerToggle", "ColorizerAttachToBuffer" },
   },
   {
     "shortcuts/no-neck-pain.nvim",
@@ -528,13 +375,29 @@ return {
       end, { nargs = "*" })
     end,
   },
+  -- {
+  --   "TobinPalmer/rayso.nvim",
+  --   cmd = { "Rayso" },
+  --   opts = {
+  --     options = {
+  --       theme = "candy",
+  --     },
+  --   },
+  -- },
   {
-    "TobinPalmer/rayso.nvim",
-    cmd = { "Rayso" },
+    "michaelrommel/nvim-silicon",
+    lazy = true,
+    cmd = "Silicon",
+    main = "nvim-silicon",
     opts = {
-      options = {
-        theme = "candy",
-      },
+      line_offset = function(args)
+        return args.line1
+      end,
+      to_clipboard = true,
+      output = function()
+        return "~/.local/state/silicon/" .. os.date("!%Y-%m-%dT%H-%M-%SZ") .. "_code.png"
+      end,
+      theme = "Sublime Snazzy",
     },
   },
   {
@@ -560,28 +423,32 @@ return {
 
       otter.setup(opts)
 
-      nvim.create_autocmd("BufRead", {
+      vim.api.nvim_create_autocmd({ "FileType" }, {
+        pattern = { "toml", "markdown" },
         group = bu.nvim.augroup("bombeelu.otter"),
-        callback = function(args)
-          local ft = vim.filetype.match({ buf = args.buf })
-
-          -- if not ft or vim.list_contains({ "oil" }, ft) then
-          --   return
-          -- end
-          if
-            not ft
-            or not vim.list_contains({ "ruby", "eruby", "markdown", "tyescriptreact", "javascriptreact", "html" }, ft)
-          then
-            return
-          end
-          -- local lang = vim.treesitter.language.get_lang(args.match)
-          local lang = vim.treesitter.language.get_lang(ft)
-          if lang then
-            -- vim.print(args)
-            otter.activate()
-          end
+        callback = function()
+          require("otter").activate()
         end,
       })
+      -- nvim.create_autocmd("BufRead", {
+      --   group = bu.nvim.augroup("bombeelu.otter"),
+      --   callback = function(args)
+      --     local ft = vim.filetype.match({ buf = args.buf })
+      --
+      --     -- if not ft or vim.list_contains({ "oil" }, ft) then
+      --     --   return
+      --     -- end
+      --     if not ft or not vim.list_contains({ "ruby", "eruby", "markdown", "html" }, ft) then
+      --       return
+      --     end
+      --     -- local lang = vim.treesitter.language.get_lang(args.match)
+      --     local lang = vim.treesitter.language.get_lang(ft)
+      --     if lang then
+      --       -- vim.print(lang)
+      --       otter.activate()
+      --     end
+      --   end,
+      -- })
       -- nvim.create_autocmd("BufRead", {
       --   group = bu.nvim.augroup("bombeelu.otter"),
       --   callback = function(o)
@@ -620,27 +487,66 @@ return {
   },
   {
     "OXY2DEV/markview.nvim",
+    enabled = false,
     lazy = false,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-tree/nvim-web-devicons",
+      "saghen/blink.cmp",
     },
-    opts = {
-      modes = { "n", "i", "no", "c" },
-      hybrid_modes = { "i", "n" },
-      callbacks = {
-        on_enable = function(_, win)
-          vim.wo[win].conceallevel = 2
-          vim.wo[win].concealcursor = "c"
-        end,
-      },
-    },
+    opts = function()
+      local headings = require("markview.presets").headings
+
+      return {
+        markdown = {
+          headings = headings.glow,
+        },
+        preview = {
+          filetypes = {
+            "md",
+            "markdown",
+            "norg",
+            "rmd",
+            "org",
+            "vimwiki",
+            "typst",
+            "latex",
+            "quarto",
+            "Avante",
+            "codecompanion",
+          },
+          ignore_buftypes = {},
+
+          condition = function(buffer)
+            local ft, bt = vim.bo[buffer].ft, vim.bo[buffer].bt
+
+            if bt == "nofile" and ft == "codecompanion" then
+              return true
+            elseif bt == "nofile" then
+              return false
+            else
+              return true
+            end
+          end,
+          modes = { "n", "i", "no", "c" },
+          -- hybrid_modes = { "i", "n" },
+          hybrid_modes = {},
+          callbacks = {
+            on_enable = function(_, win)
+              vim.wo[win].conceallevel = 2
+              vim.wo[win].concealcursor = "c"
+            end,
+          },
+        },
+      }
+    end,
   },
 
   {
-    "epwalsh/obsidian.nvim",
-    event = "VeryLazy",
+    "obsidian-nvim/obsidian.nvim",
     version = "*",
+    ft = "markdown",
+    cmd = { "Obsidian", "Notes" },
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
@@ -649,10 +555,6 @@ return {
         {
           name = "personal",
           path = "~/Obsidian/Default",
-        },
-        {
-          name = "work",
-          path = "~/Obsidian/Work/",
         },
       },
       new_notes_location = "current_dir",
@@ -698,16 +600,9 @@ return {
       })
     end,
   },
-
-  {
-    "MagicDuck/grug-far.nvim",
-    cmd = { "GrugFar" },
-    opts = {
-      engine = "ripgrep",
-    },
-  },
   {
     "pwntester/octo.nvim",
+    enabled = false,
     event = "VeryLazy",
     init = function()
       vim.treesitter.language.register("markdown", "octo")
@@ -863,9 +758,81 @@ return {
     },
   },
   {
-    "Goose97/timber.nvim",
+    "wurli/visimatch.nvim",
     event = "VeryLazy",
     opts = {},
+  },
+  {
+    "HakonHarnes/img-clip.nvim",
+    enabled = false,
+    event = "VeryLazy",
+    opts = {
+      -- recommended settings
+      default = {
+        embed_image_as_base64 = false,
+        prompt_for_file_name = false,
+        drag_and_drop = {
+          insert_mode = true,
+        },
+        -- required for Windows users
+        use_absolute_path = true,
+      },
+    },
+
+    keys = {
+      -- suggested keymap
+      { "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
+    },
+  },
+  ---@type LazySpec
+  {
+    "mikavilpas/yazi.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "folke/snacks.nvim",
+    },
+    keys = {
+      {
+        "<leader>-",
+        mode = { "n", "v" },
+        "<cmd>Yazi<cr>",
+        desc = "Open yazi at the current file",
+      },
+    },
+    ---@type YaziConfig | {}
+    opts = {
+      open_for_directories = false,
+      keymaps = {
+        show_help = "<f1>",
+      },
+    },
+  },
+  {
+    "Hashino/doing.nvim",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>da",
+        function()
+          require("doing").add()
+        end,
+        {},
+      },
+      {
+        "<leader>dn",
+        function()
+          require("doing").done()
+        end,
+        {},
+      },
+      {
+        "<leader>de",
+        function()
+          require("doing").edit()
+        end,
+        {},
+      },
+    },
   },
   { import = "plugins.lang" },
 }

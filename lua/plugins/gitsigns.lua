@@ -2,17 +2,16 @@ return {
   {
     "chrisgrieser/nvim-tinygit",
     event = "VeryLazy",
-    dependencies = { "stevearc/dressing.nvim" },
     config = function()
       require("tinygit").setup({
         commit = {
           mediumLen = 50,
           maxLen = 100,
-          emptyFillIn = "chore", ---@type string|false
           preview = true,
-          conventionalCommits = {
-            enforce = false, -- disallow commit messages without a keyword
-            keywords = {
+          wrap = "none",
+          subject = {
+            enforceType = false, -- disallow commit messages without a keyword
+            types = {
               "fix",
               "feat",
               "chore",
@@ -161,7 +160,7 @@ return {
               opts = { buffer = bufnr },
             },
             {
-              "gsM",
+              "gM",
               function()
                 gs.blame_line({ full = true, ignore_whitespace = true })
               end,

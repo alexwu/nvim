@@ -3,11 +3,9 @@ local M = {}
 local methods = vim.lsp.protocol.Methods
 
 function M.on_attach(client, bufnr)
-  local legendary = require("legendary")
-
   nvim.create_augroup("LspDiagnosticsBufferConfig", { clear = true })
 
-  if client.supports_method(methods.textDocument_codeLens) then
+  if client:supports_method(methods.textDocument_codeLens) then
     local codelens_group = vim.api.nvim_create_augroup("bombeelu/codelens", { clear = false })
     vim.api.nvim_create_autocmd("InsertEnter", {
       group = codelens_group,
@@ -39,18 +37,10 @@ local make_capabilities = function()
     cap = require("blink.cmp").get_lsp_capabilities(cap)
   end
 
-  if package.loaded["lsp-selection-range"] then
-    cap = require("lsp-selection-range").update_capabilities(cap)
-  end
-
   cap.textDocument.foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true,
   }
-
-  -- cap.textDocument.selectionRange = {
-  --   dynamicRegistration = false,
-  -- }
 
   cap.textDocument.colorProvider = {
     dynamicRegistration = false,

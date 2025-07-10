@@ -13,23 +13,23 @@ function M.is_win()
   return vim.uv.os_uname().sysname:find("Windows") ~= nil
 end
 
----@param opts? lsp.Client.filter
-function M.get_clients(opts)
-  local ret = {} ---@type lsp.Client[]
-  if vim.lsp.get_clients then
-    ret = vim.lsp.get_clients(opts)
-  else
-    ---@diagnostic disable-next-line: deprecated
-    ret = vim.lsp.get_active_clients(opts)
-    if opts and opts.method then
-      ---@param client lsp.Client
-      ret = vim.tbl_filter(function(client)
-        return client.supports_method(opts.method, { bufnr = opts.bufnr })
-      end, ret)
-    end
-  end
-  return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
-end
+-- ---@param opts? lsp.Client.filter
+-- function M.get_clients(opts)
+--   local ret = {} ---@type lsp.Client[]
+--   if vim.lsp.get_clients then
+--     ret = vim.lsp.get_clients(opts)
+--   else
+--     ---@diagnostic disable-next-line: deprecated
+--     ret = vim.lsp.get_active_clients(opts)
+--     if opts and opts.method then
+--       ---@param client lsp.Client
+--       ret = vim.tbl_filter(function(client)
+--         return client:supports_method(opts.method, { bufnr = opts.bufnr })
+--       end, ret)
+--     end
+--   end
+--   return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
+-- end
 
 ---@class LazyRoot
 ---@field paths string[]
@@ -48,25 +48,25 @@ function M.detectors.cwd()
   return { vim.uv.cwd() }
 end
 
-function M.detectors.lsp(buf)
-  local bufpath = M.bufpath(buf)
-  if not bufpath then
-    return {}
-  end
-  local roots = {} ---@type string[]
-  for _, client in pairs(M.get_clients({ bufnr = buf })) do
-    -- only check workspace folders, since we're not interested in clients
-    -- running in single file mode
-    local workspace = client.config.workspace_folders
-    for _, ws in pairs(workspace or {}) do
-      roots[#roots + 1] = vim.uri_to_fname(ws.uri)
-    end
-  end
-  return vim.tbl_filter(function(path)
-    path = LazyUtil.norm(path)
-    return path and bufpath:find(path, 1, true) == 1
-  end, roots)
-end
+-- function M.detectors.lsp(buf)
+--   local bufpath = M.bufpath(buf)
+--   if not bufpath then
+--     return {}
+--   end
+--   local roots = {} ---@type string[]
+--   for _, client in pairs(M.get_clients({ bufnr = buf })) do
+--     -- only check workspace folders, since we're not interested in clients
+--     -- running in single file mode
+--     local workspace = client.config.workspace_folders
+--     for _, ws in pairs(workspace or {}) do
+--       roots[#roots + 1] = vim.uri_to_fname(ws.uri)
+--     end
+--   end
+--   return vim.tbl_filter(function(path)
+--     path = LazyUtil.norm(path)
+--     return path and bufpath:find(path, 1, true) == 1
+--   end, roots)
+-- end
 
 ---@param patterns string[]|string
 function M.detectors.pattern(buf, patterns)

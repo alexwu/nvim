@@ -16,12 +16,10 @@ set("x", { "<" }, "<gv", { desc = "De-dent selection" })
 set("x", { ">", "<Tab>" }, ">gv", { desc = "Indent selection" })
 
 set("n", "<ESC>", ex("noh"))
+set("n", { "<C-s>", "<D-s>" }, vim.cmd.write, { desc = "Save file" })
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })
 set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
-
-set("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open Location List" })
-set("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open Quickfix List" })
 
 set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 
@@ -32,7 +30,7 @@ set("n", "[t", vim.cmd.tabprevious, { desc = "Previous tab" })
 
 set(
   "n",
-  { "<A-o>" },
+  { "<A-o>", "<D-CR>" },
   repeatable(function()
     keys.o({ esc = true })
   end),
@@ -71,10 +69,10 @@ local function scroll_half_page(dir, opts)
   end
 end
 
-set("n", "<C-d>", function()
+set({ "n", "v" }, "<C-d>", function()
   scroll_half_page("down")
 end, { desc = "Scroll down half page" })
 
-set("n", "<C-u>", function()
+set({ "n", "v" }, "<C-u>", function()
   scroll_half_page("up")
 end, { desc = "Scroll up half page" })

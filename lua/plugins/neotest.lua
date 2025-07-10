@@ -54,7 +54,7 @@ return {
     },
     config = function(_, opts)
       opts.consumers = opts.consumers or {}
-      opts.overseer = require("neotest.consumers.overseer")
+      -- opts.overseer = require("neotest.consumers.overseer")
       -- Refresh and auto close trouble after running tests
       ---@type neotest.Consumer
       opts.consumers.trouble = function(client)

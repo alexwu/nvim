@@ -5,7 +5,7 @@ return {
     init = function()
       local loaded = false
       local function check()
-        local result = require("bombeelu.utils").root_pattern("Cargo.toml")(vim.uv.cwd() or vim.uv.os_homedir())
+        local result = vim.fs.root(0, { "Cargo.toml" })
 
         if result then
           require("lazy").load({ plugins = { "crates.nvim" } })

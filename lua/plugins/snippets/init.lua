@@ -1,25 +1,19 @@
 return {
+  { "rafamadriz/friendly-snippets" },
   {
-    "L3MON4D3/LuaSnip",
-    build = (not jit.os:find("Windows"))
-        and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
-      or nil,
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end,
+    "garymjr/nvim-snippets",
+    event = "VeryLazy",
+    opts = {
+      friendly_snippets = true,
+      create_cmp_source = false,
     },
-    config = function()
-      local ls = require("luasnip")
-      ls.setup({
-        history = true,
-        delete_check_events = "TextChanged",
-      })
-
-      require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/bombeelu/snippets" })
-    end,
-    keys = {},
-    enabled = false,
+  },
+  {
+    "chrisgrieser/nvim-scissors",
+    event = "VeryLazy",
+    dependencies = { "garymjr/nvim-snippets" },
+    opts = {
+      snippetDir = vim.fn.stdpath("config") .. "/snippets",
+    },
   },
 }
