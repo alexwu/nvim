@@ -1,0 +1,31 @@
+return {
+  --     -- TODO: Make it only show visible panes lol
+  --     enabled = false,
+  --   {
+  --     "saghen/blink.cmp",
+  --     optional = true,
+  --     dependencies = {
+  --       "junkblocker/blink-cmp-wezterm",
+  --     },
+  --     opts = {
+  --       sources = {
+  --         default = { "wezterm" },
+  --         providers = {
+  --           wezterm = {
+  --             module = "blink-cmp-wezterm",
+  --             name = "wezterm",
+  --             -- default options
+  --             opts = {
+  --               all_panes = false,
+  --               capture_history = false,
+  --               -- only suggest completions from `wezterm` if the `trigger_chars` are
+  --               -- used
+  --               triggered_only = false,
+  --               trigger_chars = { "." },
+  --             },
+  --           },
+  --         },
+  --       },
+  --     },
+  --   },
+}

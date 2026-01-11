@@ -1,149 +1,172 @@
 return {
   {
-    "olimorris/codecompanion.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "zbirenbaum/copilot.lua",
-      {
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = {},
-        ft = { "codecompanion", "Avante" },
+    "MeanderingProgrammer/render-markdown.nvim",
+    -- ft = { "markdown", "codecompanion", "Avante" },
+    opts = {
+      anti_conceal = { enabled = false },
+    },
+  },
+  {
+    "folke/sidekick.nvim",
+    dependencies = {},
+    opts = {
+      cli = {
+        mux = {
+          backend = "zellij",
+          enabled = true,
+        },
       },
     },
     keys = {
-      { "<c-s>", "<CR>", ft = "codecompanion", desc = "Submit Prompt", remap = true },
-      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
       {
-        "<leader>ac",
-        "<cmd>CodeCompanionChat Toggle<cr>",
-        mode = { "n", "v" },
-        noremap = true,
-        silent = true,
-        desc = "CodeCompanion (Toggle Chat)",
+        "<tab>",
+        function()
+          -- if there is a next edit, jump to it, otherwise apply it if any
+          if not require("sidekick").nes_jump_or_apply() then
+            return "<Tab>"
+          end
+        end,
+        expr = true,
+        desc = "Goto/Apply Next Edit Suggestion",
+        mode = { "n" },
+      },
+      -- {
+      --   "<c-.>",
+      --   function()
+      --     require("sidekick.cli").focus()
+      --   end,
+      --   desc = "Sidekick Switch Focus",
+      --   mode = { "n", "v" },
+      -- },
+      -- {
+      --   "<leader>aa",
+      --   function()
+      --     require("sidekick.cli").toggle({ focus = true })
+      --   end,
+      --   desc = "Sidekick Toggle CLI",
+      --   mode = { "n", "v" },
+      -- },
+      -- {
+      --   "<leader>ac",
+      --   function()
+      --     require("sidekick.cli").toggle({ name = "claude", focus = true })
+      --   end,
+      --   desc = "Sidekick Claude Toggle",
+      --   mode = { "n", "v" },
+      -- },
+      -- {
+      --   "<leader>ap",
+      --   function()
+      --     require("sidekick.cli").select_prompt()
+      --   end,
+      --   desc = "Sidekick Ask Prompt",
+      --   mode = { "n", "v" },
+      -- },
+    },
+  },
+  {
+    "saghen/blink.cmp",
+    dependencies = { "folke/sidekick.nvim" },
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      keymap = {
+        preset = "super-tab",
+        ["<Tab>"] = {
+          function(cmp)
+            if cmp.is_visible() then
+              cmp.select_next({ on_ghost_text = true })
+            end
+          end,
+          function()
+            return require("sidekick").nes_jump_or_apply()
+          end,
+          function()
+            return vim.lsp.inline_completion.get()
+          end,
+          "fallback",
+        },
       },
     },
+  },
+
+  {
+    "linw1995/nvim-mcp",
+    -- install the mcp server binary automatically
+    build = "cargo install --path .",
+    opts = {},
+  },
+  {
+    "coder/claudecode.nvim",
+    dependencies = { "folke/snacks.nvim" },
+    opts = {
+      terminal_cmd = "~/.claude/local/claude",
+    },
+    keys = {
+      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer to Claude" },
+      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<leader>as",
+        "<cmd>ClaudeCodeTreeAdd<cr>",
+        desc = "Add file",
+        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+      },
+      -- Diff management
+      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept Claude diff" },
+      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny Claude diff" },
+    },
+  },
+  {
+    "Davidyz/VectorCode",
+    enabled = false,
+    event = "VeryLazy",
+    version = "*",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+    setup = function(_, opts)
+      require("vectorcode").setup(opts)
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function()
+          local bufnr = vim.api.nvim_get_current_buf()
+          local cacher = require("vectorcode.cacher")
+
+          cacher.async_check("config", function()
+            cacher.register_buffer(bufnr, {
+              n_query = 10,
+            })
+          end, nil)
+        end,
+        desc = "Register buffer for VectorCode",
+      })
+    end,
+  },
+  {
+    "ravitemer/mcphub.nvim",
+    enabled = false,
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    -- cmd = "MCPHub",
+    -- build = "mise use -g npm:mcp-hub@latest",
+    -- build = "mise upgrade npm:mcp-hub",
+    build = "bundled_build.lua",
     config = function()
-      require("codecompanion").setup({
-        display = {
-          chat = {
-            show_settings = false,
-            window = {
-              width = 0.33,
-            },
-          },
+      require("mcphub").setup({
+        port = 3000,
+        config = vim.fn.expand("~/Library/Application Support/Claude/claude_desktop_config.json"),
+        use_bundled_binary = true,
+        log = {
+          level = vim.log.levels.WARN,
+          to_file = false,
+          file_path = nil,
+          prefix = "MCPHub",
         },
-        opts = {
-          system_prompt = function()
-            local version = vim.version()
-
-            local cwd = vim.fn.getcwd()
-            local files = {}
-            for file, t in vim.fs.dir(cwd) do
-              if t == "file" then
-                table.insert(files, file .. " (file)")
-              elseif t == "directory" then
-                table.insert(files, file .. " (directory)")
-              end
-            end
-
-            local context = {
-              os = vim.uv.os_uname().sysname,
-              nvim_version = string.format("%d.%d.%d", version.major, version.minor, version.patch),
-              files = files,
-              home = vim.env.HOME,
-              editor = vim.env.EDITOR,
-              term = vim.env.TERM,
-              shell = vim.env.SHELL,
-            }
-
-            local output = "### Current Session Information:\n"
-            for key, value in pairs(context) do
-              if key ~= "files" then
-                output = output .. "  " .. key .. ": " .. tostring(value) .. "\n"
-              end
-            end
-
-            output = output .. "  Files in Current Working Directory: " .. table.concat(context.files, ", ")
-
-            return output
-            -- return string.format(
-            --   [[
-            -- ### Current Session Information:
-            --   Current Working Directory: %s
-            --   Files in Current Working Directory: %s
-            --   Operating System: %s
-            --   Neovim Version: %s
-            -- ]],
-            --   cwd,
-            --   table.concat(files, ", "),
-            --   os,
-            --   version_string
-            -- )
-          end,
-        },
-        strategies = {
-          chat = {
-            adapter = "luna",
-            roles = {
-              ---@type string|fun(adapter: CodeCompanion.Adapter): string
-              llm = function(adapter)
-                return adapter.formatted_name
-              end,
-            },
-            slash_commands = {
-              ["buffer"] = {
-                callback = "strategies.chat.slash_commands.buffer",
-                description = "Select a buffer",
-                opts = {
-                  provider = "snacks",
-                  contains_code = true,
-                },
-              },
-            },
+        extensions = {
+          avante = {
+            make_slash_commands = true,
           },
-          inline = {
-            adapter = "luna",
-          },
-        },
-        adapters = {
-          opts = {
-            show_defaults = false,
-          },
-          ---@returns CodeCompanion.Adapter
-          luna = function()
-            return require("codecompanion.adapters").extend("openai_compatible", {
-              schema = {
-                model = {
-                  default = "luna-work-neovim-remote",
-                },
-              },
-              name = "luna",
-              formatted_name = "Luna",
-              env = {
-                url = "https://open-webui.burro-neon.ts.net",
-                api_key = [[cmd:op read "op://personal/Open WebUI/credential" --no-newline]],
-                chat_url = "/api/chat/completions",
-              },
-            })
-          end,
-          luna_local = function()
-            return require("codecompanion.adapters").extend("openai_compatible", {
-              schema = {
-                model = {
-                  default = "luna-work-neovim-local",
-                },
-              },
-              name = "luna (local)",
-              formatted_name = "Luna (Local)",
-              env = {
-                url = "https://open-webui.burro-neon.ts.net",
-                api_key = [[cmd:op read "op://personal/Open WebUI/credential" --no-newline]],
-                chat_url = "/api/chat/completions",
-              },
-            })
-          end,
         },
       })
     end,

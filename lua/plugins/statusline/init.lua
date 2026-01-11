@@ -24,10 +24,13 @@ end
 
 return {
   "nvim-lualine/lualine.nvim",
+  enabled = true,
   event = "VeryLazy",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
     "Hashino/doing.nvim",
+    "folke/sidekick.nvim",
+    "folke/snacks.nvim",
   },
   config = function()
     M.setup("lualine")

@@ -65,83 +65,105 @@ return {
       },
     },
     ---@module "conform"
-    ---@type conform.setupOpts
-    opts = {
-      formatters_by_ft = {
-        ["markdown.mdx"] = { "prettier" },
-        c = { "clang_format" },
-        cmake = { "cmake_format" },
-        cpp = { "clang_format" },
-        css = { "prettier" },
-        eruby = { "erb_format", "rustywind", stop_after_first = true },
-        go = { "gofmt" },
-        graphql = { "prettier" },
-        gdscript = { "gdformat" },
-        handlebars = { "prettier" },
-        html = { "prettier" },
-        -- javascript = { "biome", "prettier", stop_after_first = true },
-        javascript = { "prettier", stop_after_first = true },
-        -- javascriptreact = { "biome", "prettier", stop_after_first = true },
-        javascriptreact = { "prettier", stop_after_first = true },
-        -- json = { "biome", "prettier", stop_after_first = true },
-        json = { "prettier", stop_after_first = true },
-        jsonc = { "prettier" },
-        just = { "just" },
-        less = { "prettier" },
-        lua = { "stylua" },
-        liquid = { "prettier" },
-        markdown = { "prettier", stop_after_first = true },
-        python = { "ruff" },
-        query = { "format-queries", "query_fmt", stop_after_first = true },
-        ruby = { "rubyfmt", "syntax_tree", stop_after_first = true },
-        rust = { "rustfmt" },
-        scss = { "prettier" },
-        toml = { "taplo" },
-        -- typescript = { "biome", "prettier", stop_after_first = true },
-        typescript = { "prettier", stop_after_first = true },
-        -- typescriptreact = { "biome", "prettier", stop_after_first = true },
-        typescriptreact = { "prettier", stop_after_first = true },
-        vue = { "prettier" },
-        yaml = { "prettier" },
-        swift = { "swift_format", "swiftformat", stop_after_first = true },
-        xml = { "xmlformatter" },
-        zig = { "zigfmt" },
-      },
-      formatters = {
-        rub = {
-          command = "rub",
-          args = { "--stdin" },
-          stdin = true,
-          -- cwd = require("conform.util").root_file({ "Gemfile" }),
-          require_cwd = false,
+    ---@type fun(): conform.setupOpts
+    opts = function()
+      return {
+        formatters_by_ft = {
+          ["markdown.mdx"] = { "prettier" },
+          c = { "clang_format" },
+          cmake = { "cmake_format" },
+          cpp = { "clang_format" },
+          css = { "prettier" },
+          -- eruby = { "erb_format", "rustywind", lsp_format = "prefer", stop_after_first = true },
+          eruby = { "herb", stop_after_first = true },
+          go = { "gofmt" },
+          graphql = { "prettier" },
+          gdscript = { "gdformat" },
+          handlebars = { "prettier" },
+          html = { "prettier" },
+          -- javascript = { "biome", "prettier", stop_after_first = true },
+          javascript = { "prettier", stop_after_first = true },
+          -- javascriptreact = { "biome", "prettier", stop_after_first = true },
+          javascriptreact = { "prettier", stop_after_first = true },
+          json = { "biome", "prettier", stop_after_first = true },
+          -- json = { "prettier", stop_after_first = true },
+          jsonc = { "prettier" },
+          just = { "just" },
+          less = { "prettier" },
+          lua = { "stylua" },
+          liquid = { "prettier" },
+          markdown = { "prettier", stop_after_first = true },
+          python = { "ruff" },
+          query = { "format-queries", "query_fmt", stop_after_first = true },
+          ruby = { "rubyfmt", "syntax_tree", stop_after_first = true },
+          rust = { "rustfmt" },
+          scss = { "prettier" },
+          sql = { "sqruff" },
+          toml = { "mise", "taplo", stop_after_first = true },
+          typescript = { "biome", "prettier", stop_after_first = true },
+          -- typescript = { "prettier", stop_after_first = true },
+          -- typescriptreact = { "biome", "prettier", stop_after_first = true },
+          typescriptreact = { "prettier", stop_after_first = true },
+          vue = { "prettier" },
+          yaml = { "prettier" },
+          swift = { "swift", "swiftformat", stop_after_first = true },
+          xml = { "xmlformatter" },
+          zig = { "zigfmt" },
         },
-        syntax_tree = {
-          command = "stree",
-          args = { "format" },
-          stdin = true,
-          require_cwd = false,
-        },
-        query_fmt = {
-          command = "query-fmt",
-          args = { "$FILENAME" },
-          stdin = false,
-          require_cwd = false,
-        },
-        erb_format = {
-          args = { "--stdin", "--single-class-per-line", "--print-width", "100" },
-          stdin = true,
-        },
-
-        prettier = {
-          inherit = true,
-          options = {
-            ft_parsers = {
-              eruby = "html",
+        formatters = {
+          rub = {
+            command = "rub",
+            args = { "--stdin" },
+            stdin = true,
+            -- cwd = require("conform.util").root_file({ "Gemfile" }),
+            require_cwd = false,
+          },
+          mise = {
+            command = "mise",
+            args = { "fmt", "--stdin" },
+            stdin = true,
+            cwd = require("conform.util").root_file({ "mise.toml" }),
+            require_cwd = true,
+            condition = function(self, ctx)
+              return vim.fs.basename(ctx.filename) == "mise.toml"
+            end,
+          },
+          syntax_tree = {
+            command = "stree",
+            args = { "format" },
+            stdin = true,
+            require_cwd = false,
+          },
+          query_fmt = {
+            command = "query-fmt",
+            args = { "$FILENAME" },
+            stdin = false,
+            require_cwd = false,
+          },
+          erb_format = {
+            args = { "--stdin", "--single-class-per-line", "--print-width", "100" },
+            stdin = true,
+          },
+          herb = {
+            command = "herb-format",
+            stdin = true,
+          },
+          prettier = {
+            inherit = true,
+            options = {
+              ft_parsers = {
+                eruby = "html",
+              },
             },
           },
+          biome = {
+            inherit = true,
+            cwd = require("conform.util").root_file({ "biome.json" }),
+            require_cwd = true,
+          },
         },
-      },
-    },
+      }
+    end,
     config = function(_, opts)
       require("conform").setup(opts)
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"

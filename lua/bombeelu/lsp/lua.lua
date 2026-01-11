@@ -1,5 +1,5 @@
 local defaults = require("plugins.lsp.defaults")
-local lspconfig = require("lspconfig")
+-- local lspconfig = require("lspconfig")
 
 local lua = {}
 
@@ -8,36 +8,38 @@ function lua.setup(opts)
   local on_attach = vim.F.if_nil(o.on_attach, defaults.on_attach)
   local capabilities = vim.F.if_nil(o.capabilities, defaults.capabilities)
 
-  lspconfig.lua_ls.setup({
-    on_attach = on_attach,
-    capabilities = capabilities,
-    root_dir = function(fname)
-      local root_pattern = lspconfig.util.root_pattern(".git", "*.rockspec")(fname)
-
-      if fname == vim.loop.os_homedir() then
-        return nil
-      end
-
-      return root_pattern or fname
-    end,
-    settings = {
-      Lua = {
-        semantic = { enable = true },
-        diagnostics = {
-          enable = true,
-          globals = { "vim", "nvim" },
-          unusedLocalExclude = {
-            "^_",
-          },
-        },
-        completion = { autoRequire = false },
-        hint = {
-          enable = true,
-          arrayIndex = "Disable",
-        },
-      },
-    },
-  })
+  -- vim.lsp.config("lua_ls", {
+  --   on_attach = on_attach,
+  --   capabilities = capabilities,
+  --   root_markers = { ".git", ".luarc.json", ".luacheckrc", "stylua.toml", "selene.toml" },
+  --   -- root_dir = function(fname)
+  --   --   local root_pattern = lspconfig.util.root_pattern(".git", "*.rockspec")(fname)
+  --   --
+  --   --   if fname == vim.loop.os_homedir() then
+  --   --     return nil
+  --   --   end
+  --   --
+  --   --   return root_pattern or fname
+  --   -- end,
+  --   settings = {
+  --     Lua = {
+  --       semantic = { enable = true },
+  --       diagnostics = {
+  --         enable = true,
+  --         globals = { "vim", "nvim" },
+  --         unusedLocalExclude = {
+  --           "^_",
+  --         },
+  --       },
+  --       completion = { autoRequire = false },
+  --       hint = {
+  --         enable = true,
+  --         arrayIndex = "Disable",
+  --       },
+  --     },
+  --   },
+  -- })
+  -- vim.lsp.enable("lua_ls")
 end
 
 return lua

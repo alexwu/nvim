@@ -18,6 +18,7 @@ set("x", { ">", "<Tab>" }, ">gv", { desc = "Indent selection" })
 set("n", "<ESC>", ex("noh"))
 set("n", { "<C-s>", "<D-s>" }, vim.cmd.write, { desc = "Save file" })
 set("x", "<F2>", '"*y', { desc = "Copy to system clipboard" })
+set("n", "<F3>", [[<cmd>let @+ = fnamemodify(expand('%'), ':.')<CR>]], { desc = "Copy path to current buffer to system clipboard" })
 set("n", "<A-BS>", "db", { desc = "Delete previous word" })
 set("i", "<A-BS>", "<C-W>", { desc = "Delete previous word" })
 

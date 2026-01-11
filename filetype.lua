@@ -3,6 +3,7 @@ vim.filetype.add({
     rbi = "ruby",
     ["http"] = "http",
     ["d.tl"] = "teal",
+    psc = "papyrus",
   },
   filename = {
     [".cargo/config"] = "toml",
@@ -27,5 +28,6 @@ vim.filetype.add({
     ["*.js.es6"] = function()
       return "javascript"
     end,
+    [".*/%.github[%w/]+workflows[%w/]+.*%.ya?ml"] = "yaml.github",
   },
 })

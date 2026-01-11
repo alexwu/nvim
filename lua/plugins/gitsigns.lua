@@ -7,7 +7,9 @@ return {
         commit = {
           mediumLen = 50,
           maxLen = 100,
-          preview = true,
+          preview = {
+            loglines = 3,
+          },
           wrap = "none",
           subject = {
             enforceType = false, -- disallow commit messages without a keyword

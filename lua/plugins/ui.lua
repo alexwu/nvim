@@ -1,6 +1,7 @@
 return {
   {
     "lewis6991/satellite.nvim",
+    enabled = false,
     event = { "VeryLazy" },
     dependencies = { "gitsigns.nvim" },
     config = function()

@@ -234,19 +234,34 @@ require("lualine").setup({
         update_in_insert = false,
         always_visible = false,
       },
-
-      { require("doing").status },
-    },
-    lualine_x = {
       {
         function()
-          return require("noice").api.status.command.get()
+          return " "
+        end,
+        color = function()
+          local status = require("sidekick.status").get()
+          if status then
+            return status.kind == "Error" and "DiagnosticError" or status.busy and "DiagnosticWarn" or "Special"
+          end
         end,
         cond = function()
-          return package.loaded["noice"] and require("noice").api.status.command.has()
+          local status = require("sidekick.status")
+          return status.get() ~= nil
         end,
-        color = { fg = "#ff9e64" },
       },
+      -- { require("doing").status },
+    },
+    lualine_x = {
+      Snacks.profiler.status(),
+      -- {
+      --   function()
+      --     return require("noice").api.status.command.get()
+      --   end,
+      --   cond = function()
+      --     return package.loaded["noice"] and require("noice").api.status.command.has()
+      --   end,
+      --   color = { fg = "#ff9e64" },
+      -- },
       {
         function()
           return require("noice").api.status.mode.get()
@@ -290,15 +305,20 @@ require("lualine").setup({
       },
     },
     lualine_y = {
-      {
-        "overseer",
-      },
-      {
-        "codecompanion",
-      },
+      -- {
+      --   "overseer",
+      -- },
+      -- {
+      --   "codecompanion",
+      -- },
     },
     -- lualine_z = { { "location", separator = { right = "", left = "" } } },
-    lualine_z = { { "location", separator = { left = "" } } },
+    lualine_z = {
+      -- {
+      --   "location",
+      --   separator = { left = "" },
+      -- },
+    },
   },
   inactive_sections = {
     lualine_a = {},

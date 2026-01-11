@@ -49,7 +49,22 @@ return {
         ["<CR>"] = { "accept", "fallback" },
         ["<C-e>"] = { "cancel", "fallback" },
         ["<S-Tab>"] = { "select_prev", "fallback" },
-        ["<Tab>"] = { "select_next", "fallback" },
+        ["<Tab>"] = {
+          function(cmp)
+            if cmp.is_visible() then
+              return cmp.select_next({ on_ghost_text = true })
+            end
+          end,
+          "fallback",
+        },
+        ["<C-y>"] = {
+          function(cmp)
+            if cmp.is_ghost_text_visible() then
+              return cmp.select_next({ on_ghost_text = true })
+            end
+          end,
+          "fallback",
+        },
       },
       completion = {
         accept = {
@@ -86,7 +101,11 @@ return {
             border = "rounded",
           },
         },
-        ghost_text = { enabled = true },
+        ghost_text = {
+          enabled = false,
+          show_without_menu = false,
+          show_with_menu = false,
+        },
       },
       appearance = {
         use_nvim_cmp_as_default = false,
@@ -131,6 +150,9 @@ return {
             auto_show = true,
           },
         },
+      },
+      term = {
+        enabled = true,
       },
     },
   },

@@ -3,7 +3,12 @@ return {
     "p00f/clangd_extensions.nvim",
     lazy = true,
     dependencies = {
+      -- "iguanacucumber/magazine.nvim",
+      -- "iguanacucumber/mag-nvim-lsp",
+      -- "hrsh7th/nvim-cmp",
+      -- "hrsh7th/cmp-nvim-lsp",
       "neovim/nvim-lspconfig",
+      -- "alexwu/nvim-lsp-selection-range",
     },
     init = function()
       local loaded = false

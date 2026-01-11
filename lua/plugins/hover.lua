@@ -91,44 +91,49 @@ return {
   enabled = true,
   config = function()
     local hover = require("hover")
-    hover.setup({
-      init = function()
-        -- hover.register(LSPWithDiagSource)
-        -- require("hover.providers.lsp")
-        -- require("hover.providers.gh")
-        -- require("hover.providers.gh_user")
-        -- require("hover.providers.dap")
-        require("hover.providers.fold_preview")
-        require("hover.providers.diagnostic")
-        require("hover.providers.man")
-        -- require("hover.providers.dictionary")
-      end,
+    hover.config({
+      providers = {
+        "hover.providers.diagnostic",
+        "hover.providers.lsp",
+        "hover.providers.dap",
+        "hover.providers.man",
+        -- "hover.providers.dictionary",
+        'hover.providers.gh',
+        'hover.providers.gh_user',
+        -- 'hover.providers.jira',
+        'hover.providers.fold_preview',
+        -- 'hover.providers.highlight',
+      },
       preview_opts = {
-        border = nil,
+        border = "rounded",
       },
       -- Whether the contents of a currently open hover window should be moved
       -- to a :h preview-window when pressing the hover keymap.
       preview_window = false,
       title = true,
+      mouse_providers = {
+        "hover.providers.lsp",
+      },
+      mouse_delay = 1000,
     })
-    set("n", "gK", hover.hover, { desc = "hover.nvim" })
+    set("n", "gK", hover.open, { desc = "hover.nvim (open)" })
     -- set("n", "gK", hover.hover_select, { desc = "hover.nvim select" })
 
-    require("bombeelu.utils").on_attach(function(client, buffer)
-      if not client or not client:supports_method(vim.lsp.protocol.Methods.textDocument_hover) then
-        return
-      end
-
-      local providers = require("hover.providers").providers
-      local client_name = string.format("LSP[%s]", client.name)
-
-      if vim.iter(providers):any(function(provider)
-        return provider.name == client_name
-      end) then
-        return
-      end
-
-      hover.register(LSPServerHover(client.name))
-    end)
+    -- require("bombeelu.utils").on_attach(function(client, buffer)
+    --   if not client or not client:supports_method(vim.lsp.protocol.Methods.textDocument_hover) then
+    --     return
+    --   end
+    --
+    --   local providers = require("hover.providers").providers
+    --   local client_name = string.format("LSP[%s]", client.name)
+    --
+    --   if vim.iter(providers):any(function(provider)
+    --     return provider.name == client_name
+    --   end) then
+    --     return
+    --   end
+    --
+    --   hover.register(LSPServerHover(client.name))
+    -- end)
   end,
 }

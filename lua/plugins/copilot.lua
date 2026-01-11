@@ -1,7 +1,7 @@
 return {
   {
     "zbirenbaum/copilot.lua",
-    enabled = true,
+    enabled = false,
     cmd = "Copilot",
     build = ":Copilot auth",
     opts = {
@@ -16,27 +16,28 @@ return {
   },
   {
     "giuxtaposition/blink-cmp-copilot",
+    enabled = false,
     dependencies = {
       "zbirenbaum/copilot.lua",
     },
   },
-  {
-    "saghen/blink.cmp",
-    optional = true,
-    dependencies = { "giuxtaposition/blink-cmp-copilot" },
-    opts = {
-      sources = {
-        default = { "copilot" },
-        providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-cmp-copilot",
-            -- kind = "Copilot",
-          },
-        },
-      },
-    },
-  },
+  -- {
+  --   "saghen/blink.cmp",
+  --   optional = true,
+  --   dependencies = { "giuxtaposition/blink-cmp-copilot" },
+  --   opts = {
+  --     sources = {
+  --       default = { "copilot" },
+  --       providers = {
+  --         copilot = {
+  --           name = "copilot",
+  --           module = "blink-cmp-copilot",
+  --           -- kind = "Copilot",
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     enabled = false,

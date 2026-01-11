@@ -9,6 +9,9 @@ return {
         -- ruby = { "rubocop" },
         lua = { "selene" },
         gdscript = { "gdlint" },
+        -- yaml = { "actionlint" },
+        swift = { "swiftlint" },
+        [".*/.github/workflows/.*%.yml"] = "yaml.ghaction",
         -- fish = { "fish" },
         -- Use the "*" filetype to run linters on all filetypes.
         -- ['*'] = { 'global linter' },
@@ -22,6 +25,11 @@ return {
         selene = {
           condition = function(ctx)
             return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+          end,
+        },
+        selene = {
+          condition = function(ctx)
+            return vim.fs.find({ ".swiftlint.yml" }, { path = ctx.filename, upward = true })[1]
           end,
         },
       },

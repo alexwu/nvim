@@ -1,14 +1,10 @@
-local lspconfig = require("lspconfig")
-local root_pattern = lspconfig.util.root_pattern
-
 local graphql = {}
 
 function graphql.setup(opts)
-  lspconfig.graphql.setup({
-    on_attach = opts.on_attach,
-    capabilities = opts.capabilities,
-    root_dir = root_pattern("graphql.config.ts"),
+  vim.lsp.config("graphql", {
+    root_markers = { "graphql.config.ts" },
   })
+  vim.lsp.enable("graphql")
 end
 
 return graphql

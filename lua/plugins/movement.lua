@@ -67,6 +67,47 @@ return {
         end,
         desc = "Jump forward",
       },
+      -- {
+      --   "w",
+      --   mode = { "n", "x" },
+      --   function()
+      --     require("flash").jump({
+      --       search = {
+      --         multi_window = false,
+      --         -- Use a custom function for the search mode to match word beginnings
+      --         mode = function(str)
+      --           return "\\<" .. str
+      --         end,
+      --       },
+      --       -- Additional option to restrict to current line
+      --       matcher = function(win)
+      --         -- Get cursor position
+      --         local cursor = vim.api.nvim_win_get_cursor(0)
+      --         local current_line = cursor[1]
+      --
+      --         -- Only create matches on the current line
+      --         local matches = {}
+      --         local line_text = vim.api.nvim_buf_get_lines(0, current_line - 1, current_line, false)[1]
+      --
+      --         -- Find all beginnings of words in current line
+      --         for word_start in string.gmatch(line_text, "%f[%a%d_]%w+") do
+      --           local col = string.find(line_text, word_start)
+      --           if col then
+      --             -- Create a match at the beginning of the word
+      --             table.insert(matches, {
+      --               win = win,
+      --               pos = { current_line, col - 1 }, -- 1,0-indexed position
+      --               end_pos = { current_line, col - 1 + #word_start - 1 },
+      --             })
+      --           end
+      --         end
+      --
+      --         return matches
+      --       end,
+      --     })
+      --   end,
+      --   desc = "Jump forward",
+      -- },
       {
         "<leader>s",
         "",
@@ -118,6 +159,23 @@ return {
         end,
         desc = "Treesitter Search",
       },
+      -- {
+      --   "<leader>sd",
+      --   function()
+      --     require("flash").jump({
+      --       matcher = function(win)
+      --         ---@param diag vim.Diagnostic
+      --         return vim.tbl_map(function(diag)
+      --           return {
+      --             pos = { diag.lnum + 1, diag.col },
+      --             end_pos = { diag.end_lnum + 1, diag.end_col - 1 },
+      --           }
+      --         end, vim.diagnostic.get(vim.api.nvim_win_get_buf(win)))
+      --       end,
+      --     })
+      --   end,
+      --   desc = "Jump to diagnostic",
+      -- },
     },
   },
   {

@@ -112,32 +112,55 @@ local function surround_tags()
   end)
 end
 
-function M.setup()
+---@param bufnr? integer
+local function setup_buffer_mappings(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  if not vim.bo[bufnr].modifiable then
+    return
+  end
+
   set({ "v" }, { "(", ")" }, function()
     surround_mapping({ "(", ")" })
-  end, { desc = "Surround selection with parentheses" })
+  end, { desc = "Surround selection with parentheses", buffer = bufnr })
 
   set({ "v" }, { "{", "}" }, function()
     surround_mapping({ "{", "}" })
-  end, { desc = "Surround selection with curly braces" })
+  end, { desc = "Surround selection with curly braces", buffer = bufnr })
 
   set({ "v" }, { "[", "]" }, function()
     surround_mapping({ "[", "]" })
-  end, { desc = "Surround selection with square brackets" })
+  end, { desc = "Surround selection with square brackets", buffer = bufnr })
 
   set({ "v" }, { "q" }, function()
     surround_mapping({ [["]], [["]] })
-  end, { desc = "Surround selection with double quotes" })
+  end, { desc = "Surround selection with double quotes", buffer = bufnr })
 
   set({ "v" }, { [[']] }, function()
     surround_mapping({ "'", "'" })
-  end, { desc = "Surround selection with single quotes" })
+  end, { desc = "Surround selection with single quotes", buffer = bufnr })
 
   set({ "v" }, { [[`]], [[`]] }, function()
     surround_mapping({ "`", "`" })
-  end, { desc = "Surround selection with backtick" })
+  end, { desc = "Surround selection with backtick", buffer = bufnr })
 
-  set({ "v" }, { "t" }, surround_tags, { desc = "Surround selection specified tag" })
+  set({ "v" }, { "t" }, surround_tags, { desc = "Surround selection specified tag", buffer = bufnr })
+end
+
+function M.setup()
+  -- Create autocommand group
+  local group = vim.api.nvim_create_augroup("VisualSurround", { clear = true })
+
+  -- Set up mappings for current and new buffers
+  vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+    group = group,
+    callback = function(args)
+      setup_buffer_mappings(args.buf)
+    end,
+  })
+
+  -- Set up mappings for current buffer immediately
+  setup_buffer_mappings()
 end
 
 return M

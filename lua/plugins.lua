@@ -55,6 +55,7 @@ return {
   },
   {
     "andymass/vim-matchup",
+    enabled = true,
     event = "VeryLazy",
     setup = function()
       vim.g.matchup_matchparen_deferred = 1
@@ -460,29 +461,16 @@ return {
   },
   {
     "mistweaverco/kulala.nvim",
-    ft = { "http" },
+    ft = { "http", "rest" },
     opts = {
-      debug = true,
+      global_keymaps = true,
+      global_keymaps_prefix = "<leader>R",
+      kulala_keymaps_prefix = "",
     },
-    config = true,
     keys = {
-      -- {
-      --   "<C-k>",
-      --   ":lua require('kulala').jump_prev()<CR>",
-      --   { noremap = true, silent = true },
-      -- },
-      -- {
-      --
-      --   "<C-j>",
-      --   ":lua require('kulala').jump_next()<CR>",
-      --   { noremap = true, silent = true },
-      -- },
-      {
-        "<Leader>kl",
-        ":lua require('kulala').run()<CR>",
-        noremap = true,
-        silent = true,
-      },
+      { "<leader>Rs", desc = "Send request" },
+      { "<leader>Ra", desc = "Send all requests" },
+      { "<leader>Rb", desc = "Open scratchpad" },
     },
   },
   {
@@ -544,6 +532,7 @@ return {
 
   {
     "obsidian-nvim/obsidian.nvim",
+    enabled = false,
     version = "*",
     ft = "markdown",
     cmd = { "Obsidian", "Notes" },
@@ -551,6 +540,7 @@ return {
       "nvim-lua/plenary.nvim",
     },
     opts = {
+      legacy_commands = false,
       workspaces = {
         {
           name = "personal",
@@ -599,31 +589,6 @@ return {
         },
       })
     end,
-  },
-  {
-    "pwntester/octo.nvim",
-    enabled = false,
-    event = "VeryLazy",
-    init = function()
-      vim.treesitter.language.register("markdown", "octo")
-    end,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "nvim-tree/nvim-web-devicons",
-    },
-    opts = {
-      suppress_missing_scope = {
-        projects_v2 = true,
-      },
-    },
-    keys = {
-      { "<leader>gi", "<cmd>Octo issue list<CR>", desc = "List Issues (Octo)" },
-      { "<leader>gI", "<cmd>Octo issue search<CR>", desc = "Search Issues (Octo)" },
-      { "<leader>gp", "<cmd>Octo pr list<CR>", desc = "List PRs (Octo)" },
-      { "<leader>gP", "<cmd>Octo pr search<CR>", desc = "Search PRs (Octo)" },
-      { "<leader>gr", "<cmd>Octo repo list<CR>", desc = "List Repos (Octo)" },
-    },
   },
   {
     "OXY2DEV/helpview.nvim",
@@ -809,6 +774,7 @@ return {
   },
   {
     "Hashino/doing.nvim",
+    enabled = false,
     event = "VeryLazy",
     keys = {
       {
@@ -831,6 +797,28 @@ return {
           require("doing").edit()
         end,
         {},
+      },
+    },
+  },
+  {
+    "dmtrKovalenko/fff.nvim",
+    enabled = false,
+    opts = {
+      debug = {
+        enabled = false, -- we expect your collaboration at least during the beta
+        show_scores = false, -- to help us optimize the scoring system, feel free to share your scores!
+      },
+    },
+    -- No need to lazy-load with lazy.nvim.
+    -- This plugin initializes itself lazily.
+    lazy = false,
+    keys = {
+      {
+        "<leader>FF", -- try it if you didn't it is a banger keybinding for a picker
+        function()
+          require("fff").find_files()
+        end,
+        desc = "FFFind files",
       },
     },
   },

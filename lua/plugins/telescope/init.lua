@@ -186,8 +186,13 @@ return {
 
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("nucleo")
+      -- require("telescope").load_extension("file_browser")
 
       set("n", { "<Leader>fb" }, lazy(builtin.buffers), { desc = "Select from open buffers" })
+
+      -- set("n", "<Leader>d", lazy(builtin.diagnostics, { bufnr = 0 }), { desc = "Select from buffer diagnostics " })
+      -- set("n", "<Leader>D", lazy(builtin.diagnostics, {}), { desc = "Select from workspace diagnostics " })
+      -- set("n", "<Leader>gs", lazy(builtin.git_status, {}), { desc = "Find files by git status" })
       set(
         "n",
         "<Leader>gg",
@@ -195,6 +200,9 @@ return {
         { desc = "Select from changed files since default branch" }
       )
       set("n", "<Leader>/", lazy(builtin.live_grep), { desc = "Live grep current working directory" })
+      -- set("n", "gd", lazy(builtin.lsp_definitions), { desc = "Go to definition" })
+      -- set("n", "grr", lazy(builtin.lsp_references), { desc = "Go to references" })
+      -- set("n", "gi", lazy(builtin.lsp_implementations), { desc = "Go to implementation" })
 
       local group = augroup("bombeelu.telescope", { clear = true })
 

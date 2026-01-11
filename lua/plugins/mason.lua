@@ -9,15 +9,16 @@ return {
       "williamboman/mason.nvim",
       "neovim/nvim-lspconfig",
     },
-    opts = {},
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    enabled = false,
-    event = "VeryLazy",
-    dependencies = {
-      "mason-org/mason.nvim",
+    opts = {
+      -- automatic_enable = false,
+      automatic_enable = {
+        exclude = {
+          "harper-ls",
+          "harper_ls",
+          "lua_ls",
+          "lua-language-server",
+        },
+      },
     },
-    opts = {},
   },
 }

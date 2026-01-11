@@ -134,6 +134,54 @@ return {
     },
   },
   {
+    "malewicz1337/oil-git.nvim",
+    dependencies = { "stevearc/oil.nvim" },
+    opts = {
+      --  git_status = {
+      -- symbols = {
+      --   -- Change type
+      --   added = "", -- or "✚"
+      --   modified = "", -- or ""
+      --   deleted = "✖", -- this can only be used in the git_status source
+      --   -- Status type
+      --   untracked = "",
+      --   ignored = "",
+      --   unstaged = "󰄱",
+      --   staged = "",
+      --   conflict = "",
+      -- },
+
+      symbols = {
+        file = {
+          added = "✚",
+          modified = "",
+          renamed = "󰁕",
+          deleted = "✖",
+          copied = "C",
+          conflict = "",
+          untracked = "",
+          ignored = "",
+        },
+        directory = {
+          added = "✚",
+          modified = "",
+          renamed = "󰁕",
+          deleted = "✖",
+          copied = "C",
+          conflict = "",
+          untracked = "",
+          ignored = "",
+        },
+      },
+    },
+  },
+  {
+    "A7Lavinraj/fyler.nvim",
+    enabled = false,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = { integrations = { icons = "nvim_web_devicons" } },
+  },
+  {
     "echasnovski/mini.surround",
     cond = true,
     event = "VeryLazy",
@@ -203,7 +251,7 @@ return {
         input = {},
         dim = {},
         notifier = {},
-        quickfile = {},
+        quickfile = { enabled = false },
         scratch = {},
         scroll = { enabled = false },
         picker = {
@@ -212,15 +260,20 @@ return {
             input = {
               keys = {
                 ["<Esc>"] = { "close", mode = { "n", "i" } },
-                ["<c-u>"] = { "", mode = { "i" } },
+                ["<c-u>"] = { "clear_input", mode = { "i" } },
               },
             },
+          },
+          actions = {
+            clear_input = function(picker)
+              picker.input:set("")
+            end,
           },
         },
         statuscolumn = {},
         ---@class snacks.indent.Config
         indent = {
-          enabled = true,
+          enabled = false,
           only_scope = true,
           only_current = true,
         },
@@ -343,6 +396,8 @@ return {
       -- { "<leader>/", function() Snacks.picker.grep({ }) end, desc = "Live Grep" },
       { "<leader>fs", function() Snacks.scratch.select() end, desc = "Select from scratch buffers" },
       { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Find files by Git status" },
+      { "<leader>gi", function() Snacks.picker.gh_issue() end, desc = "GitHub Issues (open)" },
+      { "<leader>gp", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Select from open buffers" },
       { "<leader>f/", function() Snacks.picker.search_history() end, desc = "Search History" },
       { "<leader>fc", function() Snacks.picker.command_history() end, desc = "Command History" },
@@ -529,4 +584,5 @@ return {
       require("which-key").add(ret, { notify = false })
     end,
   },
+  { "nmac427/guess-indent.nvim", opts = {} },
 }

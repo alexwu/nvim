@@ -14,6 +14,33 @@ vim.opt.runtimepath:prepend(lazypath)
 vim.g.mapleader = " "
 require("options")
 
+-- local function pipe_path()
+--   local current_root = vim.fs.root(0, "project.godot")
+--   if current_root then
+--     return vim.fn.stdpath("cache") .. "/server/godot.pipe"
+--   end
+--
+--   current_root = vim.fs.root(0, ".git")
+--   if current_root then
+--     local normalized_name = table.concat(vim.split(current_root, [[/]]), "_")
+--     -- return vim.fn.stdpath("cache") .. "/server/" .. normalized_name .. ".pipe"
+--     return "./tmp/nvim.sock"
+--   end
+--
+--   return vim.fn.stdpath("cache") .. "/server/server.pipe"
+-- end
+--
+-- local pipepath = pipe_path()
+-- if not vim.loop.fs_stat(pipepath) then
+--   vim.fn.serverstart(pipepath)
+-- end
+
+-- NOTE: Get rid of the deprecation warnings for now
+---@diagnostic disable-next-line: duplicate-set-field
+vim.tbl_flatten = function(t)
+  return vim.iter(t):flatten():totable()
+end
+
 -- If opening from inside neovim terminal then do not load all the other plugins
 if not vim.g.vscode and os.getenv("NVIM") ~= nil then
   require("lazy").setup({

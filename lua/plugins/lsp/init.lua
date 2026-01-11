@@ -60,37 +60,24 @@ return {
     end,
   },
   {
+    "Fildo7525/pretty_hover",
+    event = "LspAttach",
+    opts = {},
+  },
+  {
+    "MysticalDevil/inlay-hints.nvim",
+    event = "LspAttach",
+    dependencies = { "neovim/nvim-lspconfig" },
+    opts = {},
+  },
+  {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     keys = {
       { "<leader>c", "", desc = "+lsp", mode = { "n", "x" } },
     },
     dependencies = {
-      {
-        -- NOTE: This needs to be at the top
-        "folke/neoconf.nvim",
-        enabled = false,
-        module = "neoconf",
-        config = true,
-        opts = {},
-      },
       "saghen/blink.cmp",
-      {
-        "kosayoda/nvim-lightbulb",
-        config = true,
-        opts = {
-          autocmd = {
-            enabled = false,
-          },
-          action_kinds = { "quickfix", "refactor.rewrite" },
-          ignore = {
-            clients = {
-              "null-ls",
-            },
-            ft = { "neo-tree" },
-          },
-        },
-      },
       "nvim-telescope/telescope.nvim",
       "b0o/schemastore.nvim",
       "williamboman/mason.nvim",
@@ -117,9 +104,6 @@ return {
               end
             end,
           })
-        end,
-        config = function()
-          require("lspconfig.configs").vtsls = require("vtsls").lspconfig
         end,
         keys = {
           {
@@ -181,8 +165,10 @@ return {
         },
       },
       {
-        "zbirenbaum/neodim",
-        enabled = true,
+        -- "zbirenbaum/neodim",
+        "ALVAROPING1/neodim",
+        enabled = false,
+        branch = "fix-nvim-0.11",
         event = "LspAttach",
         config = function()
           require("neodim").setup({
@@ -202,6 +188,7 @@ return {
       },
       {
         "luckasRanarison/tailwind-tools.nvim",
+        enabled = false,
         event = "VeryLazy",
         dependencies = {
           "nvim-treesitter/nvim-treesitter",
@@ -216,8 +203,6 @@ return {
       local lsp = require("bombeelu.lsp")
       local on_attach = require("plugins.lsp.defaults").on_attach
       local set = require("bombeelu.utils").set
-
-      local Methods = vim.lsp.protocol.Methods
 
       local augroup = nvim.create_augroup
       local autocmd = nvim.create_autocmd
@@ -260,31 +245,66 @@ return {
       require("mason").setup()
       require("mason-lspconfig").setup()
 
-      lsp.eslint.setup({ capabilities = capabilities })
-      lsp.json.setup({ capabilities = capabilities })
+      -- lsp.eslint.setup({ capabilities = capabilities })
+      vim.lsp.config("eslint", {
+        settings = {
+          format = { enable = false },
+          rulesCustomizations = { { rule = "*", severity = "warn" } },
+        },
+      })
+      vim.lsp.enable("eslint")
       -- lsp.relay.setup({  capabilities = capabilities })
-      lsp.tailwindcss.setup({
-        capabilities = capabilities,
+      vim.lsp.config("tailwindcss", {
+        -- capabilities = capabilities,
         settings = {
           classAttributes = { "class", "className", "class:list", "classList", "ngClass", "classes" },
         },
       })
-      lsp.taplo.setup({ capabilities = capabilities })
-      lsp.yamlls.setup({ capabilities = capabilities })
-      lsp.zls.setup({ capabilities = capabilities })
+      vim.lsp.enable("tailwindcss")
+
+      vim.lsp.enable("taplo")
+      vim.lsp.enable("yamlls")
+      vim.lsp.enable("zls")
+      vim.lsp.config("herb_ls", {
+        settings = {
+          languageServerHerb = {
+            formatter = {
+              enabled = true,
+              indentWidth = 2,
+              maxLineLength = 100,
+            },
+            linter = {
+              enabled = true,
+              fixOnSave = false,
+            },
+          },
+        },
+        init_options = {
+          enabledFeatures = {
+            diagnostics = true,
+          },
+          experimentalFeaturesEnabled = true,
+        },
+      })
+      vim.lsp.enable("herb_ls")
+
+      -- lsp.taplo.setup({ capabilities = capabilities })
+      -- lsp.yamlls.setup({ capabilities = capabilities })
+      -- lsp.zls.setup({ capabilities = capabilities })
       lsp.lua.setup({ capabilities = capabilities })
 
-      lsp.markdown_oxide.setup({
+      vim.lsp.enable("markdown_oxide")
+      -- lsp.markdown_oxide.setup({
+      --
+      --   capabilities = capabilities,
+      -- })
 
-        capabilities = capabilities,
-      })
-
-      lsp.ruff.setup({
-        capabilities = capabilities,
-      })
-
-      lsp.basedpyright.setup({
-        capabilities = capabilities,
+      vim.lsp.enable("ruff")
+      -- lsp.ruff.setup({
+      --   capabilities = capabilities,
+      -- })
+      --
+      vim.lsp.config("basedpyright", {
         settings = {
           pyright = {
             -- Using Ruff's import organizer
@@ -298,6 +318,7 @@ return {
           },
         },
       })
+      vim.lsp.enable("basedpyright")
 
       -- lsp.vectorcode_server.setup({ capabilities = capabilities })
 
@@ -315,54 +336,60 @@ return {
       --     erbSupport = true,
       --   },
       -- })
-      lsp.biome.setup({
-        capabilities = capabilities,
+      vim.lsp.config("biome", {
         filetypes = { "typescript", "typescriptreact" },
       })
-      lsp.html.setup({ capabilities = capabilities })
+      vim.lsp.enable("biome")
+
+      -- lsp.html.setup({ capabilities = capabilities })
+      vim.lsp.enable("html")
       -- lsp.htmx.setup({ capabilities = capabilities, filetypes = { "html", "templ", "eruby" } })
-      lsp.sourcekit.setup({ capabilities = capabilities })
-      lsp.theme_check.setup({ capabilities = capabilities })
-      lsp.typos_lsp.setup({
-        capabilities = capabilities,
+      -- lsp.sourcekit.setup({ capabilities = capabilities })
+      vim.lsp.enable("sourcekit")
+      -- lsp.theme_check.setup({ capabilities = capabilities })
+      vim.lsp.config("typos_lsp", {
         init_options = {
-          -- Custom config. Used together with a config file found in the workspace or its parents,
-          -- taking precedence for settings declared in both.
-          -- Equivalent to the typos `--config` cli argument.
-          -- config = "~/code/typos-lsp/crates/typos-lsp/tests/typos.toml",
-          -- How typos are rendered in the editor, can be one of an Error, Warning, Info, or Hint.
-          -- Defaults to error.
           diagnosticSeverity = "Warning",
         },
       })
-      lsp.harper_ls.setup({
+      vim.lsp.enable("typos_lsp")
 
-        capabilities = capabilities,
-        filetypes = { "modelfile", "markdown" },
+      vim.lsp.inline_completion.enable()
+      vim.lsp.config("copilot", {
         settings = {
-          ["harper-ls"] = {
-            diagnosticSeverity = "hint",
-            linters = {
-              SpellCheck = true,
-              SpelledNumbers = false,
-              AnA = true,
-              SentenceCapitalization = false,
-              UnclosedQuotes = true,
-              WrongQuotes = false,
-              LongSentences = true,
-              RepeatedWords = true,
-              Spaces = true,
-              Matcher = true,
-              CorrectNumberSuffix = true,
-              NumberSuffixCapitalization = true,
-              MultipleSequentialPronouns = true,
-              LinkingVerbs = false,
-              AvoidCurses = false,
-              ToDoHyphen = false,
-            },
+          telemetry = {
+            telemetryLevel = "off",
           },
         },
       })
+      vim.lsp.enable("copilot")
+      -- lsp.harper_ls.setup({
+      --   capabilities = capabilities,
+      --   filetypes = { "modelfile", "markdown" },
+      --   settings = {
+      --     ["harper-ls"] = {
+      --       diagnosticSeverity = "hint",
+      --       linters = {
+      --         SpellCheck = true,
+      --         SpelledNumbers = false,
+      --         AnA = true,
+      --         SentenceCapitalization = false,
+      --         UnclosedQuotes = true,
+      --         WrongQuotes = false,
+      --         LongSentences = true,
+      --         RepeatedWords = true,
+      --         Spaces = true,
+      --         Matcher = true,
+      --         CorrectNumberSuffix = true,
+      --         NumberSuffixCapitalization = true,
+      --         MultipleSequentialPronouns = true,
+      --         LinkingVerbs = false,
+      --         AvoidCurses = false,
+      --         ToDoHyphen = false,
+      --       },
+      --     },
+      --   },
+      -- })
 
       -- Workaround for truncating long TypeScript inlay hints.
       -- TODO: Remove this if https://github.com/neovim/neovim/issues/27240 gets addressed.
@@ -384,8 +411,8 @@ return {
       --
       --   inlay_hint_handler(err, result, ctx, config)
       -- end
-
-      lsp.vtsls.setup({
+      vim.lsp.config("vtsls", {
+        root_markers = { "tsconfig.json", "jsconfig.json" },
         capabilities = capabilities,
         settings = {
           typescript = {
@@ -408,8 +435,21 @@ return {
           },
         },
       })
+      vim.lsp.enable("vtsls")
 
-      lsp.gdscript.setup({ capabilities = capabilities })
+      vim.lsp.config("denols", {
+        root_markers = { "deno.json", "deno.jsonc" },
+      })
+      -- vim.lsp.enable("denols")
+
+      vim.lsp.config("sqruff", {
+        root_markers = { ".sqruff" },
+      })
+      vim.lsp.enable("sqruff")
+
+      vim.lsp.enable("gdscript")
+
+      vim.lsp.enable("ast_grep")
 
       local function hover()
         local filetype = vim.filetype.match({ buf = 0 })
@@ -420,7 +460,8 @@ return {
         elseif vim.fn.expand("%:t") == "Cargo.toml" then
           require("crates").show_popup()
         else
-          vim.lsp.buf.hover()
+          -- vim.lsp.buf.hover()
+          require("pretty_hover").hover()
         end
       end
 
@@ -432,6 +473,24 @@ return {
       --   modes = { "n", "x" },
       --   opts = { silent = true, desc = "Select a code action" },
       -- })
+
+      set("i", "<C-y>", function()
+        if not vim.lsp.inline_completion.get() then
+          return "<C-y>"
+        end
+      end, { expr = true, desc = "Accept the current inline completion" })
+
+      set({ "n", "x" }, "<CR>", function()
+        if not vim.lsp.buf.selection_range(1) then
+          return "<CR>"
+        end
+      end, { expr = true, desc = "Expand selection range" })
+
+      set({ "n", "x" }, "<BS>", function()
+        if not vim.lsp.buf.selection_range(-1) then
+          return "<BS>"
+        end
+      end, { expr = true, desc = "Shrink selection range" })
 
       -- set({ "n", "x" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Select a code action" })
       set({ "n", "x" }, "gra", require("tiny-code-action").code_action, { desc = "Select a code action" })
@@ -482,8 +541,6 @@ return {
           return "<c-b>"
         end
       end, { silent = true, expr = true })
-
-      require("bombeelu.lsp.inlay_hints").setup()
 
       augroup("LspCustom", { clear = true })
       autocmd("FileType", {

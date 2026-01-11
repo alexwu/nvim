@@ -9,22 +9,34 @@ return {
   },
   {
     "nvim-neotest/neotest",
-    ft = { "ruby" },
+    -- ft = { "ruby" },
     dependencies = {
-      "alexwu/neotest-rspec",
+      { "alexwu/neotest-rspec", dev = true, branch = "custom-test-names" },
     },
     opts = {
       adapters = {
         ["neotest-rspec"] = {
-          rspec_cmd = function()
-            return vim
-              .iter({
-                "bundle",
-                "exec",
-                "rspec",
-              })
-              :flatten()
-              :totable()
+          rspec_cmd = function(position_type)
+            if position_type == "test" then
+              return vim
+                .iter({
+                  "bundle",
+                  "exec",
+                  "rspec",
+                  "--fail-fast",
+                })
+                :flatten()
+                :totable()
+            else
+              return vim
+                .iter({
+                  "bundle",
+                  "exec",
+                  "rspec",
+                })
+                :flatten()
+                :totable()
+            end
           end,
         },
         -- ["ruby_lsp.neotest"] = {},
