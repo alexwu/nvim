@@ -17,7 +17,7 @@ return {
       },
       { "disrupted/blink-cmp-conventional-commits" },
     },
-    build = "cargo build --release",
+    -- build = "cargo build --release",
     opts_extend = {
       "sources.completion.enabled_providers",
       "sources.compat",

@@ -17,6 +17,7 @@ return {
   },
   {
     "alexwu/nucleo.nvim",
+    enabled = false,
     event = "VeryLazy",
     -- dependencies = { "runiq/neovim-throttle-debounce" },
     url = "git@github.com:alexwu/nucleo.nvim.git",
@@ -85,5 +86,10 @@ return {
       model = "~/Code/neovim/plugins/whisper.nvim/models/ggml-large-v3.bin",
       mode = "vad",
     },
+  },
+  {
+    "alexwu/gh-pr-comments",
+    dev = true,
+    opts = {},
   },
 }

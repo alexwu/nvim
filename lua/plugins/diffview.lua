@@ -28,7 +28,7 @@ return {
           view = {
             ["<tab>"] = cb("select_next_entry"),
             ["<s-tab>"] = cb("select_prev_entry"),
-            ["<leader>e"] = cb("focus_files"),
+["<leader>e"] = cb("focus_files"),
             ["<leader>b"] = cb("toggle_files"),
             ["q"] = cb("close"),
             ["gf"] = cb("goto_file_edit"),
@@ -479,7 +479,15 @@ return {
   {
     "esmuellert/codediff.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
-    opts = {},
-    cmd = "CodeDiff",
+    opts = {
+      explorer = {
+        view_mode = "tree",
+      }
+    },
+    event = "VeryLazy",
+    cond = function()
+      return not vim.g.vscode
+    end,
+    -- cmd = "CodeDiff",
   },
 }

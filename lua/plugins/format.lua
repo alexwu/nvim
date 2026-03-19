@@ -40,10 +40,6 @@ return {
         desc = "Format Injected Langs",
       },
       {
-        "<F8>",
-        desc = "Format file",
-      },
-      {
         "gq",
         desc = "Format file",
       },
@@ -55,14 +51,15 @@ return {
         mode = { "n", "v" },
         desc = "Format Injected Langs",
       },
-      {
-        "<F10>",
-        function()
-          require("conform").format({ formatters = { "injected" } })
-        end,
-        mode = { "n", "v" },
-        desc = "Format Injected Langs",
-      },
+      -- TODO: Figure out a new mapping for this
+      -- {
+      --   "<F8>",
+      --   function()
+      --     require("conform").format({ formatters = { "injected" } })
+      --   end,
+      --   mode = { "n", "v" },
+      --   desc = "Format Injected Langs",
+      -- },
     },
     ---@module "conform"
     ---@type fun(): conform.setupOpts

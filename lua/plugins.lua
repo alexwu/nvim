@@ -262,6 +262,7 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
     lazy = false,
+    build = "./kitty/install-kittens.bash",
     opts = {},
   },
   {
@@ -639,29 +640,6 @@ return {
     end,
   },
   {
-    "ahmedkhalf/project.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    event = "VeryLazy",
-    opts = {
-      manual_mode = true,
-      patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "Gemfile", "node_modules/**" },
-      exclude_dirs = { "node_modules", ".cargo" },
-    },
-    config = function(_, opts)
-      require("project_nvim").setup(opts)
-      require("telescope").load_extension("projects")
-    end,
-    keys = {
-      {
-        "<leader>fp",
-        function()
-          require("telescope").extensions.projects.projects({})
-        end,
-        desc = "Projects (Telescope)",
-      },
-    },
-  },
-  {
     "stevearc/resession.nvim",
     opts = {},
     config = function(_, opts)
@@ -802,7 +780,10 @@ return {
   },
   {
     "dmtrKovalenko/fff.nvim",
-    enabled = false,
+    enabled = true,
+    build = function()
+      require("fff.download").download_or_build_binary()
+    end,
     opts = {
       debug = {
         enabled = false, -- we expect your collaboration at least during the beta
@@ -814,12 +795,40 @@ return {
     lazy = false,
     keys = {
       {
-        "<leader>FF", -- try it if you didn't it is a banger keybinding for a picker
+        "<leader>ff",
         function()
           require("fff").find_files()
         end,
         desc = "FFFind files",
       },
+    },
+  },
+  {
+    "zk-org/zk-nvim",
+    config = function()
+      require("zk").setup({
+        -- See Setup section below
+      })
+    end,
+  },
+  {
+    "daliusd/ghlite.nvim",
+    opts = {
+      diff_tool = "codediff",
+    },
+    event = "VeryLazy",
+    keys = {
+      -- { "<leader>us", ":GHLitePRSelect<cr>", silent = true, desc = "PR Select" },
+      -- -- { "<leader>uo", ":GHLitePRCheckout<cr>", silent = true, desc = "PR Checkout" },
+      -- { "<leader>uv", ":GHLitePRView<cr>", silent = true, desc = "PR View" },
+      -- { "<leader>uu", ":GHLitePRLoadComments<cr>", silent = true, desc = "PR Load Comments" },
+      -- { "<leader>up", ":GHLitePRDiff<cr>", silent = true, desc = "PR Diff" },
+      -- { "<leader>ul", ":GHLitePRDiffview<cr>", silent = true, desc = "PR Diffview" },
+      -- { "<leader>ua", ":GHLitePRAddComment<cr>", silent = true, desc = "PR Add comment" },
+      -- { "<leader>ua", ":GHLitePRAddComment<cr>", mode = "x", silent = true, desc = "PR Add comment" },
+      -- { "<leader>uc", ":GHLitePRUpdateComment<cr>", silent = true, desc = "PR Update comment" },
+      -- { "<leader>ud", ":GHLitePRDeleteComment<cr>", silent = true, desc = "PR Delete comment" },
+      -- { "<leader>ug", ":GHLitePROpenComment<cr>", silent = true, desc = "PR Open comment" },
     },
   },
   { import = "plugins.lang" },

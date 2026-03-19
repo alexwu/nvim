@@ -3,6 +3,8 @@ local M = {}
 function M.files(...)
   if package.loaded.nucleo then
     require("nucleo.sources").find_files(...)
+  elseif package.loaded.fff then
+    require("fff").find_files(...)
   end
 end
 
